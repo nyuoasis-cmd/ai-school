@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>RoomGlow — AI 인테리어</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pink: #EC4899;
+  --pink-light: #F472B6;
+  --pink-soft: #FDF2F8;
+  --pink-glow: rgba(236, 72, 153, 0.2);
+  --bg-primary: #FEFEFE;
+  --bg-secondary: #FBF7F9;
+  --bg-card: #FFFFFF;
+  --border: #F3E8EF;
+  --border-strong: #E8D5E0;
+  --text-primary: #1F1215;
+  --text-secondary: #6B5460;
+  --text-muted: #A8919D;
+  --accent-warm: #F59E0B;
+  --accent-green: #10B981;
+  --accent-blue: #6366F1;
+  --accent-orange: #F97316;
+  --header-height: 46px;
+  --tab-height: 38px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { height:100%; }
+body {
+  font-family:'Noto Sans KR',-apple-system,sans-serif;
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  overflow-x:hidden;
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:contain;
+}
+
+.app-frame {
+  max-width:430px;
+  margin:0 auto;
+  min-height:100dvh;
+  position:relative;
+  background:var(--bg-primary);
+}
+
+/* ===== Header ===== */
+.app-header {
+  height:var(--header-height);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  background:var(--bg-primary);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.app-logo {
+  display:flex; align-items:center; gap:8px;
+}
+.logo-icon {
+  width:28px; height:28px;
+  background:linear-gradient(135deg, var(--pink), var(--pink-light));
+  border-radius:7px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+  box-shadow:0 3px 10px var(--pink-glow);
+}
+.logo-text {
+  font-family:'Playfair Display', serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--text-primary);
+}
+.logo-text span { color:var(--pink); }
+.header-field {
+  font-size:11px; color:var(--pink); font-weight:600;
+  background:var(--pink-soft);
+  padding:4px 10px; border-radius:20px;
+  border:1px solid rgba(236,72,153,0.15);
+}
+
+/* ===== Tab Bar ===== */
+.tab-bar {
+  display:flex;
+  background:var(--bg-secondary);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:var(--header-height);
+  z-index:99;
+}
+.tab-item {
+  flex:1;
+  padding:9px 0;
+  text-align:center;
+  font-size:12px;
+  font-weight:500;
+  color:var(--text-muted);
+  cursor:pointer;
+  position:relative;
+  transition:color 0.3s;
+  border:none; background:none;
+  font-family:inherit;
+}
+.tab-item.active {
+  color:var(--pink);
+  font-weight:700;
+}
+.tab-item.active::after {
+  content:'';
+  position:absolute;
+  bottom:0; left:20%; width:60%; height:2.5px;
+  background:linear-gradient(90deg, var(--pink), var(--pink-light));
+  border-radius:2px;
+}
+
+/* ===== Content ===== */
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ===== TAB 1: 비포/애프터 ===== */
+.room-selector {
+  display:flex;
+  gap:8px;
+  padding:10px 14px 6px;
+  overflow-x:auto;
+}
+.room-selector::-webkit-scrollbar { display:none; }
+
+.room-chip {
+  flex-shrink:0;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:600;
+  border:1.5px solid var(--border);
+  background:white;
+  color:var(--text-secondary);
+  cursor:pointer;
+  transition:all 0.3s;
+  white-space:nowrap;
+  font-family:inherit;
+}
+.room-chip.active {
+  background:linear-gradient(135deg, var(--pink), var(--pink-light));
+  border-color:var(--pink);
+  color:white;
+  box-shadow:0 2px 12px var(--pink-glow);
+}
+
+.drag-hint {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-size:10px;
+  color:var(--text-muted);
+  padding:0 0 6px;
+  animation:hintPulse 2s ease-in-out infinite;
+}
+@keyframes hintPulse {
+  0%, 100% { opacity:0.5; }
+  50% { opacity:1; }
+}
+
+/* Before/After Card */
+.ba-container { padding:0 14px 8px; }
+
+.ba-card {
+  background:white;
+  border-radius:16px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,0.04);
+}
+
+.ba-slider-wrap {
+  position:relative;
+  width:100%;
+  height:220px;
+  overflow:hidden;
+  cursor:ew-resize;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+
+.ba-image {
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  object-fit:cover;
+}
+.ba-image.after {
+  clip-path:inset(0 0 0 50%);
+  transition:clip-path 0.05s linear;
+}
+
+.ba-divider {
+  position:absolute;
+  top:0; left:50%;
+  width:3px; height:100%;
+  background:white;
+  box-shadow:0 0 10px rgba(0,0,0,0.3);
+  z-index:10;
+  transform:translateX(-50%);
+  transition:left 0.05s linear;
+}
+.ba-handle {
+  position:absolute;
+  top:50%; left:50%;
+  width:40px; height:40px;
+  border-radius:50%;
+  background:white;
+  border:3px solid var(--pink);
+  box-shadow:0 2px 16px rgba(0,0,0,0.2);
+  z-index:20;
+  transform:translate(-50%, -50%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:left 0.05s linear;
+}
+.ba-handle-arrows {
+  font-size:13px;
+  color:var(--pink);
+  font-weight:700;
+  letter-spacing:4px;
+  padding-left:4px;
+  line-height:1;
+}
+.ba-label {
+  position:absolute;
+  top:8px;
+  padding:3px 8px;
+  border-radius:14px;
+  font-size:9px;
+  font-weight:700;
+  z-index:15;
+  backdrop-filter:blur(8px);
+}
+.ba-label.before {
+  left:10px;
+  background:rgba(0,0,0,0.5);
+  color:white;
+}
+.ba-label.after {
+  right:10px;
+  background:rgba(236,72,153,0.85);
+  color:white;
+}
+
+.ba-info { padding:10px 14px 12px; }
+.ba-room-name {
+  font-family:'Playfair Display', serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--text-primary);
+  margin-bottom:1px;
+}
+.ba-style-tag {
+  font-size:10px;
+  color:var(--pink);
+  font-weight:600;
+  margin-bottom:6px;
+}
+.ba-desc {
+  font-size:11px;
+  color:var(--text-secondary);
+  line-height:1.55;
+  margin-bottom:8px;
+}
+.ba-changes {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.change-tag {
+  padding:3px 8px;
+  border-radius:14px;
+  font-size:10px;
+  font-weight:600;
+  background:var(--pink-soft);
+  color:var(--pink);
+  border:1px solid rgba(236,72,153,0.15);
+}
+
+/* Dots & Counter */
+.ba-dots {
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  padding:6px 0 2px;
+}
+.ba-dot {
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--border-strong);
+  transition:all 0.3s;
+}
+.ba-dot.active {
+  width:20px;
+  border-radius:3px;
+  background:var(--pink);
+}
+.ba-counter {
+  text-align:center;
+  font-size:11px;
+  color:var(--text-muted);
+  font-weight:600;
+  padding-bottom:8px;
+}
+.ba-counter span { color:var(--pink); font-weight:700; }
+
+/* ===== TAB 2: 스타일 갤러리 ===== */
+.gallery-grid {
+  padding:14px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.style-card {
+  background:white;
+  border-radius:16px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  box-shadow:0 2px 12px rgba(0,0,0,0.03);
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.style-card:active { transform:scale(0.98); }
+.style-card-img {
+  width:100%;
+  height:130px;
+  object-fit:cover;
+  display:block;
+}
+.style-card-body { padding:12px 14px; }
+.style-card-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:5px;
+}
+.style-name {
+  font-family:'Playfair Display', serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--text-primary);
+}
+.style-badge {
+  padding:3px 10px;
+  border-radius:12px;
+  font-size:10px;
+  font-weight:700;
+}
+.style-badge.popular { background:rgba(236,72,153,0.1); color:var(--pink); }
+.style-badge.trending { background:rgba(99,102,241,0.1); color:var(--accent-blue); }
+.style-badge.classic { background:rgba(245,158,11,0.1); color:var(--accent-warm); }
+.style-badge.natural { background:rgba(16,185,129,0.1); color:var(--accent-green); }
+
+.style-desc {
+  font-size:11px;
+  color:var(--text-secondary);
+  line-height:1.5;
+  margin-bottom:10px;
+}
+.style-colors {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.style-colors-label {
+  font-size:10px;
+  color:var(--text-muted);
+  font-weight:600;
+  margin-right:4px;
+}
+.color-dot {
+  width:18px; height:18px;
+  border-radius:50%;
+  border:2px solid white;
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== TAB 3: AI 추천 ===== */
+.ai-section { padding:16px; }
+.ai-prompt-card {
+  background:linear-gradient(135deg, var(--pink-soft), #FEF3C7);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:18px;
+}
+.ai-prompt-title {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:14px;
+}
+.ai-icon {
+  width:30px; height:30px;
+  background:linear-gradient(135deg, var(--pink), var(--pink-light));
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+}
+.ai-prompt-label {
+  font-size:14px;
+  font-weight:700;
+  color:var(--text-primary);
+}
+.ai-select-group { margin-bottom:14px; }
+.ai-select-label {
+  font-size:10px;
+  font-weight:700;
+  color:var(--text-muted);
+  margin-bottom:8px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.ai-select-options {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.ai-opt {
+  padding:8px 14px;
+  border-radius:12px;
+  font-size:12px;
+  font-weight:600;
+  border:1.5px solid var(--border);
+  background:white;
+  color:var(--text-secondary);
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+}
+.ai-opt.selected {
+  border-color:var(--pink);
+  background:var(--pink-soft);
+  color:var(--pink);
+}
+
+.ai-generate-btn {
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg, var(--pink), var(--pink-light));
+  color:white;
+  border:none;
+  border-radius:14px;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 4px 16px var(--pink-glow);
+  transition:all 0.3s;
+  margin-top:4px;
+  font-family:inherit;
+}
+.ai-generate-btn:active { transform:scale(0.98); }
+.ai-generate-btn:disabled {
+  opacity:0.7;
+  cursor:default;
+}
+
+/* AI Result */
+.ai-result {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,0.04);
+  transition:opacity 0.4s, transform 0.4s;
+}
+.ai-result.hidden {
+  display:none;
+}
+.ai-result-img {
+  width:100%;
+  height:170px;
+  object-fit:cover;
+}
+.ai-result-body { padding:16px; }
+.ai-result-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  background:linear-gradient(135deg, var(--pink), var(--pink-light));
+  color:white;
+  padding:3px 10px;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+.ai-result-title {
+  font-family:'Playfair Display', serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--text-primary);
+  margin-bottom:8px;
+}
+.ai-result-desc {
+  font-size:12px;
+  color:var(--text-secondary);
+  line-height:1.7;
+  margin-bottom:14px;
+}
+
+.ai-palette { margin-bottom:14px; }
+.ai-palette-label {
+  font-size:10px;
+  font-weight:700;
+  color:var(--text-muted);
+  margin-bottom:8px;
+}
+.ai-palette-row {
+  display:flex;
+  gap:6px;
+}
+.palette-chip {
+  flex:1;
+  height:34px;
+  border-radius:10px;
+  position:relative;
+  box-shadow:0 2px 6px rgba(0,0,0,0.06);
+}
+.palette-chip::after {
+  content:attr(data-name);
+  position:absolute;
+  bottom:-16px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:9px;
+  color:var(--text-muted);
+  white-space:nowrap;
+  font-weight:600;
+}
+.ai-tips {
+  margin-top:26px;
+  background:var(--pink-soft);
+  border-radius:12px;
+  padding:12px;
+  border:1px solid rgba(236,72,153,0.1);
+}
+.ai-tips-title {
+  font-size:11px;
+  font-weight:700;
+  color:var(--pink);
+  margin-bottom:5px;
+}
+.ai-tips-text {
+  font-size:11px;
+  color:var(--text-secondary);
+  line-height:1.6;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(254,254,254,0.97); z-index:500;
+  flex-direction:column; align-items:center; justify-content:center; gap:18px;
+}
+.loading-overlay.show { display:flex; }
+.loading-spinner {
+  width:48px; height:48px;
+  border:4px solid var(--border);
+  border-top:4px solid var(--pink);
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform:rotate(360deg); }
+}
+.loading-bar-wrap {
+  width:160px; height:4px; background:var(--border);
+  border-radius:2px; overflow:hidden;
+}
+.loading-bar {
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--pink), var(--pink-light));
+  border-radius:2px; transition:width 0.3s ease;
+}
+.loading-text { font-size:14px; font-weight:700; color:var(--text-primary); text-align:center; }
+.loading-sub { font-size:12px; color:var(--text-muted); margin-top:-10px; text-align:center; }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(14px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.fade-up { animation:fadeInUp 0.35s ease forwards; }
+.d1 { animation-delay:0.08s; opacity:0; }
+.d2 { animation-delay:0.16s; opacity:0; }
+.d3 { animation-delay:0.24s; opacity:0; }
+.d4 { animation-delay:0.32s; opacity:0; }
+
+.style-card { animation:fadeInUp 0.4s ease-out both; }
+.style-card:nth-child(1) { animation-delay:0.05s; }
+.style-card:nth-child(2) { animation-delay:0.1s; }
+.style-card:nth-child(3) { animation-delay:0.15s; }
+.style-card:nth-child(4) { animation-delay:0.2s; }
+
+/* Desktop */
+@media (min-width:500px) {
+  .app-frame { max-width:480px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="app-logo">
+      <div class="logo-icon">🏠</div>
+      <div class="logo-text">Room<span>Glow</span></div>
+    </div>
+    <span class="header-field">디자인·미디어</span>
+  </header>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-item active" data-tab="compare">🔄 비포/애프터</button>
+    <button class="tab-item" data-tab="gallery">🎨 스타일</button>
+    <button class="tab-item" data-tab="ai">🤖 AI 추천</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- ===== TAB 1: 비포/애프터 ===== -->
+    <div id="tab-compare" class="tab-panel active">
+      <div class="room-selector">
+        <button class="room-chip active" data-room="0">🛋️ 거실</button>
+        <button class="room-chip" data-room="1">🛏️ 침실</button>
+        <button class="room-chip" data-room="2">🍳 주방</button>
+        <button class="room-chip" data-room="3">🛁 욕실</button>
+      </div>
+
+      <div class="drag-hint">↔ 슬라이더를 드래그하여 비교하세요</div>
+
+      <div class="ba-container" id="ba-container"></div>
+
+      <div class="ba-dots">
+        <div class="ba-dot active"></div>
+        <div class="ba-dot"></div>
+        <div class="ba-dot"></div>
+        <div class="ba-dot"></div>
+      </div>
+      <div class="ba-counter"><span>1</span> / 4 공간</div>
+    </div>
+
+    <!-- ===== TAB 2: 스타일 갤러리 ===== -->
+    <div id="tab-gallery" class="tab-panel">
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+
+    <!-- ===== TAB 3: AI 추천 ===== -->
+    <div id="tab-ai" class="tab-panel">
+      <div class="ai-section">
+        <!-- AI Prompt Card -->
+        <div class="ai-prompt-card">
+          <div class="ai-prompt-title">
+            <div class="ai-icon">✨</div>
+            <div class="ai-prompt-label">AI 스타일 추천받기</div>
+          </div>
+
+          <div class="ai-select-group" data-group="room">
+            <div class="ai-select-label">공간 선택</div>
+            <div class="ai-select-options">
+              <button class="ai-opt selected" data-val="거실">🛋️ 거실</button>
+              <button class="ai-opt" data-val="침실">🛏️ 침실</button>
+              <button class="ai-opt" data-val="주방">🍳 주방</button>
+              <button class="ai-opt" data-val="욕실">🛁 욕실</button>
+            </div>
+          </div>
+
+          <div class="ai-select-group" data-group="mood">
+            <div class="ai-select-label">분위기</div>
+            <div class="ai-select-options">
+              <button class="ai-opt selected" data-val="편안한">☁️ 편안한</button>
+              <button class="ai-opt" data-val="모던한">⚡ 모던한</button>
+              <button class="ai-opt" data-val="화사한">🌸 화사한</button>
+              <button class="ai-opt" data-val="차분한">🌙 차분한</button>
+            </div>
+          </div>
+
+          <div class="ai-select-group" data-group="budget">
+            <div class="ai-select-label">예산</div>
+            <div class="ai-select-options">
+              <button class="ai-opt" data-val="50">💰 50만원 이하</button>
+              <button class="ai-opt selected" data-val="100">💰💰 100만원</button>
+              <button class="ai-opt" data-val="200">💰💰💰 200만원+</button>
+            </div>
+          </div>
+
+          <button class="ai-generate-btn" id="ai-btn" onclick="generateAI()">
+            ✨ AI 추천 받기
+          </button>
+        </div>
+
+        <!-- AI Result (initially hidden) -->
+        <div class="ai-result hidden" id="ai-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-bar-wrap"><div id="load-bar" class="loading-bar"></div></div>
+    <div class="loading-text" id="load-text">AI가 스타일을 분석하고 있어요</div>
+    <div class="loading-sub" id="load-sub">잠깐만요...</div>
+  </div>
+</div>
+
+<script>
+// === DATA ===
+const rooms = [
+  {
+    room:"거실", icon:"🛋️",
+    styleName:"모던 미니멀 거실", styleEn:"Modern Minimal Style",
+    before:"https://images.unsplash.com/photo-1641232458416-feace752b346?w=700&h=520&fit=crop",
+    after:"https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=520&fit=crop",
+    desc:"어둡고 답답했던 거실이 밝은 톤의 가구와 간결한 배치로 개방감 있는 공간으로 변신했습니다.",
+    changes:["🪑 가구 교체","💡 조명 추가","🎨 벽 컬러 변경","🌿 식물 배치"]
+  },
+  {
+    room:"침실", icon:"🛏️",
+    styleName:"내추럴 우드 침실", styleEn:"Natural Wood Bedroom",
+    before:"https://images.unsplash.com/photo-1646904607974-84f415888f89?w=700&h=520&fit=crop",
+    after:"https://images.unsplash.com/photo-1513694203232-719a280e022f?w=700&h=520&fit=crop",
+    desc:"차갑고 단조로웠던 침실에 원목 프레임 침대와 따뜻한 패브릭을 더해 아늑한 휴식 공간으로 탈바꿈했습니다.",
+    changes:["🛏️ 침대 프레임","🕯️ 간접 조명","🧶 패브릭 교체","🖼️ 액자 배치"]
+  },
+  {
+    room:"주방", icon:"🍳",
+    styleName:"화이트 모던 주방", styleEn:"White Modern Kitchen",
+    before:"https://images.unsplash.com/photo-1647604074042-d0d82ca7e7f0?w=700&h=520&fit=crop",
+    after:"https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=700&h=520&fit=crop",
+    desc:"낡은 주방 상판과 수납장을 화이트 톤으로 교체하고, 펜던트 조명과 타일 백스플래시로 카페 같은 주방을 만들었습니다.",
+    changes:["🗄️ 상판 교체","💡 펜던트 조명","🧱 타일 시공","🍳 수납 정리"]
+  },
+  {
+    room:"욕실", icon:"🛁",
+    styleName:"미니멀 스파 욕실", styleEn:"Minimal Spa Bathroom",
+    before:"https://images.unsplash.com/photo-1664227430687-9299c593e3da?w=700&h=520&fit=crop",
+    after:"https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=700&h=520&fit=crop",
+    desc:"어둡고 습한 느낌의 욕실을 밝은 타일과 우드 선반, 간접 조명으로 호텔 스파 같은 공간으로 변화시켰습니다.",
+    changes:["🧱 타일 교체","🪞 거울 교체","🪵 우드 선반","💡 간접 조명"]
+  }
+];
+
+const styles = [
+  { name:"모던 미니멀", badge:"인기", badgeType:"popular",
+    img:"https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=280&fit=crop",
+    desc:"불필요한 장식을 배제하고 깔끔한 라인과 중성톤 컬러로 정돈된 공간을 연출합니다.",
+    colors:["#E5E5E5","#FAFAFA","#292524","#A8A29E"]
+  },
+  { name:"내추럴 우드", badge:"자연", badgeType:"natural",
+    img:"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=700&h=280&fit=crop",
+    desc:"원목 소재와 따뜻한 색감으로 자연의 편안함을 실내로 가져옵니다.",
+    colors:["#D4A574","#8B7355","#F5F0EB","#4A7C59"]
+  },
+  { name:"화이트 모던", badge:"클래식", badgeType:"classic",
+    img:"https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&h=280&fit=crop",
+    desc:"화이트 톤의 깔끔한 마감과 심플한 라인으로 넓어 보이는 세련된 공간을 연출합니다.",
+    colors:["#FFFFFF","#F5F5F5","#D4D4D4","#292524"]
+  },
+  { name:"북유럽 스칸디", badge:"트렌드", badgeType:"trending",
+    img:"https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=700&h=280&fit=crop",
+    desc:"화이트 톤 + 밝은 원목 + 패브릭 소품으로 깔끔하면서도 포근한 공간을 만듭니다.",
+    colors:["#FFFFFF","#E8DCC8","#B0C4DE","#C9B99A"]
+  }
+];
+
+const badgeIcons = { popular:"🔥", natural:"🌿", classic:"✨", trending:"💜" };
+
+const aiPresets = [
+  { room:"거실", mood:"편안한", title:"편안한 모던 내추럴 거실",
+    img:"https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=360&fit=crop",
+    desc:"밝은 톤의 원목 가구에 그레이-베이지 패브릭 소파를 매치하면 모던하면서도 따뜻한 느낌을 줄 수 있어요. 간접 조명과 그린 식물로 포인트를 주면 완성!",
+    palette:[{c:"#F5F0EB",n:"아이보리"},{c:"#C4B5A4",n:"웜그레이"},{c:"#8B7355",n:"원목"},{c:"#5B7F5E",n:"세이지"},{c:"#2C2C2C",n:"차콜"}],
+    tip:"소파 쿠션은 3개가 적당해요. 메인 컬러 1개 + 포인트 컬러 2개 조합이 균형 잡힌 느낌을 줍니다."
+  },
+  { room:"거실", mood:"모던한", title:"시크 모노톤 거실",
+    img:"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=700&h=360&fit=crop",
+    desc:"블랙&화이트 기본 톤에 메탈 소재 조명과 유리 테이블로 세련된 도시 감성을 연출하세요.",
+    palette:[{c:"#FFFFFF",n:"화이트"},{c:"#D4D4D4",n:"실버"},{c:"#737373",n:"그레이"},{c:"#171717",n:"블랙"},{c:"#EC4899",n:"포인트핑크"}],
+    tip:"모던 인테리어의 핵심은 '비움'이에요. 가구 수를 최소화하고, 하나의 포인트 오브제에 시선을 집중시키세요."
+  },
+  { room:"거실", mood:"화사한", title:"브라이트 리빙 거실",
+    img:"https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=360&fit=crop",
+    desc:"파스텔 쿠션과 화이트 가구, 큰 창으로 들어오는 자연광이 화사하고 생기 있는 거실을 만들어줍니다.",
+    palette:[{c:"#FFF5F5",n:"로즈화이트"},{c:"#FECDD3",n:"라이트핑크"},{c:"#FDE68A",n:"레몬"},{c:"#A7F3D0",n:"민트"},{c:"#E5E7EB",n:"라이트그레이"}],
+    tip:"화사한 공간의 비결은 자연광! 커튼은 시어(sheer) 소재로 빛을 최대한 들여보내세요."
+  },
+  { room:"거실", mood:"차분한", title:"무드 다크 거실",
+    img:"https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=700&h=360&fit=crop",
+    desc:"딥 그린과 네이비 톤의 벽에 원목 가구를 매치하면 차분하고 고급스러운 분위기를 연출할 수 있어요.",
+    palette:[{c:"#1E3A2F",n:"딥그린"},{c:"#1E293B",n:"네이비"},{c:"#C4B5A4",n:"웜그레이"},{c:"#8B7355",n:"원목"},{c:"#F5F0EB",n:"아이보리"}],
+    tip:"어두운 벽 컬러에는 따뜻한 무드등이 필수! 3000K 이하 간접 조명으로 분위기를 완성하세요."
+  },
+  { room:"침실", mood:"편안한", title:"포근한 내추럴 침실",
+    img:"https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&h=360&fit=crop",
+    desc:"린넨 침구와 원목 헤드보드로 자연스러운 포근함을 만들어요. 무드등과 캔들로 릴렉스 분위기를 완성하세요.",
+    palette:[{c:"#FAF5F0",n:"크림"},{c:"#D4B896",n:"린넨"},{c:"#A67B5B",n:"월넛"},{c:"#E8D5C4",n:"베이지"},{c:"#6B705C",n:"올리브"}],
+    tip:"침실 조명은 3000K 이하의 따뜻한 색온도가 좋아요. 메인 조명 + 사이드 무드등 조합이 최고!"
+  },
+  { room:"침실", mood:"모던한", title:"모던 시크 침실",
+    img:"https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&h=360&fit=crop",
+    desc:"그레이 톤 침구에 블랙 프레임 침대, 미니멀한 사이드 테이블로 깔끔한 침실을 만들어보세요.",
+    palette:[{c:"#F5F5F5",n:"라이트그레이"},{c:"#9CA3AF",n:"그레이"},{c:"#374151",n:"다크그레이"},{c:"#111827",n:"블랙"},{c:"#EC4899",n:"핑크"}],
+    tip:"침대 헤드보드는 패딩 타입이 고급스러워요. 무광 블랙 프레임 + 그레이 패딩 조합 추천!"
+  },
+  { room:"침실", mood:"화사한", title:"로맨틱 파스텔 침실",
+    img:"https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&h=360&fit=crop",
+    desc:"파스텔 핑크와 라벤더 톤의 침구에 골드 소품을 더하면 로맨틱한 분위기의 침실이 완성됩니다.",
+    palette:[{c:"#FDF2F8",n:"핑크"},{c:"#EDE9FE",n:"라벤더"},{c:"#FEFCE8",n:"크림"},{c:"#D4AF37",n:"골드"},{c:"#F5F5F5",n:"화이트"}],
+    tip:"침대 위 쿠션은 크기를 섞어 레이어링하면 호텔 느낌이 나요. 큰 것 → 작은 것 순으로!"
+  },
+  { room:"침실", mood:"차분한", title:"젠 미니멀 침실",
+    img:"https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&h=360&fit=crop",
+    desc:"침대와 무드등만 남긴 미니멀 침실. 저채도 컬러와 자연 소재로 숙면을 돕는 공간을 만들어보세요.",
+    palette:[{c:"#E5E7EB",n:"라이트그레이"},{c:"#D4B896",n:"린넨"},{c:"#8B7355",n:"원목"},{c:"#6B705C",n:"올리브"},{c:"#1F2937",n:"다크"}],
+    tip:"수면 전문가들은 침실에 전자기기를 최소화하라고 해요. 알람은 아날로그 시계로!"
+  },
+  { room:"주방", mood:"편안한", title:"웜톤 카페 주방",
+    img:"https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=700&h=360&fit=crop",
+    desc:"우드 톤 상판에 화이트 하부장, 따뜻한 펜던트 조명으로 카페처럼 편안한 주방을 만들어보세요.",
+    palette:[{c:"#F5F0EB",n:"아이보리"},{c:"#D4A574",n:"우드"},{c:"#8B7355",n:"다크우드"},{c:"#FFFFFF",n:"화이트"},{c:"#4A7C59",n:"그린"}],
+    tip:"주방 조명은 작업대 위 펜던트 2~3개가 실용적이면서 카페 분위기도 살려줘요."
+  },
+  { room:"주방", mood:"모던한", title:"올화이트 모던 주방",
+    img:"https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=700&h=360&fit=crop",
+    desc:"화이트 상판 + 화이트 하부장 + 스테인리스 가전으로 깔끔한 모던 주방을 완성하세요.",
+    palette:[{c:"#FFFFFF",n:"화이트"},{c:"#F5F5F5",n:"라이트"},{c:"#D4D4D4",n:"실버"},{c:"#737373",n:"그레이"},{c:"#171717",n:"블랙"}],
+    tip:"화이트 주방은 손잡이 디테일이 포인트! 무광 블랙이나 브러시드 골드 손잡이 추천."
+  },
+  { room:"주방", mood:"화사한", title:"브라이트 카페 주방",
+    img:"https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=700&h=360&fit=crop",
+    desc:"화이트 상판에 파스텔 타일 백스플래시, 골드 수전으로 카페 같은 화사한 주방을 만들어요.",
+    palette:[{c:"#FFFFFF",n:"화이트"},{c:"#FDE68A",n:"레몬"},{c:"#A7F3D0",n:"민트"},{c:"#FECACA",n:"코럴"},{c:"#D4AF37",n:"골드"}],
+    tip:"서브웨이 타일이 가성비 최고! 흰색 타일 + 컬러 줄눈으로 포인트를 줄 수 있어요."
+  },
+  { room:"주방", mood:"차분한", title:"다크 우드 주방",
+    img:"https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=700&h=360&fit=crop",
+    desc:"다크 우드 캐비닛에 대리석 상판, 간접 조명으로 고급스럽고 차분한 주방을 연출하세요.",
+    palette:[{c:"#3D2B1F",n:"다크우드"},{c:"#E5E7EB",n:"대리석"},{c:"#9CA3AF",n:"그레이"},{c:"#D4AF37",n:"골드"},{c:"#1F2937",n:"다크"}],
+    tip:"다크 주방에는 언더캐비닛 LED가 필수! 작업대를 밝히면서 분위기도 살려줍니다."
+  },
+  { room:"욕실", mood:"편안한", title:"스파 내추럴 욕실",
+    img:"https://images.unsplash.com/photo-1620626011761-996317b8d101?w=700&h=360&fit=crop",
+    desc:"밝은 타일에 우드 선반, 유칼립투스 한 다발이면 집에서도 스파 같은 욕실을 만들 수 있어요.",
+    palette:[{c:"#FFFFFF",n:"화이트"},{c:"#F5F0EB",n:"아이보리"},{c:"#C4A882",n:"우드"},{c:"#D1FAE5",n:"라이트민트"},{c:"#6B705C",n:"올리브"}],
+    tip:"욕실 식물로는 유칼립투스가 최고! 샤워기 위에 걸어두면 스팀으로 향이 퍼져요."
+  },
+  { room:"욕실", mood:"모던한", title:"모노톤 모던 욕실",
+    img:"https://images.unsplash.com/photo-1620626011761-996317b8d101?w=700&h=360&fit=crop",
+    desc:"대형 그레이 타일에 무광 블랙 수전, 프레임리스 거울로 호텔 같은 모던 욕실을 완성하세요.",
+    palette:[{c:"#E5E7EB",n:"라이트그레이"},{c:"#9CA3AF",n:"그레이"},{c:"#374151",n:"다크그레이"},{c:"#111827",n:"블랙"},{c:"#FFFFFF",n:"화이트"}],
+    tip:"욕실 수전은 무광 블랙이 트렌드! 물때가 덜 보이고 고급스러운 느낌을 줍니다."
+  },
+  { room:"욕실", mood:"화사한", title:"밝은 타일 욕실",
+    img:"https://images.unsplash.com/photo-1620626011761-996317b8d101?w=700&h=360&fit=crop",
+    desc:"화이트 타일에 파스텔 포인트 타일을 더하고, 골드 소품으로 화사하면서 세련된 욕실을 만들어요.",
+    palette:[{c:"#FFFFFF",n:"화이트"},{c:"#FECDD3",n:"핑크"},{c:"#A7F3D0",n:"민트"},{c:"#FDE68A",n:"레몬"},{c:"#D4AF37",n:"골드"}],
+    tip:"포인트 타일은 전체의 20% 정도만! 세면대 뒤나 샤워 부스 한쪽 벽에 적용하면 딱이에요."
+  },
+  { room:"욕실", mood:"차분한", title:"젠 스파 욕실",
+    img:"https://images.unsplash.com/photo-1620626011761-996317b8d101?w=700&h=360&fit=crop",
+    desc:"무광 그레이 타일과 원목 선반, 간접 LED 조명으로 호텔 스파 느낌의 차분한 욕실을 연출하세요.",
+    palette:[{c:"#E5E7EB",n:"라이트그레이"},{c:"#9CA3AF",n:"그레이"},{c:"#C4A882",n:"우드"},{c:"#D1FAE5",n:"라이트민트"},{c:"#1F2937",n:"다크그레이"}],
+    tip:"욕실은 습기에 강한 티크(teak) 원목 소품이 좋아요. LED 거울은 실용적이면서 분위기도 살려줘요."
+  }
+];
+
+// === INIT ===
+let currentRoom = 0;
+
+// Build BA cards
+function buildBA() {
+  const container = document.getElementById('ba-container');
+  container.innerHTML = rooms.map((r, i) => `
+    <div class="ba-card room-card ${i===0?'':'hidden-card'}" data-idx="${i}" style="${i!==0?'display:none':''}">
+      <div class="ba-slider-wrap ba-slider">
+        <img class="ba-image before" src="${r.before}" alt="Before" loading="lazy">
+        <img class="ba-image after ba-after" src="${r.after}" alt="After" loading="lazy">
+        <div class="ba-label before">BEFORE</div>
+        <div class="ba-label after">AFTER ✨</div>
+        <div class="ba-divider ba-div"></div>
+        <div class="ba-handle ba-hdl"><span class="ba-handle-arrows">◂▸</span></div>
+      </div>
+      <div class="ba-info">
+        <div class="ba-room-name">${r.styleName}</div>
+        <div class="ba-style-tag">${r.styleEn}</div>
+        <div class="ba-desc">${r.desc}</div>
+        <div class="ba-changes">${r.changes.map(c=>`<span class="change-tag">${c}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+  initSliders();
+}
+
+// Build gallery
+function buildGallery() {
+  document.getElementById('gallery-grid').innerHTML = styles.map(s => `
+    <div class="style-card">
+      <img class="style-card-img" src="${s.img}" alt="${s.name}" loading="lazy">
+      <div class="style-card-body">
+        <div class="style-card-top">
+          <div class="style-name">${s.name}</div>
+          <div class="style-badge ${s.badgeType}">${badgeIcons[s.badgeType]} ${s.badge}</div>
+        </div>
+        <div class="style-desc">${s.desc}</div>
+        <div class="style-colors">
+          <span class="style-colors-label">컬러</span>
+          ${s.colors.map(c=>`<div class="color-dot" style="background:${c}${c==='#FFFFFF'?';border:1px solid #eee':''}"></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+buildBA();
+buildGallery();
+
+// === TAB SWITCHING ===
+document.querySelectorAll('.tab-item').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// === ROOM CHIP SELECTION ===
+const roomChips = document.querySelectorAll('.room-chip');
+const baDots = document.querySelectorAll('.ba-dot');
+const baCounterSpan = document.querySelector('.ba-counter span');
+
+roomChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    const idx = parseInt(chip.dataset.room);
+    currentRoom = idx;
+    roomChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    document.querySelectorAll('.room-card').forEach(card => {
+      card.style.display = 'none';
+    });
+    const activeCard = document.querySelector(`.room-card[data-idx="${idx}"]`);
+    activeCard.style.display = 'block';
+    baDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    baCounterSpan.textContent = idx + 1;
+    // Reset slider
+    const af = activeCard.querySelector('.ba-after');
+    const dv = activeCard.querySelector('.ba-div');
+    const hd = activeCard.querySelector('.ba-hdl');
+    af.style.clipPath = 'inset(0 0 0 50%)';
+    dv.style.left = '50%';
+    hd.style.left = '50%';
+  });
+});
+
+// === AI OPTION SELECTION ===
+document.querySelectorAll('.ai-select-group').forEach(group => {
+  group.querySelectorAll('.ai-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      group.querySelectorAll('.ai-opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+    });
+  });
+});
+
+// === BA SLIDER ===
+let isDragging = false;
+let activeSlider = null;
+
+function updateSlider(slider, x) {
+  const rect = slider.getBoundingClientRect();
+  let pct = ((x - rect.left) / rect.width) * 100;
+  pct = Math.max(5, Math.min(95, pct));
+  slider.querySelector('.ba-after').style.clipPath = `inset(0 0 0 ${100 - pct}%)`;
+  slider.querySelector('.ba-div').style.left = pct + '%';
+  slider.querySelector('.ba-hdl').style.left = pct + '%';
+}
+
+function initSliders() {
+  document.querySelectorAll('.ba-slider').forEach(slider => {
+    slider.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      activeSlider = slider;
+      updateSlider(slider, e.clientX);
+    });
+    slider.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      activeSlider = slider;
+      updateSlider(slider, e.touches[0].clientX);
+    }, { passive: true });
+  });
+}
+
+document.addEventListener('mousemove', (e) => {
+  if (isDragging && activeSlider) updateSlider(activeSlider, e.clientX);
+});
+document.addEventListener('touchmove', (e) => {
+  if (isDragging && activeSlider) updateSlider(activeSlider, e.touches[0].clientX);
+}, { passive: true });
+document.addEventListener('mouseup', () => { isDragging = false; activeSlider = null; });
+document.addEventListener('touchend', () => { isDragging = false; activeSlider = null; });
+
+// === AI GENERATE ===
+function generateAI() {
+  const room = document.querySelector('[data-group="room"] .ai-opt.selected')?.dataset.val;
+  const mood = document.querySelector('[data-group="mood"] .ai-opt.selected')?.dataset.val;
+  const btn = document.getElementById('ai-btn');
+  btn.disabled = true;
+
+  const ld = document.getElementById('loading');
+  const bar = document.getElementById('load-bar');
+  const txt = document.getElementById('load-text');
+  const sub = document.getElementById('load-sub');
+
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  requestAnimationFrame(() => {
+    bar.style.transition = 'width 0.3s ease';
+    ld.classList.add('show');
+    txt.textContent = 'AI가 스타일을 분석하고 있어요';
+    sub.textContent = '잠깐만요...';
+
+    setTimeout(() => { bar.style.width = '30%'; sub.textContent = '공간 분석 중...'; }, 200);
+    setTimeout(() => { bar.style.width = '60%'; sub.textContent = '스타일 매칭 중...'; }, 700);
+    setTimeout(() => { bar.style.width = '90%'; sub.textContent = '컬러 팔레트 생성 중...'; }, 1200);
+    setTimeout(() => { bar.style.width = '100%'; txt.textContent = '추천 완성!'; sub.textContent = '결과를 표시합니다'; }, 1600);
+    setTimeout(() => {
+      ld.classList.remove('show');
+      btn.disabled = false;
+      showAIResult(room, mood);
+    }, 2000);
+  });
+}
+
+function showAIResult(room, mood) {
+  let preset = aiPresets.find(p => p.room === room && p.mood === mood);
+  if (!preset) preset = aiPresets.find(p => p.room === room) || aiPresets[0];
+
+  const el = document.getElementById('ai-result');
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <img class="ai-result-img" src="${preset.img}" alt="">
+    <div class="ai-result-body">
+      <div class="ai-result-badge fade-up">🤖 AI 추천</div>
+      <div class="ai-result-title fade-up d1">${preset.title}</div>
+      <div class="ai-result-desc fade-up d2">${preset.desc}</div>
+      <div class="ai-palette fade-up d3">
+        <div class="ai-palette-label">추천 컬러 팔레트</div>
+        <div class="ai-palette-row">
+          ${preset.palette.map(p => `<div class="palette-chip" style="background:${p.c}" data-name="${p.n}"></div>`).join('')}
+        </div>
+      </div>
+      <div class="ai-tips fade-up d4">
+        <div class="ai-tips-title">💡 AI 스타일링 팁</div>
+        <div class="ai-tips-text">${preset.tip}</div>
+      </div>
+    </div>
+  `;
+
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+</script>
+
+</body>
+</html>
