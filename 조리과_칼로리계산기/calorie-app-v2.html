@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>AI 칼로리 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FFF8F1;
+  --surface: #FFFFFF;
+  --text: #2D1B0E;
+  --text2: #6B5444;
+  --text3: #A89080;
+  --border: #F0E6DA;
+  --accent: #E05A2B;
+  --accent-light: #FFF1EB;
+  --accent-dark: #C44A20;
+  --green: #2EAA5E;
+  --green-light: #E8F8F0;
+  --blue: #3B82C4;
+  --blue-light: #EBF3FB;
+  --yellow: #D4940A;
+  --yellow-light: #FFF8E6;
+  --carb: #E05A2B;
+  --protein: #3B82C4;
+  --fat: #D4940A;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --shadow: 0 2px 12px rgba(45,27,14,0.06);
+  --shadow-md: 0 8px 24px rgba(45,27,14,0.1);
+  --tab-height: 56px;
+  --header-height: 52px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { height:100%; }
+body {
+  font-family:'Noto Sans KR',-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:contain;
+}
+
+.app-frame {
+  max-width:430px;
+  margin:0 auto;
+  min-height:100dvh;
+  position:relative;
+  background:var(--bg);
+}
+
+/* ===== Header ===== */
+.app-header {
+  height:var(--header-height);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:linear-gradient(135deg, #2D1B0E, #4A2E1A);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.app-header h1 {
+  font-size:16px; font-weight:700; color:#FFF8F1;
+  display:flex; align-items:center; gap:8px;
+}
+.header-badge {
+  font-size:8px; font-weight:700;
+  background:var(--accent); color:#fff;
+  padding:2px 6px; border-radius:4px; letter-spacing:0.5px;
+}
+.header-field {
+  font-size:11px; color:rgba(255,248,241,0.7); font-weight:500;
+  background:rgba(255,255,255,0.1);
+  padding:4px 12px; border-radius:20px;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== Content ===== */
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ===== Bottom Tabs (hidden) ===== */
+.bottom-tabs { display:none; }
+
+/* ===== CAPTURE TAB ===== */
+.capture-section { padding:0 16px 80px; }
+
+.hero-area { text-align:center; padding:14px 8px 8px; }
+.hero-area h2 {
+  font-size:20px; font-weight:900; line-height:1.3;
+  margin-bottom:2px; color:var(--text);
+}
+.hero-area p { font-size:12px; color:var(--text2); line-height:1.5; }
+
+.section-head {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:10px;
+}
+.section-head h3 { font-size:13px; font-weight:700; color:var(--text); }
+.hint-tag {
+  font-size:10px; color:var(--accent); font-weight:600;
+  background:var(--accent-light); padding:2px 8px; border-radius:10px;
+}
+
+.food-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.food-card {
+  border-radius:var(--radius-sm); overflow:hidden; cursor:pointer;
+  position:relative; aspect-ratio:1; background:var(--border);
+  transition:transform 0.15s, box-shadow 0.15s;
+  box-shadow:0 3px 12px rgba(45,27,14,0.1);
+}
+.food-card:active {
+  transform:scale(0.94);
+  box-shadow:0 6px 20px rgba(224,90,43,0.18);
+}
+.food-card img { width:100%; height:100%; object-fit:cover; display:block; }
+.food-card .food-overlay {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:20px 5px 5px;
+  background:linear-gradient(to top, rgba(30,15,5,0.8) 0%, transparent 100%);
+  display:flex; align-items:flex-end; justify-content:space-between;
+}
+.food-card .food-name {
+  color:#fff; font-size:9.5px; font-weight:700;
+  text-shadow:0 1px 3px rgba(0,0,0,0.3);
+  line-height:1.2; max-width:70%;
+}
+.food-card .food-kcal { color:rgba(255,255,255,0.85); font-size:8.5px; font-weight:500; }
+
+/* Camera CTA - Floating */
+.camera-cta {
+  position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+  width:calc(100% - 32px); max-width:400px;
+  padding:14px 20px; border:none; border-radius:var(--radius);
+  background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color:#fff; font-size:14px; font-weight:700; font-family:inherit;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:transform 0.12s, box-shadow 0.2s;
+  box-shadow:0 4px 20px rgba(224,90,43,0.35);
+  z-index:150;
+}
+.camera-cta:active { transform:translateX(-50%) scale(0.97); box-shadow:0 2px 8px rgba(224,90,43,0.15); }
+.file-input { display:none; }
+
+/* ===== LOADING ===== */
+.loading-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(255,248,241,0.97); z-index:500;
+  flex-direction:column; align-items:center; justify-content:center; gap:20px;
+}
+.loading-overlay.show { display:flex; }
+.loading-img {
+  width:120px; height:120px; border-radius:24px; object-fit:cover;
+  box-shadow:var(--shadow-md); animation:pulse 1s ease infinite alternate;
+}
+@keyframes pulse {
+  0% { transform:scale(1); opacity:1; }
+  100% { transform:scale(1.04); opacity:0.82; }
+}
+.loading-bar-wrap {
+  width:180px; height:5px; background:var(--border);
+  border-radius:3px; overflow:hidden;
+}
+.loading-bar {
+  height:100%; width:0%;
+  background:linear-gradient(90deg, var(--accent), var(--yellow));
+  border-radius:3px; transition:width 0.3s ease;
+}
+.loading-text { font-size:15px; font-weight:700; color:var(--text); text-align:center; }
+.loading-sub { font-size:13px; color:var(--text3); margin-top:-12px; text-align:center; }
+
+/* ===== RESULT ===== */
+.result-panel { display:none; padding:0 16px 16px; }
+.result-panel.show {
+  display:block;
+  padding-bottom:calc(var(--tab-height) + var(--safe-bottom) + 16px);
+}
+.result-photo {
+  width:100%; aspect-ratio:16/10; border-radius:var(--radius);
+  overflow:hidden; margin-bottom:14px; position:relative;
+  box-shadow:var(--shadow-md);
+}
+.result-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+.result-badge {
+  position:absolute; top:10px; right:10px;
+  background:rgba(45,27,14,0.6); color:#FFF8F1;
+  padding:4px 10px; border-radius:20px;
+  font-size:11px; font-weight:600;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.total-card {
+  background:var(--surface); border-radius:var(--radius);
+  padding:20px; box-shadow:var(--shadow); margin-bottom:10px;
+  text-align:center; border:1px solid var(--border);
+}
+.total-label { font-size:12px; color:var(--text3); font-weight:500; margin-bottom:4px; }
+.total-value { font-size:42px; font-weight:900; color:var(--accent); line-height:1.1; }
+.total-unit { font-size:15px; font-weight:600; color:var(--text2); margin-left:2px; }
+.daily-gauge { margin-top:14px; padding-top:12px; border-top:1px solid var(--border); }
+.gauge-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.gauge-label { font-size:11px; color:var(--text3); }
+.gauge-val { font-size:11px; font-weight:700; color:var(--text2); }
+.gauge-track { height:8px; background:var(--border); border-radius:4px; overflow:hidden; }
+.gauge-fill { height:100%; border-radius:4px; transition:width 0.8s cubic-bezier(0.25,0.46,0.45,0.94); }
+.gauge-marks { display:flex; justify-content:space-between; margin-top:3px; }
+.gauge-marks span { font-size:9px; color:var(--text3); }
+
+.nutri-card {
+  background:var(--surface); border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow); margin-bottom:10px;
+  border:1px solid var(--border);
+}
+.nutri-label { font-size:12px; font-weight:700; color:var(--text2); margin-bottom:10px; }
+.nutri-bar { height:12px; border-radius:6px; overflow:hidden; display:flex; margin-bottom:10px; }
+.seg-c { background:var(--carb); transition:width 0.6s ease 0.2s; }
+.seg-p { background:var(--protein); transition:width 0.6s ease 0.35s; }
+.seg-f { background:var(--fat); transition:width 0.6s ease 0.5s; }
+.nutri-legend { display:flex; justify-content:space-around; }
+.n-item { text-align:center; }
+.n-dot { width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:3px; vertical-align:middle; }
+.n-name { font-size:11px; color:var(--text3); }
+.n-val { font-size:14px; font-weight:700; display:block; margin-top:1px; }
+
+.food-list-card {
+  background:var(--surface); border-radius:var(--radius);
+  padding:16px; box-shadow:var(--shadow); margin-bottom:10px;
+  border:1px solid var(--border);
+}
+.fl-title { font-size:12px; font-weight:700; color:var(--text2); margin-bottom:8px; }
+.fl-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid var(--border);
+}
+.fl-item:last-child { border-bottom:none; padding-bottom:0; }
+.fl-item:first-child { padding-top:0; }
+.fl-thumb { width:42px; height:42px; border-radius:10px; object-fit:cover; flex-shrink:0; }
+.fl-info { flex:1; }
+.fl-name { font-size:13px; font-weight:600; }
+.fl-qty { font-size:11px; color:var(--text3); margin-top:1px; }
+.fl-cal { font-size:14px; font-weight:700; color:var(--accent); white-space:nowrap; }
+
+.result-actions { display:flex; gap:8px; margin-top:4px; }
+.r-btn {
+  flex:1; padding:13px; border-radius:var(--radius-sm);
+  font-size:14px; font-weight:700; cursor:pointer; border:none;
+  font-family:inherit; transition:transform 0.1s, opacity 0.1s;
+}
+.r-btn:active { transform:scale(0.96); opacity:0.85; }
+.btn-retry { background:var(--surface); color:var(--text2); border:1px solid var(--border); }
+.btn-save {
+  background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color:#fff; box-shadow:0 3px 12px rgba(224,90,43,0.2);
+}
+
+/* ===== HISTORY TAB ===== */
+.history-section {
+  padding:20px 16px;
+  padding-bottom:calc(var(--tab-height) + var(--safe-bottom) + 16px);
+}
+.h-summary {
+  background:var(--surface); border-radius:var(--radius);
+  padding:20px; box-shadow:var(--shadow); margin-bottom:18px;
+  text-align:center; border:1px solid var(--border);
+}
+.h-summary h3 { font-size:13px; font-weight:600; color:var(--text2); margin-bottom:10px; }
+.h-cal-row { display:flex; align-items:baseline; justify-content:center; gap:3px; margin-bottom:10px; }
+.h-cal-now { font-size:32px; font-weight:900; color:var(--accent); }
+.h-cal-sep { font-size:18px; color:var(--text3); }
+.h-cal-tgt { font-size:18px; font-weight:600; color:var(--text3); }
+.h-cal-u { font-size:13px; color:var(--text3); }
+.h-gauge-bar { height:10px; background:var(--border); border-radius:5px; overflow:hidden; margin-bottom:4px; }
+.h-gauge-fill { height:100%; border-radius:5px; width:0%; transition:width 1s cubic-bezier(0.25,0.46,0.45,0.94); }
+.h-gauge-pct { font-size:12px; font-weight:600; }
+
+.meal-group { margin-bottom:14px; }
+.meal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.meal-time { font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px; }
+.mt-icon {
+  width:26px; height:26px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center; font-size:13px;
+}
+.mt-morning { background:var(--yellow-light); }
+.mt-lunch { background:var(--accent-light); }
+.mt-snack { background:var(--blue-light); }
+.mt-dinner { background:var(--green-light); }
+.meal-total { font-size:13px; font-weight:700; color:var(--text2); }
+
+.meal-card {
+  background:var(--surface); border-radius:var(--radius-sm);
+  box-shadow:var(--shadow); overflow:hidden; border:1px solid var(--border);
+}
+.m-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; border-bottom:1px solid var(--border);
+}
+.m-item:last-child { border-bottom:none; }
+.m-thumb { width:38px; height:38px; border-radius:8px; object-fit:cover; }
+.m-info { flex:1; }
+.m-name { font-size:13px; font-weight:600; }
+.m-desc { font-size:11px; color:var(--text3); }
+.m-cal { font-size:13px; font-weight:700; color:var(--accent); }
+
+.empty-hist { text-align:center; padding:40px 20px; color:var(--text3); }
+.empty-hist .e-icon { font-size:36px; margin-bottom:10px; }
+.empty-hist p { font-size:13px; line-height:1.7; }
+
+/* ===== Animations ===== */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.fade-up { animation:fadeUp 0.35s ease forwards; }
+.d1 { animation-delay:0.08s; opacity:0; }
+.d2 { animation-delay:0.16s; opacity:0; }
+.d3 { animation-delay:0.24s; opacity:0; }
+.d4 { animation-delay:0.32s; opacity:0; }
+
+/* ===== Toast ===== */
+.toast {
+  position:fixed; bottom:calc(var(--tab-height) + var(--safe-bottom) + 16px);
+  left:50%; transform:translateX(-50%) translateY(20px);
+  background:#2D1B0E; color:#FFF8F1;
+  padding:10px 20px; border-radius:24px;
+  font-size:13px; font-weight:600;
+  box-shadow:0 4px 16px rgba(45,27,14,0.2);
+  opacity:0; transition:all 0.3s ease; z-index:300;
+  pointer-events:none; white-space:nowrap;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ===== Desktop ===== */
+@media (min-width:500px) {
+  .app-frame {
+    max-width:480px;
+  }
+  .toast { max-width:400px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <header class="app-header">
+    <h1>🍳 AI 칼로리 계산기</h1>
+    <span class="header-field">조리·식품</span>
+  </header>
+
+  <div class="tab-content">
+    <div id="tab-capture" class="tab-panel active">
+      <div id="capture-mode" class="capture-section">
+        <div class="hero-area">
+          <h2>오늘 뭐 먹었어? 🍽️</h2>
+          <p>음식 사진을 찍으면 AI가 칼로리를 분석해요</p>
+        </div>
+
+        <div class="section-head">
+          <h3>💡 체험해보기</h3>
+          <span class="hint-tag">탭해서 분석</span>
+        </div>
+        <div class="food-grid" id="food-grid"></div>
+
+        <button class="camera-cta" onclick="triggerCamera()">
+          📷 사진 찍어서 분석하기 <span style="font-size:10px;font-weight:400;opacity:0.7">(API 연결 필요)</span>
+        </button>
+      </div>
+
+      <div id="result-mode" class="result-panel"></div>
+    </div>
+
+    <div id="tab-history" class="tab-panel">
+      <div class="history-section">
+        <div class="h-summary">
+          <h3>📊 오늘 총 섭취량</h3>
+          <div class="h-cal-row">
+            <span id="h-current" class="h-cal-now">0</span>
+            <span class="h-cal-sep">/</span>
+            <span class="h-cal-tgt">2,000</span>
+            <span class="h-cal-u">kcal</span>
+          </div>
+          <div class="h-gauge-bar"><div id="h-gauge" class="h-gauge-fill"></div></div>
+          <div id="h-pct" class="h-gauge-pct" style="color:var(--green)">0%</div>
+        </div>
+        <div id="history-list"></div>
+        <div id="empty-hist" class="empty-hist">
+          <div class="e-icon">🍽️</div>
+          <p>아직 기록이 없어요<br>📷 탭에서 음식을 촬영해보세요!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="loading" class="loading-overlay">
+    <img id="load-img" class="loading-img" src="" alt="">
+    <div class="loading-bar-wrap"><div id="load-bar" class="loading-bar"></div></div>
+    <div class="loading-text" id="load-text">AI가 음식을 분석하고 있어요</div>
+    <div class="loading-sub" id="load-sub">잠깐만요...</div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</div>
+
+<script>
+const meals = [
+  {
+    name:"떡볶이", totalCal:480, carb:62, protein:15, fat:23,
+    img:"https://images.unsplash.com/photo-1635363638580-c2809d049eee?w=600&h=400&fit=crop",
+    foods:[
+      {name:"떡",qty:"200g",cal:230,img:"https://images.unsplash.com/photo-1635363638580-c2809d049eee?w=100&h=100&fit=crop"},
+      {name:"어묵",qty:"3개",cal:120,img:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=100&h=100&fit=crop"},
+      {name:"삶은달걀",qty:"1개",cal:80,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"},
+      {name:"대파",qty:"약간",cal:50,img:"../image/대파.jpg"}
+    ]
+  },
+  {
+    name:"크림 파스타", totalCal:780, carb:48, protein:22, fat:30,
+    img:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600&h=400&fit=crop",
+    foods:[
+      {name:"크림 파스타",qty:"1인분 (350g)",cal:620,img:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=100&h=100&fit=crop"},
+      {name:"마늘빵",qty:"2조각",cal:120,img:"https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=100&h=100&fit=crop"},
+      {name:"탄산음료",qty:"1잔",cal:40,img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"햄버거 세트", totalCal:1050, carb:42, protein:28, fat:30,
+    img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=400&fit=crop",
+    foods:[
+      {name:"치즈버거",qty:"1개",cal:520,img:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=100&h=100&fit=crop"},
+      {name:"감자튀김",qty:"미디움",cal:340,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=100&h=100&fit=crop"},
+      {name:"콜라",qty:"미디움",cal:190,img:"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"비빔밥", totalCal:580, carb:52, protein:28, fat:20,
+    img:"https://images.unsplash.com/photo-1553163147-622ab57be1c7?w=600&h=400&fit=crop",
+    foods:[
+      {name:"잡곡밥",qty:"1공기",cal:280,img:"../image/잡곡밥.jpg"},
+      {name:"나물",qty:"5종",cal:120,img:"../image/나물.jpg"},
+      {name:"고추장소스",qty:"2T",cal:60,img:"../image/고추장.jpg"},
+      {name:"달걀프라이",qty:"1개",cal:120,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"샐러드 볼", totalCal:320, carb:35, protein:38, fat:27,
+    img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&h=400&fit=crop",
+    foods:[
+      {name:"믹스 채소",qty:"1볼",cal:45,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop"},
+      {name:"그릴 치킨",qty:"100g",cal:165,img:"https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=100&h=100&fit=crop"},
+      {name:"드레싱",qty:"2T",cal:80,img:"https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=100&h=100&fit=crop"},
+      {name:"파마산",qty:"1T",cal:30,img:"https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"라면", totalCal:550, carb:58, protein:18, fat:24,
+    img:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600&h=400&fit=crop",
+    foods:[
+      {name:"라면",qty:"1봉지",cal:500,img:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=100&h=100&fit=crop"},
+      {name:"계란",qty:"1개",cal:30,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"},
+      {name:"대파·김치",qty:"약간",cal:20,img:"../image/김치.jpg"}
+    ]
+  },
+  {
+    name:"김치찌개", totalCal:550, carb:50, protein:28, fat:22,
+    img:"https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=600&h=400&fit=crop",
+    foods:[
+      {name:"김치찌개",qty:"1인분",cal:200,img:"https://images.unsplash.com/photo-1498654896293-37aacf113fd9?w=100&h=100&fit=crop"},
+      {name:"쌀밥",qty:"1공기",cal:310,img:"../image/쌀밥.jpg"},
+      {name:"반찬",qty:"2종",cal:40,img:"../image/나물.jpg"}
+    ]
+  },
+  {
+    name:"돈까스", totalCal:750, carb:45, protein:30, fat:25,
+    img:"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&h=400&fit=crop",
+    foods:[
+      {name:"돈까스",qty:"1인분",cal:450,img:"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=100&h=100&fit=crop"},
+      {name:"밥",qty:"1공기",cal:200,img:"../image/밥.webp"},
+      {name:"샐러드",qty:"1접시",cal:40,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop"},
+      {name:"소스",qty:"2T",cal:60,img:"../image/소스.jpg"}
+    ]
+  },
+  {
+    name:"김밥", totalCal:450, carb:55, protein:20, fat:25,
+    img:"https://images.unsplash.com/photo-1590301157890-4810ed352733?w=600&h=400&fit=crop",
+    foods:[
+      {name:"밥·김",qty:"1줄",cal:250,img:"https://images.unsplash.com/photo-1590301157890-4810ed352733?w=100&h=100&fit=crop"},
+      {name:"단무지·당근",qty:"적당량",cal:80,img:"https://images.unsplash.com/photo-1590301157890-4810ed352733?w=100&h=100&fit=crop"},
+      {name:"햄·계란",qty:"적당량",cal:120,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"치킨", totalCal:800, carb:30, protein:40, fat:30,
+    img:"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600&h=400&fit=crop",
+    foods:[
+      {name:"후라이드치킨",qty:"반마리",cal:650,img:"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=100&h=100&fit=crop"},
+      {name:"콜라",qty:"1잔",cal:150,img:"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"제육볶음", totalCal:620, carb:48, protein:30, fat:22,
+    img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&h=400&fit=crop",
+    foods:[
+      {name:"제육볶음",qty:"1인분",cal:320,img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=100&h=100&fit=crop"},
+      {name:"잡곡밥",qty:"1공기",cal:280,img:"../image/잡곡밥.jpg"},
+      {name:"쌈채소",qty:"1접시",cal:20,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"카레라이스", totalCal:680, carb:55, protein:20, fat:25,
+    img:"https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=600&h=400&fit=crop",
+    foods:[
+      {name:"카레소스",qty:"1인분",cal:350,img:"https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=100&h=100&fit=crop"},
+      {name:"밥",qty:"1공기",cal:280,img:"../image/밥.webp"},
+      {name:"반숙계란",qty:"1개",cal:50,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"볶음밥", totalCal:550, carb:58, protein:18, fat:24,
+    img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=600&h=400&fit=crop",
+    foods:[
+      {name:"볶음밥",qty:"1접시",cal:480,img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=100&h=100&fit=crop"},
+      {name:"계란프라이",qty:"1개",cal:50,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"},
+      {name:"단무지",qty:"약간",cal:20,img:"https://images.unsplash.com/photo-1590301157890-4810ed352733?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"잡채", totalCal:380, carb:52, protein:22, fat:26,
+    img:"../image/잡채.jpg",
+    foods:[
+      {name:"당면",qty:"1인분",cal:200,img:"../image/잡채.jpg"},
+      {name:"채소",qty:"적당량",cal:60,img:"../image/나물.jpg"},
+      {name:"소고기",qty:"50g",cal:80,img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=100&h=100&fit=crop"},
+      {name:"참기름",qty:"1T",cal:40,img:"../image/참기름.jpg"}
+    ]
+  },
+  {
+    name:"삼겹살", totalCal:900, carb:20, protein:35, fat:45,
+    img:"../image/삼겹살.jpg",
+    foods:[
+      {name:"삼겹살",qty:"200g",cal:580,img:"../image/삼겹살.jpg"},
+      {name:"쌈채소",qty:"1접시",cal:20,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop"},
+      {name:"쌈장",qty:"2T",cal:60,img:"../image/고추장.jpg"},
+      {name:"밥",qty:"1공기",cal:240,img:"../image/밥.webp"}
+    ]
+  },
+  {
+    name:"순두부찌개", totalCal:420, carb:45, protein:32, fat:23,
+    img:"../image/순두부찌개.jpg",
+    foods:[
+      {name:"순두부찌개",qty:"1인분",cal:180,img:"../image/순두부찌개.jpg"},
+      {name:"밥",qty:"1공기",cal:200,img:"../image/밥.webp"},
+      {name:"반찬",qty:"2종",cal:40,img:"../image/김치.jpg"}
+    ]
+  },
+  {
+    name:"불고기", totalCal:590, carb:42, protein:35, fat:23,
+    img:"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&h=400&fit=crop",
+    foods:[
+      {name:"불고기",qty:"150g",cal:300,img:"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=100&h=100&fit=crop"},
+      {name:"밥",qty:"1공기",cal:250,img:"../image/잡곡밥.jpg"},
+      {name:"반찬",qty:"3종",cal:40,img:"../image/나물.jpg"}
+    ]
+  },
+  {
+    name:"짜장면", totalCal:650, carb:60, protein:18, fat:22,
+    img:"../image/짜장면.jpeg",
+    foods:[
+      {name:"면",qty:"1인분",cal:350,img:"../image/면.jpg"},
+      {name:"짜장소스",qty:"1인분",cal:250,img:"../image/짜장소스.jpg"},
+      {name:"단무지",qty:"약간",cal:20,img:"https://images.unsplash.com/photo-1590301157890-4810ed352733?w=100&h=100&fit=crop"},
+      {name:"양파",qty:"약간",cal:30,img:"../image/대파.jpg"}
+    ]
+  },
+  {
+    name:"냉면", totalCal:480, carb:65, protein:18, fat:17,
+    img:"../image/냉면.jpg",
+    foods:[
+      {name:"냉면",qty:"1인분",cal:380,img:"../image/냉면.jpg"},
+      {name:"삶은달걀",qty:"반개",cal:40,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"},
+      {name:"무·오이",qty:"약간",cal:30,img:"../image/나물.jpg"},
+      {name:"식초·겨자",qty:"약간",cal:30,img:"../image/식초겨자.jpg"}
+    ]
+  },
+  {
+    name:"떡국", totalCal:470, carb:52, protein:28, fat:20,
+    img:"../image/떡국.webp",
+    foods:[
+      {name:"떡",qty:"1인분",cal:250,img:"https://images.unsplash.com/photo-1635363638580-c2809d049eee?w=100&h=100&fit=crop"},
+      {name:"소고기",qty:"50g",cal:120,img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=100&h=100&fit=crop"},
+      {name:"계란",qty:"1개",cal:60,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"},
+      {name:"대파·김",qty:"약간",cal:40,img:"../image/대파.jpg"}
+    ]
+  },
+  {
+    name:"오므라이스", totalCal:620, carb:50, protein:22, fat:28,
+    img:"../image/오므라이스.jpg",
+    foods:[
+      {name:"볶음밥",qty:"1접시",cal:400,img:"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=100&h=100&fit=crop"},
+      {name:"달걀",qty:"2개",cal:140,img:"https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=100&h=100&fit=crop"},
+      {name:"케첩",qty:"2T",cal:40,img:"../image/케첩.jpg"},
+      {name:"샐러드",qty:"약간",cal:40,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"족발", totalCal:750, carb:15, protein:45, fat:40,
+    img:"../image/족발.jpg",
+    foods:[
+      {name:"족발",qty:"200g",cal:580,img:"../image/족발.jpg"},
+      {name:"쌈채소",qty:"1접시",cal:20,img:"https://images.unsplash.com/photo-1540420773420-3366772f4999?w=100&h=100&fit=crop"},
+      {name:"새우젓",qty:"1T",cal:30,img:"../image/김치.jpg"},
+      {name:"막국수",qty:"0.5인분",cal:120,img:"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"피자", totalCal:850, carb:45, protein:25, fat:30,
+    img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&h=400&fit=crop",
+    foods:[
+      {name:"피자",qty:"3조각",cal:720,img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=100&h=100&fit=crop"},
+      {name:"콜라",qty:"1잔",cal:130,img:"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=100&h=100&fit=crop"}
+    ]
+  },
+  {
+    name:"탕수육", totalCal:650, carb:48, protein:25, fat:27,
+    img:"https://images.unsplash.com/photo-1525755662778-989d0524087e?w=600&h=400&fit=crop",
+    foods:[
+      {name:"탕수육",qty:"10조각",cal:500,img:"https://images.unsplash.com/photo-1525755662778-989d0524087e?w=100&h=100&fit=crop"},
+      {name:"소스",qty:"1인분",cal:100,img:"../image/소스.jpg"},
+      {name:"단무지",qty:"약간",cal:50,img:"https://images.unsplash.com/photo-1590301157890-4810ed352733?w=100&h=100&fit=crop"}
+    ]
+  }
+];
+
+const slotNames = ["아침","점심","간식","저녁"];
+const slotEmojis = ["🌅","☀️","🍪","🌙"];
+const slotClasses = ["morning","lunch","snack","dinner"];
+let history = [];
+let nextSlot = 0;
+let currentMealIdx = -1;
+
+function buildGrid() {
+  const grid = document.getElementById('food-grid');
+  grid.innerHTML = meals.map((m, i) => `
+    <div class="food-card" onclick="analyze(${i})">
+      <img src="${m.img}" alt="${m.name}" loading="lazy">
+      <div class="food-overlay">
+        <span class="food-name">${m.name}</span>
+        <span class="food-kcal">${m.totalCal}kcal</span>
+      </div>
+    </div>
+  `).join('');
+}
+buildGrid();
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn')[tab === 'capture' ? 0 : 1].classList.add('active');
+  if (tab === 'history') renderHistory();
+}
+
+function triggerCamera() {
+  const idx = Math.floor(Math.random() * meals.length);
+  analyze(idx);
+}
+
+function analyze(idx) {
+  runLoading(meals[idx], idx);
+}
+
+function runLoading(m, idx) {
+  currentMealIdx = idx;
+  const ld = document.getElementById('loading');
+  const bar = document.getElementById('load-bar');
+  const img = document.getElementById('load-img');
+  const txt = document.getElementById('load-text');
+  const sub = document.getElementById('load-sub');
+
+  img.src = m.img;
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+  requestAnimationFrame(() => {
+    bar.style.transition = 'width 0.3s ease';
+    ld.classList.add('show');
+    txt.textContent = 'AI가 음식을 분석하고 있어요';
+    sub.textContent = '잠깐만요...';
+
+    setTimeout(() => { bar.style.width = '35%'; sub.textContent = '음식을 인식하는 중...'; }, 150);
+    setTimeout(() => { bar.style.width = '70%'; sub.textContent = m.foods[0].name + ' 발견!'; }, 600);
+    setTimeout(() => { bar.style.width = '100%'; txt.textContent = '분석 완료!'; sub.textContent = m.foods.length + '가지 음식을 찾았어요'; }, 1100);
+    setTimeout(() => { ld.classList.remove('show'); showResult(m, idx); }, 1500);
+  });
+}
+
+function showResult(m, idx) {
+  document.getElementById('capture-mode').style.display = 'none';
+  const r = document.getElementById('result-mode');
+  r.classList.add('show');
+
+  const prev = history.reduce((s, h) => s + h.totalCal, 0);
+  const total = prev + m.totalCal;
+  const pct = Math.min(Math.round(total / 2000 * 100), 100);
+  const gc = pct > 90 ? 'var(--accent)' : 'var(--green)';
+
+  r.innerHTML = `
+    <div class="result-photo fade-up">
+      <img src="${m.img}" alt="${m.name}">
+      <span class="result-badge">AI 분석 결과</span>
+    </div>
+    <div class="total-card fade-up d1">
+      <div class="total-label">총 칼로리</div>
+      <div class="total-value">${m.totalCal.toLocaleString()}<span class="total-unit">kcal</span></div>
+      <div class="daily-gauge">
+        <div class="gauge-row">
+          <span class="gauge-label">일일 권장 섭취량</span>
+          <span class="gauge-val">${total.toLocaleString()} / 2,000 kcal</span>
+        </div>
+        <div class="gauge-track"><div class="gauge-fill" id="r-gauge" style="width:0%;background:linear-gradient(90deg,var(--green),${gc})"></div></div>
+        <div class="gauge-marks"><span>0</span><span>500</span><span>1,000</span><span>1,500</span><span>2,000</span></div>
+      </div>
+    </div>
+    <div class="nutri-card fade-up d2">
+      <div class="nutri-label">영양소 비율</div>
+      <div class="nutri-bar">
+        <div class="seg-c" style="width:${m.carb}%"></div>
+        <div class="seg-p" style="width:${m.protein}%"></div>
+        <div class="seg-f" style="width:${m.fat}%"></div>
+      </div>
+      <div class="nutri-legend">
+        <div class="n-item"><span class="n-dot" style="background:var(--carb)"></span><span class="n-name">탄수화물</span><span class="n-val">${m.carb}%</span></div>
+        <div class="n-item"><span class="n-dot" style="background:var(--protein)"></span><span class="n-name">단백질</span><span class="n-val">${m.protein}%</span></div>
+        <div class="n-item"><span class="n-dot" style="background:var(--fat)"></span><span class="n-name">지방</span><span class="n-val">${m.fat}%</span></div>
+      </div>
+    </div>
+    <div class="food-list-card fade-up d3">
+      <div class="fl-title">🔍 인식된 음식 ${m.foods.length}가지</div>
+      ${m.foods.map(f => `
+        <div class="fl-item">
+          <img class="fl-thumb" src="${f.img}" alt="${f.name}">
+          <div class="fl-info"><div class="fl-name">${f.name}</div><div class="fl-qty">${f.qty}</div></div>
+          <div class="fl-cal">${f.cal} kcal</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="result-actions fade-up d4">
+      <button class="r-btn btn-retry" onclick="resetCapture()">📷 다시 찍기</button>
+      <button class="r-btn btn-save" onclick="saveHist(${idx})">✅ 기록 저장</button>
+    </div>
+  `;
+
+  const content = document.querySelector('.tab-content');
+  if (content) content.scrollTop = 0;
+
+  setTimeout(() => {
+    const gauge = document.getElementById('r-gauge');
+    if (gauge) gauge.style.width = pct + '%';
+  }, 350);
+}
+
+function resetCapture() {
+  document.getElementById('capture-mode').style.display = 'block';
+  const r = document.getElementById('result-mode');
+  r.classList.remove('show');
+  r.innerHTML = '';
+  const content = document.querySelector('.tab-content');
+  if (content) content.scrollTop = 0;
+}
+
+function saveHist(idx) {
+  const m = meals[idx];
+  history.push({ ...m, slot: nextSlot % slotNames.length });
+  nextSlot++;
+  showToast('✅ 기록이 저장되었어요');
+  resetCapture();
+  switchTab('history');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function renderHistory() {
+  const total = history.reduce((s, h) => s + h.totalCal, 0);
+  const pct = Math.min(Math.round(total / 2000 * 100), 100);
+
+  document.getElementById('h-current').textContent = total.toLocaleString();
+  document.getElementById('h-pct').textContent = pct + '%';
+  document.getElementById('h-pct').style.color = pct > 90 ? 'var(--accent)' : 'var(--green)';
+
+  setTimeout(() => {
+    const g = document.getElementById('h-gauge');
+    g.style.width = pct + '%';
+    g.style.background = pct > 90
+      ? 'linear-gradient(90deg, var(--green), var(--accent))'
+      : 'var(--green)';
+  }, 80);
+
+  const list = document.getElementById('history-list');
+  const empty = document.getElementById('empty-hist');
+
+  if (!history.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  const grouped = {};
+  history.forEach(h => {
+    if (!grouped[h.slot]) grouped[h.slot] = [];
+    grouped[h.slot].push(h);
+  });
+
+  let html = '';
+  Object.keys(grouped).sort().forEach(s => {
+    const items = grouped[s];
+    const st = items.reduce((a, i) => a + i.totalCal, 0);
+    html += `
+      <div class="meal-group fade-up">
+        <div class="meal-head">
+          <div class="meal-time">
+            <span class="mt-icon mt-${slotClasses[s]}">${slotEmojis[s]}</span>
+            ${slotNames[s]}
+          </div>
+          <span class="meal-total">${st.toLocaleString()} kcal</span>
+        </div>
+        <div class="meal-card">
+          ${items.map(i => `
+            <div class="m-item">
+              <img class="m-thumb" src="${i.img}" alt="${i.name}">
+              <div class="m-info">
+                <div class="m-name">${i.name}</div>
+                <div class="m-desc">${i.foods.length}가지 음식</div>
+              </div>
+              <span class="m-cal">${i.totalCal.toLocaleString()} kcal</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+  });
+  list.innerHTML = html;
+}
+</script>
+</body>
+</html>

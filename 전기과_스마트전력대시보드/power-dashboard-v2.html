@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>⚡ 스마트 전력 모니터링</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B1121;
+  --bg2: #111B33;
+  --surface: #162040;
+  --surface2: #1C2A4A;
+  --border: #243056;
+  --text: #E8ECF4;
+  --text2: #8B9BC0;
+  --text3: #4E6190;
+  --cyan: #00D4FF;
+  --cyan-dim: rgba(0,212,255,0.15);
+  --cyan-glow: rgba(0,212,255,0.3);
+  --green: #00E676;
+  --green-dim: rgba(0,230,118,0.15);
+  --yellow: #FFD600;
+  --yellow-dim: rgba(255,214,0,0.15);
+  --orange: #FF9100;
+  --orange-dim: rgba(255,145,0,0.15);
+  --red: #FF5252;
+  --red-dim: rgba(255,82,82,0.15);
+  --blue: #448AFF;
+  --purple: #B388FF;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --header-height: 56px;
+  --tab-height: 52px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  user-select: none; -webkit-user-select: none;
+}
+
+.app-frame {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  height: var(--header-height);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  background: var(--bg2);
+  position: sticky; top:0; z-index:100;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+}
+.h-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--cyan-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.h-info { flex:1; }
+.h-title { font-size: 14px; font-weight: 700; display:flex; align-items:center; gap:6px; }
+.h-badge {
+  font-size: 8px; font-weight: 700; background: var(--cyan); color: var(--bg);
+  padding: 2px 6px; border-radius: 4px;
+}
+.h-school { font-size: 11px; color: var(--text2); }
+.h-live {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; font-weight: 700; color: var(--green);
+  background: var(--green-dim); padding: 4px 10px; border-radius: 20px;
+}
+.h-live::before {
+  content:''; width:6px; height:6px; border-radius:50%; background:var(--green);
+  animation: blink 1.5s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* Tabs */
+.tab-bar {
+  display: flex; background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 0 12px;
+}
+.tab-item {
+  flex: 1; padding: 12px 0; text-align: center;
+  font-size: 12px; font-weight: 600; color: var(--text3);
+  border: none; background: none; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.tab-item.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+/* Content */
+.content { flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:12px; }
+.tab-content { display:none; flex-direction:column; gap:12px; }
+.tab-content.active { display:flex; }
+
+/* Summary row */
+.summary-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.summary-card {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.sc-label { font-size: 10px; color: var(--text2); margin-bottom: 4px; }
+.sc-value { font-size: 20px; font-weight: 800; }
+.sc-unit { font-size: 11px; color: var(--text2); font-weight: 500; }
+.sc-change { font-size: 10px; margin-top: 4px; font-weight: 600; }
+.sc-change.up { color: var(--red); }
+.sc-change.down { color: var(--green); }
+
+/* Main gauge */
+.gauge-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--border);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.gauge-card::before {
+  content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+  background: radial-gradient(circle at 50% 80%, var(--cyan-dim) 0%, transparent 50%);
+  pointer-events: none;
+}
+.gauge-title { font-size: 12px; color: var(--text2); margin-bottom: 16px; font-weight: 600; position:relative; }
+.gauge-wrap { position: relative; width: 200px; height: 120px; margin: 0 auto; }
+.gauge-svg { width: 200px; height: 120px; }
+.gauge-bg { fill: none; stroke: var(--border); stroke-width: 10; }
+.gauge-fill {
+  fill: none; stroke: var(--cyan); stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease, stroke 0.5s;
+  filter: drop-shadow(0 0 6px var(--cyan-glow));
+}
+.gauge-center {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  text-align: center;
+}
+.gauge-value { font-size: 36px; font-weight: 900; color: var(--cyan); line-height: 1; }
+.gauge-kwh { font-size: 12px; color: var(--text2); }
+.gauge-status { font-size: 11px; margin-top: 12px; position:relative; }
+.gauge-status .badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 11px;
+}
+.badge.good { background: var(--green-dim); color: var(--green); }
+.badge.warn { background: var(--yellow-dim); color: var(--yellow); }
+.badge.danger { background: var(--red-dim); color: var(--red); }
+.gauge-max { font-size: 10px; color: var(--text3); margin-top: 8px; position:relative; }
+
+/* Time chart */
+.chart-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+.chart-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.chart-title { font-size: 13px; font-weight: 700; }
+.chart-period { font-size: 10px; color: var(--text3); background: var(--surface2); padding:3px 8px; border-radius:6px; }
+.chart-area { position:relative; height:140px; }
+.chart-canvas { width:100%; height:100%; }
+
+/* Bar chart grid */
+.bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 120px; padding-top: 10px; }
+.bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar {
+  width: 100%; border-radius: 4px 4px 0 0;
+  transition: height 0.8s ease;
+  position: relative;
+  min-height: 2px;
+}
+.bar.cyan { background: linear-gradient(to top, var(--cyan-dim), var(--cyan)); box-shadow: 0 0 8px var(--cyan-dim); }
+.bar.low { background: linear-gradient(to top, var(--green-dim), var(--green)); }
+.bar.mid { background: linear-gradient(to top, var(--cyan-dim), var(--cyan)); }
+.bar.high { background: linear-gradient(to top, var(--orange-dim), var(--orange)); }
+.bar.peak { background: linear-gradient(to top, var(--red-dim), var(--red)); }
+.bar-label { font-size: 9px; color: var(--text3); }
+.bar-value { font-size: 8px; color: var(--text2); font-weight: 600; }
+
+/* Zone cards */
+.zone-title { font-size: 13px; font-weight: 700; padding: 0 2px; }
+.zone-list { display:flex; flex-direction:column; gap:8px; }
+.zone-card {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.zone-card:active { transform: scale(0.98); border-color: var(--cyan); }
+.zone-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.zone-info { flex:1; }
+.zone-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.zone-detail { font-size: 11px; color: var(--text2); }
+.zone-right { text-align: right; }
+.zone-power { font-size: 16px; font-weight: 800; }
+.zone-pct { font-size: 10px; font-weight: 600; margin-top: 2px; }
+.zone-bar-wrap { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-top: 6px; }
+.zone-bar-fill { height: 100%; border-radius: 2px; transition: width 1s; }
+
+/* Status cards grid */
+.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.status-card {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.st-header { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.st-dot { width: 8px; height: 8px; border-radius: 50%; }
+.st-label { font-size: 11px; color: var(--text2); font-weight: 500; }
+.st-value { font-size: 22px; font-weight: 800; line-height: 1; }
+.st-unit { font-size: 11px; color: var(--text2); font-weight: 500; }
+.st-sub { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* AI Tips */
+.ai-card {
+  background: linear-gradient(135deg, #162040, #1C2A5A);
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid var(--cyan-dim);
+}
+.ai-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.ai-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--cyan-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.ai-label { font-size: 12px; font-weight: 700; color: var(--cyan); }
+.ai-tip { font-size: 12px; color: var(--text); line-height: 1.6; }
+.ai-tip b { color: var(--cyan); }
+
+/* Alerts tab */
+.alert-item {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border-left: 3px solid;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.alert-item.warn { border-color: var(--yellow); }
+.alert-item.danger { border-color: var(--red); }
+.alert-item.info { border-color: var(--cyan); }
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.alert-body { flex:1; }
+.alert-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.alert-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+.alert-time { font-size: 10px; color: var(--text3); margin-top: 4px; }
+
+/* Animations */
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+.fade-up { animation: fadeUp 0.4s ease forwards; }
+@keyframes countUp { from{opacity:0;} to{opacity:1;} }
+@keyframes glow { 0%,100%{box-shadow:0 0 8px var(--cyan-dim);} 50%{box-shadow:0 0 20px var(--cyan-glow);} }
+
+/* Scrollbar */
+.content::-webkit-scrollbar { width: 3px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="h-icon">⚡</div>
+    <div class="h-info">
+      <div class="h-title">스마트 전력 모니터링 <span class="h-badge">DEMO</span></div>
+      <div class="h-school">한국전기전자고등학교</div>
+    </div>
+    <div class="h-live">LIVE</div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-item active" onclick="switchTab(0)">📊 대시보드</button>
+    <button class="tab-item" onclick="switchTab(1)">🏫 구역별</button>
+    <button class="tab-item" onclick="switchTab(2)">🔔 알림</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content">
+
+    <!-- TAB 0: Dashboard -->
+    <div class="tab-content active" id="tab0">
+
+      <!-- Summary -->
+      <div class="summary-row fade-up">
+        <div class="summary-card">
+          <div class="sc-label">현재 전력</div>
+          <div class="sc-value" style="color:var(--cyan);" id="live-power">47.2</div>
+          <div class="sc-unit">kW</div>
+          <div class="sc-change down">▼ 3.1% 어제대비</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label">오늘 누적</div>
+          <div class="sc-value" style="color:var(--blue);">312</div>
+          <div class="sc-unit">kWh</div>
+          <div class="sc-change down">▼ 5.2% 어제대비</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label">이번달 요금</div>
+          <div class="sc-value" style="color:var(--yellow);">847</div>
+          <div class="sc-unit">만원</div>
+          <div class="sc-change up">▲ 2.3% 전월대비</div>
+        </div>
+      </div>
+
+      <!-- Main Gauge -->
+      <div class="gauge-card fade-up">
+        <div class="gauge-title">⚡ 실시간 전력 사용률</div>
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 200 120">
+            <path class="gauge-bg" d="M 20 110 A 80 80 0 0 1 180 110" />
+            <path class="gauge-fill" id="gauge-arc" d="M 20 110 A 80 80 0 0 1 180 110"
+              stroke-dasharray="251" stroke-dashoffset="75" />
+          </svg>
+          <div class="gauge-center">
+            <div class="gauge-value" id="gauge-pct">68</div>
+            <div class="gauge-kwh">47.2 / 70 kW</div>
+          </div>
+        </div>
+        <div class="gauge-status">
+          <span class="badge good" id="gauge-badge">✅ 정상 운영 중</span>
+        </div>
+        <div class="gauge-max">최대 허용: 70 kW | 계약 전력: 100 kW</div>
+      </div>
+
+      <!-- Hourly Chart -->
+      <div class="chart-card fade-up">
+        <div class="chart-header">
+          <span class="chart-title">📈 시간대별 전력 사용량</span>
+          <span class="chart-period">오늘</span>
+        </div>
+        <div class="bar-chart" id="hourly-chart"></div>
+      </div>
+
+      <!-- Status grid -->
+      <div class="status-grid fade-up">
+        <div class="status-card">
+          <div class="st-header"><div class="st-dot" style="background:var(--cyan)"></div><span class="st-label">전압</span></div>
+          <div><span class="st-value" style="color:var(--cyan)" id="live-volt">221</span><span class="st-unit"> V</span></div>
+          <div class="st-sub">정상 범위 220±10V</div>
+        </div>
+        <div class="status-card">
+          <div class="st-header"><div class="st-dot" style="background:var(--green)"></div><span class="st-label">전류</span></div>
+          <div><span class="st-value" style="color:var(--green)" id="live-amp">214</span><span class="st-unit"> A</span></div>
+          <div class="st-sub">정격 300A</div>
+        </div>
+        <div class="status-card">
+          <div class="st-header"><div class="st-dot" style="background:var(--purple)"></div><span class="st-label">주파수</span></div>
+          <div><span class="st-value" style="color:var(--purple)" id="live-freq">60.0</span><span class="st-unit"> Hz</span></div>
+          <div class="st-sub">정상 범위 59.9~60.1</div>
+        </div>
+        <div class="status-card">
+          <div class="st-header"><div class="st-dot" style="background:var(--yellow)"></div><span class="st-label">역률</span></div>
+          <div><span class="st-value" style="color:var(--yellow)" id="live-pf">96.5</span><span class="st-unit"> %</span></div>
+          <div class="st-sub">목표 95% 이상</div>
+        </div>
+      </div>
+
+      <!-- AI Tip -->
+      <div class="ai-card fade-up">
+        <div class="ai-header">
+          <div class="ai-icon">🤖</div>
+          <span class="ai-label">AI 절전 분석</span>
+        </div>
+        <div class="ai-tip">
+          현재 <b>3층 컴퓨터실</b>이 전체 사용량의 <b>34%</b>를 차지하고 있어요.
+          점심시간(12:00~13:00)에 실습실 조명과 모니터를 꺼두면 약 <b>월 12만원</b> 절감이 가능합니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1: Zone -->
+    <div class="tab-content" id="tab1">
+      <div class="zone-title">🏫 구역별 전력 현황</div>
+      <div class="zone-list" id="zone-list"></div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">🏢 구역별 비율</span>
+          <span class="chart-period">실시간</span>
+        </div>
+        <div id="zone-bars" style="display:flex;flex-direction:column;gap:10px;margin-top:4px;"></div>
+      </div>
+
+      <div class="ai-card">
+        <div class="ai-header">
+          <div class="ai-icon">💡</div>
+          <span class="ai-label">절전 등급</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:4px;">
+          <div style="font-size:48px;line-height:1;">🅱</div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--green);">양호 등급</div>
+            <div style="font-size:11px;color:var(--text2);margin-top:2px;line-height:1.5;">
+              전월 대비 5.2% 절감 중!<br>A등급까지 <b style="color:var(--cyan);">8%</b> 추가 절감 필요
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Alerts -->
+    <div class="tab-content" id="tab2">
+      <div class="zone-title">🔔 알림 내역</div>
+
+      <div class="alert-item danger fade-up">
+        <div class="alert-icon">🚨</div>
+        <div class="alert-body">
+          <div class="alert-title">순간 최대전력 초과 경고</div>
+          <div class="alert-desc">3층 컴퓨터실에서 순간 전력이 <b style="color:var(--red)">68.5kW</b>까지 상승했습니다. 계약전력의 97% 수준입니다.</div>
+          <div class="alert-time">오늘 10:32</div>
+        </div>
+      </div>
+
+      <div class="alert-item warn fade-up">
+        <div class="alert-icon">⚠️</div>
+        <div class="alert-body">
+          <div class="alert-title">역률 저하 감지</div>
+          <div class="alert-desc">2층 전기실습실 역률이 <b style="color:var(--yellow)">91.2%</b>로 하락했습니다. 콘덴서 점검을 권장합니다.</div>
+          <div class="alert-time">오늘 09:15</div>
+        </div>
+      </div>
+
+      <div class="alert-item info fade-up">
+        <div class="alert-icon">💡</div>
+        <div class="alert-body">
+          <div class="alert-title">점심시간 자동 절전 실행</div>
+          <div class="alert-desc">12:00 ~ 13:00 실습실 조명 자동 OFF 스케줄이 실행되었습니다. 예상 절감: 2.3kWh</div>
+          <div class="alert-time">오늘 12:00</div>
+        </div>
+      </div>
+
+      <div class="alert-item info fade-up">
+        <div class="alert-icon">📊</div>
+        <div class="alert-body">
+          <div class="alert-title">일일 리포트 생성 완료</div>
+          <div class="alert-desc">어제(2/5) 총 사용량 <b style="color:var(--cyan)">328kWh</b>, 전일 대비 5.2% 감소. 우수 절전 구역: 1층 교실동</div>
+          <div class="alert-time">오늘 08:00</div>
+        </div>
+      </div>
+
+      <div class="alert-item warn fade-up">
+        <div class="alert-icon">🌡️</div>
+        <div class="alert-body">
+          <div class="alert-title">변압기 온도 상승</div>
+          <div class="alert-desc">지하 변전실 변압기 온도가 <b style="color:var(--yellow)">72°C</b>까지 상승. 정상 범위이나 모니터링 중.</div>
+          <div class="alert-time">어제 16:40</div>
+        </div>
+      </div>
+
+      <div class="alert-item info fade-up">
+        <div class="alert-icon">✅</div>
+        <div class="alert-body">
+          <div class="alert-title">월간 절전 목표 달성 중</div>
+          <div class="alert-desc">이번 달 목표 대비 <b style="color:var(--green)">92%</b> 진행률. 현재 추세면 목표 달성 예상!</div>
+          <div class="alert-time">어제 08:00</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// === TAB SWITCH ===
+const tabs = document.querySelectorAll('.tab-item');
+const contents = document.querySelectorAll('.tab-content');
+function switchTab(idx) {
+  tabs.forEach((t,i) => { t.classList.toggle('active', i===idx); });
+  contents.forEach((c,i) => { c.classList.toggle('active', i===idx); });
+}
+
+// === ZONE DATA ===
+const zones = [
+  { name: "3층 컴퓨터실", icon: "💻", bg: "var(--cyan-dim)", power: 16.1, pct: 34, color: "var(--cyan)", status: "높음" },
+  { name: "2층 전기실습실", icon: "🔧", bg: "var(--orange-dim)", power: 10.8, pct: 23, color: "var(--orange)", status: "보통" },
+  { name: "1층 교실동", icon: "📚", bg: "var(--blue)", power: 8.5, pct: 18, color: "var(--blue)", status: "보통" },
+  { name: "체육관", icon: "🏀", bg: "var(--green-dim)", power: 5.2, pct: 11, color: "var(--green)", status: "낮음" },
+  { name: "급식실", icon: "🍚", bg: "var(--yellow-dim)", power: 4.1, pct: 9, color: "var(--yellow)", status: "낮음" },
+  { name: "행정동", icon: "🏢", bg: "var(--purple)", power: 2.5, pct: 5, color: "var(--purple)", status: "낮음" },
+];
+
+// Zone list render
+const zoneListEl = document.getElementById('zone-list');
+zones.forEach(z => {
+  const statusColor = z.status === '높음' ? 'var(--red)' : z.status === '보통' ? 'var(--yellow)' : 'var(--green)';
+  zoneListEl.innerHTML += `
+    <div class="zone-card fade-up">
+      <div class="zone-icon" style="background:${z.bg}">${z.icon}</div>
+      <div class="zone-info">
+        <div class="zone-name">${z.name}</div>
+        <div class="zone-detail">${z.pct}% 점유</div>
+        <div class="zone-bar-wrap"><div class="zone-bar-fill" style="width:${z.pct}%;background:${z.color};"></div></div>
+      </div>
+      <div class="zone-right">
+        <div class="zone-power" style="color:${z.color}">${z.power}</div>
+        <div class="zone-pct" style="color:${statusColor}">${z.status}</div>
+      </div>
+    </div>
+  `;
+});
+
+// Zone horizontal bars
+const zoneBarsEl = document.getElementById('zone-bars');
+zones.forEach(z => {
+  zoneBarsEl.innerHTML += `
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:11px;color:var(--text2);width:70px;text-align:right;flex-shrink:0;">${z.name.split(' ').pop()}</span>
+      <div style="flex:1;height:14px;background:var(--border);border-radius:7px;overflow:hidden;">
+        <div style="height:100%;width:${z.pct}%;background:${z.color};border-radius:7px;transition:width 1s;"></div>
+      </div>
+      <span style="font-size:11px;color:${z.color};font-weight:700;width:36px;">${z.pct}%</span>
+    </div>
+  `;
+});
+
+// === HOURLY CHART ===
+const hourlyData = [
+  {h:'06', v:12}, {h:'07', v:28}, {h:'08', v:52}, {h:'09', v:58},
+  {h:'10', v:65}, {h:'11', v:62}, {h:'12', v:35}, {h:'13', v:55},
+  {h:'14', v:61}, {h:'15', v:48}, {h:'16', v:38}, {h:'17', v:18},
+];
+const maxV = 70;
+const chartEl = document.getElementById('hourly-chart');
+hourlyData.forEach(d => {
+  const hPct = (d.v / maxV) * 100;
+  let cls = 'low';
+  if (d.v >= 60) cls = 'peak';
+  else if (d.v >= 45) cls = 'high';
+  else if (d.v >= 30) cls = 'mid';
+  chartEl.innerHTML += `
+    <div class="bar-col">
+      <div class="bar-value">${d.v}</div>
+      <div class="bar ${cls}" style="height:${hPct}%"></div>
+      <div class="bar-label">${d.h}</div>
+    </div>
+  `;
+});
+
+// === LIVE SIMULATION ===
+function randomFlutter(base, range) {
+  return (base + (Math.random() - 0.5) * range).toFixed(1);
+}
+
+setInterval(() => {
+  const power = randomFlutter(47.2, 4);
+  document.getElementById('live-power').textContent = power;
+  document.getElementById('live-volt').textContent = Math.round(randomFlutter(221, 4));
+  document.getElementById('live-amp').textContent = Math.round(randomFlutter(214, 10));
+  document.getElementById('live-freq').textContent = randomFlutter(60.0, 0.2);
+  document.getElementById('live-pf').textContent = randomFlutter(96.5, 1.5);
+
+  // Update gauge
+  const pct = Math.round((power / 70) * 100);
+  document.getElementById('gauge-pct').textContent = pct;
+  document.querySelector('.gauge-kwh').textContent = `${power} / 70 kW`;
+  const offset = 251 - (251 * pct / 100);
+  document.getElementById('gauge-arc').setAttribute('stroke-dashoffset', offset);
+
+  const badge = document.getElementById('gauge-badge');
+  if (pct >= 90) {
+    badge.className = 'badge danger';
+    badge.textContent = '🚨 주의 필요';
+    document.getElementById('gauge-arc').style.stroke = 'var(--red)';
+  } else if (pct >= 75) {
+    badge.className = 'badge warn';
+    badge.textContent = '⚠️ 사용량 높음';
+    document.getElementById('gauge-arc').style.stroke = 'var(--yellow)';
+  } else {
+    badge.className = 'badge good';
+    badge.textContent = '✅ 정상 운영 중';
+    document.getElementById('gauge-arc').style.stroke = 'var(--cyan)';
+  }
+}, 2000);
+</script>
+</body>
+</html>

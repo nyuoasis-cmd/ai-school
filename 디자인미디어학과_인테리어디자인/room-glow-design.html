@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>RoomGlow — AI 인테리어 비포/애프터</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #EC4899;
+    --pink-light: #F472B6;
+    --pink-soft: #FDF2F8;
+    --pink-glow: rgba(236, 72, 153, 0.2);
+    --bg-primary: #FEFEFE;
+    --bg-secondary: #FBF7F9;
+    --bg-card: #FFFFFF;
+    --border: #F3E8EF;
+    --border-strong: #E8D5E0;
+    --text-primary: #1F1215;
+    --text-secondary: #6B5460;
+    --text-muted: #A8919D;
+    --accent-warm: #F59E0B;
+    --accent-green: #10B981;
+    --accent-blue: #6366F1;
+    --accent-orange: #F97316;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: linear-gradient(135deg, #FDF2F8, #FEF3C7, #FDF2F8);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px 0;
+  }
+
+  /* Phone Frame */
+  .phone-frame {
+    width: 390px;
+    height: 844px;
+    background: var(--bg-primary);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    border: 3px solid #F3E8EF;
+    box-shadow: 0 0 60px rgba(236,72,153,0.08), 0 20px 60px rgba(0,0,0,0.08);
+  }
+
+  .status-bar {
+    height: 54px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 28px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    position: relative;
+    z-index: 100;
+  }
+
+  .status-icons { display: flex; gap: 6px; align-items: center; font-size: 12px; }
+
+  /* Header */
+  .app-header {
+    padding: 8px 20px 14px;
+    background: var(--bg-primary);
+    position: relative;
+    z-index: 50;
+  }
+
+  .header-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 2px;
+  }
+
+  .app-logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--pink), var(--pink-light));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 12px var(--pink-glow);
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .logo-text span { color: var(--pink); }
+
+  .header-badge {
+    background: var(--pink-soft);
+    border: 1px solid rgba(236,72,153,0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--pink);
+    font-weight: 600;
+  }
+
+  .header-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: 46px;
+    margin-top: -2px;
+  }
+
+  /* Tab Bar */
+  .tab-bar {
+    display: flex;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab-item {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  .tab-item.active {
+    color: var(--pink);
+    font-weight: 700;
+  }
+
+  .tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 20%; width: 60%; height: 2.5px;
+    background: linear-gradient(90deg, var(--pink), var(--pink-light));
+    border-radius: 2px;
+  }
+
+  /* Content Area */
+  .content-area {
+    height: calc(844px - 54px - 56px - 44px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .content-area::-webkit-scrollbar { display: none; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ===== TAB 1: 비포/애프터 ===== */
+
+  .room-selector {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px 12px;
+    overflow-x: auto;
+  }
+
+  .room-selector::-webkit-scrollbar { display: none; }
+
+  .room-chip {
+    flex-shrink: 0;
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .room-chip.active {
+    background: linear-gradient(135deg, var(--pink), var(--pink-light));
+    border-color: var(--pink);
+    color: white;
+    box-shadow: 0 2px 12px var(--pink-glow);
+  }
+
+  /* Before/After Slider */
+  .ba-container {
+    padding: 0 20px 16px;
+  }
+
+  .ba-card {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  }
+
+  .ba-slider-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+    cursor: ew-resize;
+    touch-action: none;
+  }
+
+  .ba-image {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  .ba-image.after {
+    clip-path: inset(0 50% 0 0);
+    transition: clip-path 0.05s linear;
+  }
+
+  .ba-divider {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: 100%;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 10;
+    transform: translateX(-50%);
+    transition: left 0.05s linear;
+  }
+
+  .ba-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--pink);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    z-index: 20;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: left 0.05s linear;
+  }
+
+  .ba-handle-arrows {
+    font-size: 14px;
+    color: var(--pink);
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .ba-label {
+    position: absolute;
+    top: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    z-index: 15;
+    backdrop-filter: blur(8px);
+  }
+
+  .ba-label.before {
+    left: 12px;
+    background: rgba(0,0,0,0.5);
+    color: white;
+  }
+
+  .ba-label.after {
+    right: 12px;
+    background: rgba(236,72,153,0.85);
+    color: white;
+  }
+
+  .ba-info {
+    padding: 16px;
+  }
+
+  .ba-room-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .ba-style-tag {
+    font-size: 12px;
+    color: var(--pink);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .ba-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .ba-changes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .change-tag {
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--pink-soft);
+    color: var(--pink);
+    border: 1px solid rgba(236,72,153,0.15);
+  }
+
+  /* Room Dots */
+  .ba-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 0 4px;
+  }
+
+  .ba-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition: all 0.3s;
+  }
+
+  .ba-dot.active {
+    width: 20px;
+    border-radius: 3px;
+    background: var(--pink);
+  }
+
+  .ba-counter {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding-bottom: 16px;
+  }
+
+  .ba-counter span { color: var(--pink); font-weight: 700; }
+
+  /* Drag Hint */
+  .drag-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 0 0 12px;
+    animation: hintPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* ===== TAB 2: 스타일 갤러리 ===== */
+
+  .gallery-grid {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .style-card {
+    background: white;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .style-card:active { transform: scale(0.98); }
+
+  .style-card-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .style-card-body {
+    padding: 14px 16px;
+  }
+
+  .style-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .style-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .style-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .style-badge.popular {
+    background: rgba(236,72,153,0.1);
+    color: var(--pink);
+  }
+
+  .style-badge.trending {
+    background: rgba(99,102,241,0.1);
+    color: var(--accent-blue);
+  }
+
+  .style-badge.classic {
+    background: rgba(245,158,11,0.1);
+    color: var(--accent-warm);
+  }
+
+  .style-badge.natural {
+    background: rgba(16,185,129,0.1);
+    color: var(--accent-green);
+  }
+
+  .style-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .style-colors {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .style-colors-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+
+  .color-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+
+  /* ===== TAB 3: AI 추천 ===== */
+
+  .ai-section {
+    padding: 20px;
+  }
+
+  .ai-prompt-card {
+    background: linear-gradient(135deg, var(--pink-soft), #FEF3C7);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .ai-prompt-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .ai-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--pink), var(--pink-light));
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .ai-prompt-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .ai-select-group {
+    margin-bottom: 14px;
+  }
+
+  .ai-select-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .ai-select-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ai-opt {
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .ai-opt.selected {
+    border-color: var(--pink);
+    background: var(--pink-soft);
+    color: var(--pink);
+  }
+
+  .ai-generate-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--pink), var(--pink-light));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px var(--pink-glow);
+    transition: all 0.3s;
+    margin-top: 4px;
+  }
+
+  .ai-generate-btn:active { transform: scale(0.98); }
+
+  /* AI Result */
+  .ai-result {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+  }
+
+  .ai-result-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  .ai-result-body {
+    padding: 16px;
+  }
+
+  .ai-result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, var(--pink), var(--pink-light));
+    color: white;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .ai-result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .ai-result-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .ai-palette {
+    margin-bottom: 16px;
+  }
+
+  .ai-palette-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .ai-palette-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .palette-chip {
+    flex: 1;
+    height: 36px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+
+  .palette-chip::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .ai-tips {
+    margin-top: 28px;
+    background: var(--pink-soft);
+    border-radius: 14px;
+    padding: 14px;
+    border: 1px solid rgba(236,72,153,0.1);
+  }
+
+  .ai-tips-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pink);
+    margin-bottom: 6px;
+  }
+
+  .ai-tips-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* Home Indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.1);
+  }
+
+  /* Decorative line */
+  .pink-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--pink-light), transparent);
+    margin: 0 20px;
+    opacity: 0.3;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .style-card { animation: fadeInUp 0.4s ease-out both; }
+  .style-card:nth-child(1) { animation-delay: 0.05s; }
+  .style-card:nth-child(2) { animation-delay: 0.1s; }
+  .style-card:nth-child(3) { animation-delay: 0.15s; }
+  .style-card:nth-child(4) { animation-delay: 0.2s; }
+
+  /* Responsive */
+  @media (max-width: 420px) {
+    body { padding: 0; }
+    .phone-frame { width: 100%; height: 100vh; border-radius: 0; border: none; }
+    .content-area { height: calc(100vh - 54px - 56px - 44px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span style="font-weight:700">9:41</span>
+    <div class="status-icons">
+      <span>●●●●○</span>
+      <span>WiFi</span>
+      <span>🔋</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="header-top">
+      <div class="app-logo">
+        <div class="logo-icon">🏠</div>
+        <div class="logo-text">Room<span>Glow</span></div>
+      </div>
+      <div class="header-badge">✨ AI 인테리어</div>
+    </div>
+    <div class="header-subtitle">비포/애프터로 보는 공간 변화</div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item active" data-tab="compare">🔄 비포/애프터</div>
+    <div class="tab-item" data-tab="gallery">🎨 스타일</div>
+    <div class="tab-item" data-tab="ai">🤖 AI 추천</div>
+  </div>
+
+  <!-- Content -->
+  <div class="content-area">
+
+    <!-- ===== TAB 1: 비포/애프터 ===== -->
+    <div class="tab-content active" id="tab-compare">
+
+      <!-- Room Selector -->
+      <div class="room-selector">
+        <div class="room-chip active">🛋️ 거실</div>
+        <div class="room-chip">🛏️ 침실</div>
+        <div class="room-chip">🍳 주방</div>
+        <div class="room-chip">🛁 욕실</div>
+      </div>
+
+      <div class="drag-hint">↔ 슬라이더를 드래그하여 비교하세요</div>
+
+      <!-- Before/After Card -->
+      <div class="ba-container">
+
+        <!-- Room 1: 거실 -->
+        <div class="ba-card room-card active" data-room="거실">
+          <div class="ba-slider-wrap ba-slider" >
+            <img class="ba-image before" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&h=520&fit=crop" alt="Before">
+            <img class="ba-image after ba-after" src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=520&fit=crop" alt="After">
+            <div class="ba-label before">BEFORE</div>
+            <div class="ba-label after">AFTER ✨</div>
+            <div class="ba-divider ba-div"></div>
+            <div class="ba-handle ba-hdl"><span class="ba-handle-arrows">◂ ▸</span></div>
+          </div>
+          <div class="ba-info">
+            <div class="ba-room-name">모던 미니멀 거실</div>
+            <div class="ba-style-tag">Modern Minimal Style</div>
+            <div class="ba-desc">어둡고 답답했던 거실이 밝은 톤의 가구와 간결한 배치로 개방감 있는 공간으로 변신했습니다.</div>
+            <div class="ba-changes">
+              <span class="change-tag">🪑 가구 교체</span>
+              <span class="change-tag">💡 조명 추가</span>
+              <span class="change-tag">🎨 벽 컬러 변경</span>
+              <span class="change-tag">🌿 식물 배치</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room 2: 침실 -->
+        <div class="ba-card room-card" data-room="침실" style="display:none">
+          <div class="ba-slider-wrap ba-slider">
+            <img class="ba-image before" src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=700&h=520&fit=crop" alt="Before">
+            <img class="ba-image after ba-after" src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&h=520&fit=crop" alt="After">
+            <div class="ba-label before">BEFORE</div>
+            <div class="ba-label after">AFTER ✨</div>
+            <div class="ba-divider ba-div"></div>
+            <div class="ba-handle ba-hdl"><span class="ba-handle-arrows">◂ ▸</span></div>
+          </div>
+          <div class="ba-info">
+            <div class="ba-room-name">내추럴 우드 침실</div>
+            <div class="ba-style-tag">Natural Wood Bedroom</div>
+            <div class="ba-desc">차갑고 단조로웠던 침실에 원목 프레임 침대와 따뜻한 패브릭을 더해 아늑한 휴식 공간으로 탈바꿈했습니다.</div>
+            <div class="ba-changes">
+              <span class="change-tag">🛏️ 침대 프레임</span>
+              <span class="change-tag">🕯️ 간접 조명</span>
+              <span class="change-tag">🧶 패브릭 교체</span>
+              <span class="change-tag">🖼️ 액자 배치</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room 3: 주방 -->
+        <div class="ba-card room-card" data-room="주방" style="display:none">
+          <div class="ba-slider-wrap ba-slider">
+            <img class="ba-image before" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&h=520&fit=crop" alt="Before">
+            <img class="ba-image after ba-after" src="https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=700&h=520&fit=crop" alt="After">
+            <div class="ba-label before">BEFORE</div>
+            <div class="ba-label after">AFTER ✨</div>
+            <div class="ba-divider ba-div"></div>
+            <div class="ba-handle ba-hdl"><span class="ba-handle-arrows">◂ ▸</span></div>
+          </div>
+          <div class="ba-info">
+            <div class="ba-room-name">화이트 모던 주방</div>
+            <div class="ba-style-tag">White Modern Kitchen</div>
+            <div class="ba-desc">낡은 주방 상판과 수납장을 화이트 톤으로 교체하고, 펜던트 조명과 타일 백스플래시로 카페 같은 주방을 만들었습니다.</div>
+            <div class="ba-changes">
+              <span class="change-tag">🗄️ 상판 교체</span>
+              <span class="change-tag">💡 펜던트 조명</span>
+              <span class="change-tag">🧱 타일 시공</span>
+              <span class="change-tag">🍳 수납 정리</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Room 4: 욕실 -->
+        <div class="ba-card room-card" data-room="욕실" style="display:none">
+          <div class="ba-slider-wrap ba-slider">
+            <img class="ba-image before" src="https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=700&h=520&fit=crop" alt="Before">
+            <img class="ba-image after ba-after" src="https://images.unsplash.com/photo-1620626011761-996317b8d101?w=700&h=520&fit=crop" alt="After">
+            <div class="ba-label before">BEFORE</div>
+            <div class="ba-label after">AFTER ✨</div>
+            <div class="ba-divider ba-div"></div>
+            <div class="ba-handle ba-hdl"><span class="ba-handle-arrows">◂ ▸</span></div>
+          </div>
+          <div class="ba-info">
+            <div class="ba-room-name">미니멀 스파 욕실</div>
+            <div class="ba-style-tag">Minimal Spa Bathroom</div>
+            <div class="ba-desc">어둡고 습한 느낌의 욕실을 밝은 타일과 우드 선반, 간접 조명으로 호텔 스파 같은 공간으로 변화시켰습니다.</div>
+            <div class="ba-changes">
+              <span class="change-tag">🧱 타일 교체</span>
+              <span class="change-tag">🪞 거울 교체</span>
+              <span class="change-tag">🪵 우드 선반</span>
+              <span class="change-tag">💡 간접 조명</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ba-dots">
+        <div class="ba-dot active"></div>
+        <div class="ba-dot"></div>
+        <div class="ba-dot"></div>
+        <div class="ba-dot"></div>
+      </div>
+      <div class="ba-counter"><span>1</span> / 4 공간</div>
+
+    </div>
+
+    <!-- ===== TAB 2: 스타일 갤러리 ===== -->
+    <div class="tab-content" id="tab-gallery">
+
+      <div class="gallery-grid">
+
+        <!-- Modern Minimal -->
+        <div class="style-card">
+          <img class="style-card-img" src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=280&fit=crop" alt="">
+          <div class="style-card-body">
+            <div class="style-card-top">
+              <div class="style-name">모던 미니멀</div>
+              <div class="style-badge popular">🔥 인기</div>
+            </div>
+            <div class="style-desc">불필요한 장식을 배제하고 깔끔한 라인과 중성톤 컬러로 정돈된 공간을 연출합니다.</div>
+            <div class="style-colors">
+              <span class="style-colors-label">컬러</span>
+              <div class="color-dot" style="background:#E5E5E5"></div>
+              <div class="color-dot" style="background:#FAFAFA"></div>
+              <div class="color-dot" style="background:#292524"></div>
+              <div class="color-dot" style="background:#A8A29E"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Natural Wood -->
+        <div class="style-card">
+          <img class="style-card-img" src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=700&h=280&fit=crop" alt="">
+          <div class="style-card-body">
+            <div class="style-card-top">
+              <div class="style-name">내추럴 우드</div>
+              <div class="style-badge natural">🌿 자연</div>
+            </div>
+            <div class="style-desc">원목 소재와 따뜻한 색감으로 자연의 편안함을 실내로 가져옵니다.</div>
+            <div class="style-colors">
+              <span class="style-colors-label">컬러</span>
+              <div class="color-dot" style="background:#D4A574"></div>
+              <div class="color-dot" style="background:#8B7355"></div>
+              <div class="color-dot" style="background:#F5F0EB"></div>
+              <div class="color-dot" style="background:#4A7C59"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vintage -->
+        <div class="style-card">
+          <img class="style-card-img" src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&h=280&fit=crop" alt="">
+          <div class="style-card-body">
+            <div class="style-card-top">
+              <div class="style-name">빈티지 레트로</div>
+              <div class="style-badge classic">✨ 클래식</div>
+            </div>
+            <div class="style-desc">오래된 느낌의 가구와 따뜻한 조명으로 감성적이고 아늑한 분위기를 만듭니다.</div>
+            <div class="style-colors">
+              <span class="style-colors-label">컬러</span>
+              <div class="color-dot" style="background:#C4956A"></div>
+              <div class="color-dot" style="background:#8B4513"></div>
+              <div class="color-dot" style="background:#F0E6D3"></div>
+              <div class="color-dot" style="background:#B8860B"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nordic -->
+        <div class="style-card">
+          <img class="style-card-img" src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=700&h=280&fit=crop" alt="">
+          <div class="style-card-body">
+            <div class="style-card-top">
+              <div class="style-name">북유럽 스칸디</div>
+              <div class="style-badge trending">💜 트렌드</div>
+            </div>
+            <div class="style-desc">화이트 톤 + 밝은 원목 + 패브릭 소품으로 깔끔하면서도 포근한 공간을 만듭니다.</div>
+            <div class="style-colors">
+              <span class="style-colors-label">컬러</span>
+              <div class="color-dot" style="background:#FFFFFF; border:1px solid #eee"></div>
+              <div class="color-dot" style="background:#E8DCC8"></div>
+              <div class="color-dot" style="background:#B0C4DE"></div>
+              <div class="color-dot" style="background:#C9B99A"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== TAB 3: AI 추천 ===== -->
+    <div class="tab-content" id="tab-ai">
+      <div class="ai-section">
+
+        <!-- AI Prompt Card -->
+        <div class="ai-prompt-card">
+          <div class="ai-prompt-title">
+            <div class="ai-icon">✨</div>
+            <div class="ai-prompt-label">AI 스타일 추천받기</div>
+          </div>
+
+          <div class="ai-select-group">
+            <div class="ai-select-label">공간 선택</div>
+            <div class="ai-select-options">
+              <div class="ai-opt selected">🛋️ 거실</div>
+              <div class="ai-opt">🛏️ 침실</div>
+              <div class="ai-opt">🍳 주방</div>
+              <div class="ai-opt">🛁 욕실</div>
+            </div>
+          </div>
+
+          <div class="ai-select-group">
+            <div class="ai-select-label">분위기</div>
+            <div class="ai-select-options">
+              <div class="ai-opt selected">☁️ 편안한</div>
+              <div class="ai-opt">⚡ 모던한</div>
+              <div class="ai-opt">🌸 화사한</div>
+              <div class="ai-opt">🌙 차분한</div>
+            </div>
+          </div>
+
+          <div class="ai-select-group">
+            <div class="ai-select-label">예산</div>
+            <div class="ai-select-options">
+              <div class="ai-opt">💰 50만원 이하</div>
+              <div class="ai-opt selected">💰💰 100만원</div>
+              <div class="ai-opt">💰💰💰 200만원+</div>
+            </div>
+          </div>
+
+          <button class="ai-generate-btn">
+            ✨ AI 추천 받기
+          </button>
+        </div>
+
+        <!-- AI Result -->
+        <div class="ai-result">
+          <img class="ai-result-img" src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=700&h=360&fit=crop" alt="">
+          <div class="ai-result-body">
+            <div class="ai-result-badge">🤖 AI 추천</div>
+            <div class="ai-result-title">편안한 모던 내추럴 거실</div>
+            <div class="ai-result-desc">
+              밝은 톤의 원목 가구에 그레이-베이지 패브릭 소파를 매치하면 모던하면서도 따뜻한 느낌을 줄 수 있어요. 간접 조명과 그린 식물로 포인트를 주면 완성!
+            </div>
+
+            <div class="ai-palette">
+              <div class="ai-palette-label">추천 컬러 팔레트</div>
+              <div class="ai-palette-row">
+                <div class="palette-chip" style="background:#F5F0EB" data-name="아이보리"></div>
+                <div class="palette-chip" style="background:#C4B5A4" data-name="웜그레이"></div>
+                <div class="palette-chip" style="background:#8B7355" data-name="원목"></div>
+                <div class="palette-chip" style="background:#5B7F5E" data-name="세이지"></div>
+                <div class="palette-chip" style="background:#2C2C2C" data-name="차콜"></div>
+              </div>
+            </div>
+
+            <div class="ai-tips">
+              <div class="ai-tips-title">💡 AI 스타일링 팁</div>
+              <div class="ai-tips-text">
+                소파 쿠션은 3개가 적당해요. 메인 컬러 1개 + 포인트 컬러 2개 조합이 균형 잡힌 느낌을 줍니다. 커튼은 바닥에 살짝 닿는 길이가 고급스러워요!
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="home-indicator"></div>
+</div>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-item').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Room chip selection → switch room card
+  const roomNames = ['거실', '침실', '주방', '욕실'];
+  const roomChips = document.querySelectorAll('.room-chip');
+  const roomCards = document.querySelectorAll('.room-card');
+  const baDots = document.querySelectorAll('.ba-dot');
+  const baCounterSpan = document.querySelector('.ba-counter span');
+
+  roomChips.forEach((chip, idx) => {
+    chip.addEventListener('click', () => {
+      roomChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      roomCards.forEach(card => {
+        card.style.display = 'none';
+        card.classList.remove('active');
+      });
+      roomCards[idx].style.display = 'block';
+      roomCards[idx].classList.add('active');
+      baDots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      baCounterSpan.textContent = idx + 1;
+
+      // Reset slider position
+      const activeCard = roomCards[idx];
+      const af = activeCard.querySelector('.ba-after');
+      const dv = activeCard.querySelector('.ba-div');
+      const hd = activeCard.querySelector('.ba-hdl');
+      af.style.clipPath = 'inset(0 50% 0 0)';
+      dv.style.left = '50%';
+      hd.style.left = '50%';
+    });
+  });
+
+  // AI option selection (per group)
+  document.querySelectorAll('.ai-select-group').forEach(group => {
+    group.querySelectorAll('.ai-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        group.querySelectorAll('.ai-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+      });
+    });
+  });
+
+  // Before/After Slider — works for all sliders
+  let isDragging = false;
+  let activeSlider = null;
+
+  function updateSlider(slider, x) {
+    const rect = slider.getBoundingClientRect();
+    let pct = ((x - rect.left) / rect.width) * 100;
+    pct = Math.max(5, Math.min(95, pct));
+    slider.querySelector('.ba-after').style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+    slider.querySelector('.ba-div').style.left = pct + '%';
+    slider.querySelector('.ba-hdl').style.left = pct + '%';
+  }
+
+  document.querySelectorAll('.ba-slider').forEach(slider => {
+    slider.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      activeSlider = slider;
+      updateSlider(slider, e.clientX);
+    });
+    slider.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      activeSlider = slider;
+      updateSlider(slider, e.touches[0].clientX);
+    }, { passive: true });
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging && activeSlider) updateSlider(activeSlider, e.clientX);
+  });
+  document.addEventListener('touchmove', (e) => {
+    if (isDragging && activeSlider) updateSlider(activeSlider, e.touches[0].clientX);
+  }, { passive: true });
+  document.addEventListener('mouseup', () => { isDragging = false; activeSlider = null; });
+  document.addEventListener('touchend', () => { isDragging = false; activeSlider = null; });
+</script>
+
+</body>
+</html>

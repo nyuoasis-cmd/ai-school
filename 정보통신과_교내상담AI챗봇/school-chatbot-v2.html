@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>교내 AI 상담 도우미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0F2F8;
+  --surface: #FFFFFF;
+  --text: #1A1D2E;
+  --text2: #5A5F7A;
+  --text3: #9398B0;
+  --border: #E4E7F0;
+  --accent: #6C5CE7;
+  --accent-light: #F0EEFF;
+  --accent-dark: #5A4BD6;
+  --blue: #3B82F6;
+  --blue-light: #EBF2FF;
+  --green: #10B981;
+  --green-light: #E6FAF2;
+  --orange: #F59E0B;
+  --orange-light: #FEF6E0;
+  --pink: #EC4899;
+  --pink-light: #FDF0F7;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --shadow: 0 1px 6px rgba(108,92,231,0.06);
+  --shadow-md: 0 4px 20px rgba(108,92,231,0.1);
+  --header-height: 64px;
+  --input-height: 64px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  user-select: none; -webkit-user-select: none;
+}
+
+.app-frame {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background: var(--surface);
+  position: sticky; top:0; z-index:100;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-shrink: 0;
+}
+.h-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(108,92,231,0.25);
+}
+.h-info { flex:1; }
+.h-name { font-size: 15px; font-weight: 700; display:flex; align-items:center; gap:6px; }
+.h-badge {
+  font-size: 8px; font-weight: 700; background: var(--accent); color:#fff;
+  padding: 2px 6px; border-radius: 4px; letter-spacing: 0.3px;
+}
+.h-status { font-size: 11px; color: var(--green); font-weight: 500; display:flex; align-items:center; gap:4px; }
+.h-status::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); }
+.h-school { font-size: 11px; color: var(--text3); background:var(--bg); padding:4px 10px; border-radius:20px; font-weight:500; white-space:nowrap; }
+
+/* Chat area */
+.chat-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Welcome card */
+.welcome-card {
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  border-radius: var(--radius);
+  padding: 16px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 2px;
+}
+.w-emoji { font-size: 36px; margin-bottom: 4px; }
+.w-title { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+.w-sub { font-size: 12px; opacity: 0.9; line-height: 1.5; }
+
+/* Quick buttons */
+.quick-section { margin-bottom: 0; }
+.quick-label { font-size: 11px; color:var(--text3); font-weight:600; margin-bottom:5px; padding-left:2px; }
+.quick-grid { display: flex; flex-direction: column; gap: 6px; }
+.quick-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px; background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); cursor: pointer; font-family: inherit;
+  transition: all 0.15s; text-align: left;
+}
+.quick-btn:active { transform: scale(0.96); border-color: var(--accent); background: var(--accent-light); }
+.q-icon {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.q-icon.meal { background: var(--orange-light); }
+.q-icon.schedule { background: var(--blue-light); }
+.q-icon.calendar { background: var(--pink-light); }
+.q-icon.place { background: var(--green-light); }
+.q-icon.etc { background: var(--accent-light); }
+.q-text { font-size: 13px; font-weight: 600; line-height: 1.3; text-align: left; }
+
+/* Messages */
+.msg-row { display: flex; gap: 8px; max-width: 100%; }
+.msg-row.bot { align-self: flex-start; }
+.msg-row.user { align-self: flex-end; flex-direction: row-reverse; max-width: 85%; }
+
+.msg-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; margin-top: 2px;
+}
+
+.msg-content { display: flex; flex-direction: column; gap: 6px; }
+
+.msg-bubble {
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.msg-row.bot .msg-bubble {
+  background: var(--surface);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow);
+}
+.msg-row.user .msg-bubble {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.msg-time { font-size: 10px; color: var(--text3); padding: 0 4px; }
+.msg-row.user .msg-time { text-align: right; }
+
+/* ===== CARD RESPONSES ===== */
+
+/* Meal card */
+.card-meal {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  width: 100%;
+}
+.card-meal-header {
+  background: linear-gradient(135deg, #F59E0B, #F97316);
+  padding: 12px 14px;
+  color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cm-title { font-size: 13px; font-weight: 700; }
+.cm-date { font-size: 11px; opacity: 0.85; }
+.card-meal-body { padding: 10px 14px; }
+.cm-menu-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.cm-menu-item:last-child { border-bottom: none; }
+.cm-emoji { font-size: 18px; width: 28px; text-align: center; }
+.cm-name { flex: 1; font-size: 13px; font-weight: 500; }
+.cm-cal { font-size: 11px; color: var(--orange); font-weight: 600; }
+.card-meal-footer {
+  padding: 8px 14px;
+  background: var(--orange-light);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cm-total-label { font-size: 11px; color: var(--text2); }
+.cm-total-val { font-size: 15px; font-weight: 800; color: #E67E00; }
+
+/* Timetable card */
+.card-table {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  width: 100%;
+}
+.card-table-header {
+  background: linear-gradient(135deg, #3B82F6, #6366F1);
+  padding: 12px 14px;
+  color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ct-title { font-size: 13px; font-weight: 700; }
+.ct-class { font-size: 11px; opacity: 0.85; }
+.timetable {
+  width: 100%;
+  border-collapse: collapse;
+}
+.timetable th {
+  padding: 6px 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text3);
+  background: var(--bg);
+  text-align: center;
+}
+.timetable th.today {
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.timetable td {
+  padding: 5px 3px;
+  font-size: 11px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  font-weight: 500;
+}
+.timetable td.today-col {
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 700;
+}
+.timetable .period-num {
+  font-size: 10px;
+  color: var(--text3);
+  font-weight: 600;
+  width: 28px;
+}
+
+/* Calendar card */
+.card-calendar {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  width: 100%;
+}
+.card-calendar-header {
+  background: linear-gradient(135deg, #EC4899, #F43F5E);
+  padding: 12px 14px;
+  color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cc-title { font-size: 13px; font-weight: 700; }
+.cc-month { font-size: 11px; opacity: 0.85; }
+.card-calendar-body { padding: 6px 12px; }
+.cal-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.cal-item:last-child { border-bottom: none; }
+.cal-date-box {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.cal-date-box.exam { background: var(--pink-light); }
+.cal-date-box.event { background: var(--blue-light); }
+.cal-date-box.holiday { background: var(--green-light); }
+.cal-day { font-size: 16px; font-weight: 800; line-height: 1; }
+.cal-dow { font-size: 9px; font-weight: 600; color: var(--text3); }
+.cal-info { flex: 1; }
+.cal-title { font-size: 13px; font-weight: 600; }
+.cal-desc { font-size: 11px; color: var(--text3); }
+.cal-tag {
+  font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px;
+  white-space: nowrap;
+}
+.tag-exam { background: var(--pink-light); color: var(--pink); }
+.tag-event { background: var(--blue-light); color: var(--blue); }
+.tag-holiday { background: var(--green-light); color: var(--green); }
+
+/* Typing indicator */
+.typing-row {
+  display: none;
+  align-self: flex-start;
+  gap: 8px; align-items: center;
+}
+.typing-row.show { display: flex; }
+.typing-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.typing-dots {
+  background: var(--surface);
+  border-radius: 18px 18px 18px 4px;
+  padding: 12px 18px;
+  display: flex; gap: 5px;
+  box-shadow: var(--shadow);
+}
+.typing-dots span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text3);
+  animation: typing 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing {
+  0%,60%,100% { opacity:0.3; transform:translateY(0); }
+  30% { opacity:1; transform:translateY(-4px); }
+}
+
+/* Input area */
+.input-area {
+  padding: 10px 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center;
+  position: sticky; bottom: 0;
+  flex-shrink: 0;
+}
+.input-field {
+  flex: 1; padding: 12px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.2s;
+  user-select: text; -webkit-user-select: text;
+}
+.input-field:focus { border-color: var(--accent); }
+.input-field::placeholder { color: var(--text3); }
+.send-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--accent);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.send-btn:active { transform: scale(0.9); background: var(--accent-dark); }
+
+/* Animations */
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+.fade-up { animation: fadeUp 0.3s ease forwards; }
+@keyframes slideIn { from{opacity:0;transform:translateX(-12px);} to{opacity:1;transform:translateX(0);} }
+.slide-in { animation: slideIn 0.3s ease forwards; }
+
+/* Scrollbar */
+.chat-area::-webkit-scrollbar { width: 4px; }
+.chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <header class="app-header">
+    <div class="h-avatar">🐱</div>
+    <div class="h-info">
+      <div class="h-name">또리 <span class="h-badge">DEMO</span></div>
+      <div class="h-status">응답 가능</div>
+    </div>
+    <span class="h-school">정보·통신</span>
+  </header>
+
+  <div class="chat-area" id="chat-area">
+    <!-- Welcome -->
+    <div class="welcome-card fade-up" id="welcome">
+      <div class="w-emoji">🐱</div>
+      <div class="w-title">안녕, 나는 또리다냥!</div>
+      <div class="w-sub">학교 정보가 궁금하면 뭐든 물어봐냥~<br>급식, 시간표, 학사일정 다 알려줄게! 🐾</div>
+    </div>
+
+    <!-- Quick buttons -->
+    <div class="quick-section" id="quick-section">
+      <div class="quick-label">💬 자주 묻는 질문</div>
+      <div class="quick-grid">
+        <button class="quick-btn" onclick="askQuestion('meal')">
+          <div class="q-icon meal">🍚</div>
+          <div class="q-text">오늘 급식 뭐야?</div>
+        </button>
+        <button class="quick-btn" onclick="askQuestion('timetable')">
+          <div class="q-icon schedule">📅</div>
+          <div class="q-text">이번 주 시간표 알려줘</div>
+        </button>
+        <button class="quick-btn" onclick="askQuestion('calendar')">
+          <div class="q-icon calendar">📋</div>
+          <div class="q-text">학사일정 알려줘</div>
+        </button>
+        <button class="quick-btn" onclick="askQuestion('place')">
+          <div class="q-icon place">🏫</div>
+          <div class="q-text">교무실 어디야?</div>
+        </button>
+        <button class="quick-btn" onclick="askQuestion('wifi')">
+          <div class="q-icon etc">📶</div>
+          <div class="q-text">와이파이 비번 뭐야?</div>
+        </button>
+        <button class="quick-btn" onclick="askQuestion('club')">
+          <div class="q-icon etc">🎮</div>
+          <div class="q-text">동아리 정보 알려줘</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Typing indicator (inside chat-area for proper scrolling) -->
+    <div class="typing-row" id="typing">
+      <div class="typing-avatar">🐱</div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <input class="input-field" id="input" placeholder="또리에게 물어봐냥~ 🐾"
+           onkeydown="if(event.key==='Enter')sendCustom()">
+    <button class="send-btn" onclick="sendCustom()">🐾</button>
+  </div>
+</div>
+
+<script>
+const chatArea = document.getElementById('chat-area');
+const typingEl = document.getElementById('typing');
+const inputEl = document.getElementById('input');
+
+const responses = {
+  meal: {
+    userText: "오늘 급식 뭐야?",
+    botText: "오늘 급식 알려줄게냥! 🍚 맛있는 메뉴다냥~",
+    card: '<div class="card-meal"><div class="card-meal-header"><span class="cm-title">🍚 오늘의 급식</span><span class="cm-date">2월 6일 (목)</span></div><div class="card-meal-body"><div class="cm-menu-item"><span class="cm-emoji">🍚</span><span class="cm-name">잡곡밥</span><span class="cm-cal">310 kcal</span></div><div class="cm-menu-item"><span class="cm-emoji">🍲</span><span class="cm-name">김치찌개</span><span class="cm-cal">180 kcal</span></div><div class="cm-menu-item"><span class="cm-emoji">🥩</span><span class="cm-name">돈까스</span><span class="cm-cal">350 kcal</span></div><div class="cm-menu-item"><span class="cm-emoji">🥗</span><span class="cm-name">콩나물무침</span><span class="cm-cal">45 kcal</span></div><div class="cm-menu-item"><span class="cm-emoji">🍊</span><span class="cm-name">귤</span><span class="cm-cal">40 kcal</span></div><div class="cm-menu-item"><span class="cm-emoji">🥛</span><span class="cm-name">딸기우유</span><span class="cm-cal">120 kcal</span></div></div><div class="card-meal-footer"><span class="cm-total-label">총 칼로리</span><span class="cm-total-val">1,045 kcal</span></div></div>',
+    afterText: "오늘은 돈까스 나오는 날이다냥! 😻 맛있게 먹으라냥~"
+  },
+  timetable: {
+    userText: "이번 주 시간표 알려줘",
+    botText: "이번 주 시간표 보여줄게냥! 📅",
+    card: '<div class="card-table"><div class="card-table-header"><span class="ct-title">📅 이번 주 시간표</span><span class="ct-class">정보통신과 2-1</span></div><table class="timetable"><thead><tr><th></th><th>월</th><th>화</th><th>수</th><th class="today">목</th><th>금</th></tr></thead><tbody><tr><td class="period-num">1</td><td>국어</td><td>수학</td><td>영어</td><td class="today-col">네트워크</td><td>체육</td></tr><tr><td class="period-num">2</td><td>수학</td><td>프로그래밍</td><td>국어</td><td class="today-col">네트워크</td><td>체육</td></tr><tr><td class="period-num">3</td><td>프로그래밍</td><td>프로그래밍</td><td>데이터베이스</td><td class="today-col">정보보안</td><td>영어</td></tr><tr><td class="period-num">4</td><td>프로그래밍</td><td>영어</td><td>데이터베이스</td><td class="today-col">정보보안</td><td>수학</td></tr><tr><td class="period-num">5</td><td>정보보안</td><td>국어</td><td>프로그래밍</td><td class="today-col">한국사</td><td>데이터베이스</td></tr><tr><td class="period-num">6</td><td>한국사</td><td>네트워크</td><td>프로그래밍</td><td class="today-col">한국사</td><td>데이터베이스</td></tr><tr><td class="period-num">7</td><td>창체</td><td>네트워크</td><td>자율</td><td class="today-col">동아리</td><td>자율</td></tr></tbody></table></div>',
+    afterText: "오늘은 목요일이라 네트워크 수업이 있다냥! 💻 보라색으로 표시해뒀으니 확인해냥~"
+  },
+  calendar: {
+    userText: "학사일정 알려줘",
+    botText: "이번 달 주요 일정 정리해봤다냥! 📋",
+    card: '<div class="card-calendar"><div class="card-calendar-header"><span class="cc-title">📋 학사일정</span><span class="cc-month">2026년 2월</span></div><div class="card-calendar-body"><div class="cal-item"><div class="cal-date-box exam"><span class="cal-day" style="color:var(--pink)">10</span><span class="cal-dow">월</span></div><div class="cal-info"><div class="cal-title">학년말고사 시작</div><div class="cal-desc">2/10(월) ~ 2/13(목) 4일간</div></div><span class="cal-tag tag-exam">시험</span></div><div class="cal-item"><div class="cal-date-box event"><span class="cal-day" style="color:var(--blue)">17</span><span class="cal-dow">월</span></div><div class="cal-info"><div class="cal-title">진로체험의 날</div><div class="cal-desc">IT 기업 현장 방문 (판교)</div></div><span class="cal-tag tag-event">행사</span></div><div class="cal-item"><div class="cal-date-box event"><span class="cal-day" style="color:var(--blue)">21</span><span class="cal-dow">금</span></div><div class="cal-info"><div class="cal-title">졸업식</div><div class="cal-desc">3학년 졸업식 (오전 10시 체육관)</div></div><span class="cal-tag tag-event">행사</span></div><div class="cal-item"><div class="cal-date-box holiday"><span class="cal-day" style="color:var(--green)">24</span><span class="cal-dow">월</span></div><div class="cal-info"><div class="cal-title">겨울방학 시작</div><div class="cal-desc">2/24(월) ~ 3/1(일)</div></div><span class="cal-tag tag-holiday">방학</span></div></div></div>',
+    afterText: "시험이 다음 주라냥..! 📚 공부 열심히 해야 한다냥 화이팅이다냥! 💪🐾"
+  },
+  place: {
+    userText: "교무실 어디야?",
+    botText: "교무실 위치 알려줄게냥! 🏫",
+    card: null,
+    afterText: "교무실은 <b>본관 2층 201호</b>다냥! 🐾<br><br>🏢 <b>자주 찾는 장소</b><br>• 교무실: 본관 2층 201호<br>• 행정실: 본관 1층 103호<br>• 진로상담실: 별관 3층 302호<br>• 컴퓨터실: 별관 2층 204호<br>• 보건실: 본관 1층 105호<br>• 도서관: 별관 4층<br><br>길 잃으면 또 물어봐냥~ 😸"
+  },
+  wifi: {
+    userText: "와이파이 비번 뭐야?",
+    botText: null,
+    card: null,
+    afterText: "학교 와이파이 정보다냥! 📶<br><br>📡 <b>학생용 Wi-Fi</b><br>• SSID: <b>SCHOOL-STUDENT</b><br>• 비밀번호: <b>info2026!</b><br><br>📡 <b>실습실 Wi-Fi</b><br>• SSID: <b>LAB-NET</b><br>• 비밀번호: <b>lab@2026</b><br><br>접속 안 되면 전산실(별관 201)에 문의해냥! 🐱"
+  },
+  club: {
+    userText: "동아리 정보 알려줘",
+    botText: null,
+    card: null,
+    afterText: "정보통신과 동아리 정보다냥! 🎮<br><br>💻 <b>코딩 동아리 (CodeCat)</b><br>• 활동: 웹/앱 개발, 해커톤 참가<br>• 시간: 목요일 7교시<br>• 장소: 별관 204호<br><br>🔒 <b>정보보안 동아리 (WhiteHat)</b><br>• 활동: CTF 대회 준비, 보안 실습<br>• 시간: 수요일 방과후<br>• 장소: 별관 205호<br><br>🤖 <b>AI 동아리 (NeuroNet)</b><br>• 활동: 머신러닝, AI 프로젝트<br>• 시간: 금요일 방과후<br>• 장소: 별관 204호<br><br>관심 있는 동아리 있으면 담당 선생님한테 얘기해보라냥! 😺"
+  }
+};
+
+const defaultReplies = [
+  "오호~ 그건 잘 모르겠다냥 😿 선생님께 직접 물어보는 게 좋을 것 같다냥!",
+  "음... 그 정보는 아직 없다냥! 🙀 나중에 업데이트해줄게냥~",
+  "냥냥! 그건 교무실(본관 2층)에 문의해보라냥~ 🐾"
+];
+
+const now = new Date();
+const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+
+function addMessage(type, html, animate) {
+  if (animate === undefined) animate = true;
+  var div = document.createElement('div');
+  if (type === 'user') {
+    div.className = 'msg-row user' + (animate ? ' fade-up' : '');
+    div.innerHTML = '<div class="msg-content"><div class="msg-bubble">' + html + '</div><div class="msg-time">' + timeStr + '</div></div>';
+  } else {
+    div.className = 'msg-row bot' + (animate ? ' slide-in' : '');
+    div.innerHTML = '<div class="msg-avatar">🐱</div><div class="msg-content"><div class="msg-bubble">' + html + '</div></div>';
+  }
+  chatArea.insertBefore(div, typingEl);
+  scrollBottom();
+}
+
+function addCard(cardHtml) {
+  var div = document.createElement('div');
+  div.className = 'msg-row bot slide-in';
+  div.innerHTML = '<div class="msg-avatar">🐱</div><div class="msg-content">' + cardHtml + '</div>';
+  chatArea.insertBefore(div, typingEl);
+  scrollBottom();
+}
+
+function showTyping() { typingEl.classList.add('show'); scrollBottom(); }
+function hideTyping() { typingEl.classList.remove('show'); }
+function scrollBottom() {
+  setTimeout(function() { chatArea.scrollTop = chatArea.scrollHeight; }, 50);
+}
+
+function clearWelcome() {
+  var w = document.getElementById('welcome');
+  var q = document.getElementById('quick-section');
+  if (w) w.style.display = 'none';
+  if (q) q.style.display = 'none';
+}
+
+function processResponse(r) {
+  var hasBot = !!r.botText;
+  var hasCard = !!r.card;
+  var hasAfter = !!r.afterText;
+
+  if (hasBot) {
+    showTyping();
+    setTimeout(function() {
+      hideTyping();
+      addMessage('bot', r.botText);
+      if (hasCard) {
+        showTyping();
+        setTimeout(function() {
+          hideTyping();
+          addCard(r.card);
+          if (hasAfter) {
+            showTyping();
+            setTimeout(function() { hideTyping(); addMessage('bot', r.afterText); }, 600);
+          }
+        }, 600);
+      } else if (hasAfter) {
+        showTyping();
+        setTimeout(function() { hideTyping(); addMessage('bot', r.afterText); }, 600);
+      }
+    }, 600);
+  } else if (hasCard) {
+    showTyping();
+    setTimeout(function() {
+      hideTyping();
+      addCard(r.card);
+      if (hasAfter) {
+        showTyping();
+        setTimeout(function() { hideTyping(); addMessage('bot', r.afterText); }, 600);
+      }
+    }, 600);
+  } else if (hasAfter) {
+    showTyping();
+    setTimeout(function() { hideTyping(); addMessage('bot', r.afterText); }, 600);
+  }
+}
+
+function askQuestion(type) {
+  var r = responses[type];
+  if (!r) return;
+  clearWelcome();
+  addMessage('user', r.userText);
+  processResponse(r);
+}
+
+function sendCustom() {
+  var val = inputEl.value.trim();
+  if (!val) return;
+  inputEl.value = '';
+  clearWelcome();
+  addMessage('user', val);
+
+  var matched = null;
+  if (/급식|점심|밥|메뉴|먹/.test(val)) matched = 'meal';
+  else if (/시간표|수업|몇교시/.test(val)) matched = 'timetable';
+  else if (/시험|일정|행사|졸업|방학/.test(val)) matched = 'calendar';
+  else if (/교무실|어디|위치|장소|보건실|도서관/.test(val)) matched = 'place';
+  else if (/와이파이|wifi|비번|비밀번호|인터넷/i.test(val)) matched = 'wifi';
+  else if (/동아리|클럽/.test(val)) matched = 'club';
+
+  if (matched) {
+    processResponse(responses[matched]);
+  } else {
+    showTyping();
+    var reply = defaultReplies[Math.floor(Math.random() * defaultReplies.length)];
+    setTimeout(function() { hideTyping(); addMessage('bot', reply); }, 800);
+  }
+}
+</script>
+</body>
+</html>
