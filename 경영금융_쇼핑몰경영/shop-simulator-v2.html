@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🛍️ 모의 창업 쇼핑몰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F0FDF4;
+  --surface: #FFFFFF;
+  --text: #1A1D2E;
+  --text2: #5A5F7A;
+  --text3: #9398B0;
+  --green: #10B981;
+  --green-dark: #059669;
+  --green-light: #D1FAE5;
+  --blue: #3B82F6;
+  --blue-light: #EBF2FF;
+  --purple: #8B5CF6;
+  --purple-light: #EDE9FE;
+  --orange: #F59E0B;
+  --red: #EF4444;
+  --radius: 16px;
+  --radius-sm: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  user-select: none; -webkit-user-select: none;
+}
+
+.app-frame {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  background: linear-gradient(135deg, #10B981, #059669);
+  padding: 12px 16px 10px;
+  position: sticky; top: 0; z-index: 100;
+  color: #fff;
+}
+.h-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.h-left { display: flex; align-items: center; gap: 8px; }
+.h-icon { font-size: 18px; }
+.h-title { font-size: 14px; font-weight: 700; }
+.h-badge {
+  font-size: 8px; font-weight: 700;
+  background: rgba(255,255,255,0.25); color: #fff;
+  padding: 2px 6px; border-radius: 4px; margin-left: 4px;
+}
+.h-reset {
+  background: rgba(255,255,255,0.2); border: none; color: #fff;
+  font-size: 12px; padding: 4px 10px; border-radius: 8px;
+  cursor: pointer; font-family: inherit; font-weight: 600;
+}
+.h-reset:active { background: rgba(255,255,255,0.35); }
+.h-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+}
+.h-stat {
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 5px 4px; text-align: center;
+}
+.h-stat-value { font-size: 13px; font-weight: 800; }
+.h-stat-label { font-size: 9px; opacity: 0.85; }
+
+/* Tabs */
+.tab-bar {
+  display: flex; background: #fff;
+  border-bottom: 1px solid #E5E7EB;
+  position: sticky; top: 0; z-index: 99;
+}
+.tab-item {
+  flex: 1; padding: 10px 0; text-align: center;
+  font-size: 12px; font-weight: 600; color: var(--text3);
+  border: none; background: none; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.tab-item.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* Content */
+.content { flex: 1; overflow-y: auto; padding: 10px 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.tab-content { display: none; flex-direction: column; gap: 10px; }
+.tab-content.active { display: flex; }
+
+/* Product Card */
+.product-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.pc-top { display: flex; gap: 10px; margin-bottom: 10px; }
+.pc-img {
+  width: 68px; height: 68px; border-radius: var(--radius-sm);
+  object-fit: cover; flex-shrink: 0;
+  background: #f3f4f6;
+}
+.pc-info { flex: 1; min-width: 0; }
+.pc-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.pc-desc { font-size: 10px; color: var(--text2); margin-bottom: 5px; }
+.pc-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.pc-tag {
+  font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 6px;
+}
+
+/* Sliders */
+.slider-group { margin-bottom: 2px; }
+.slider-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 2px;
+}
+.slider-label { font-size: 11px; color: var(--text2); font-weight: 500; }
+.slider-value { font-size: 12px; font-weight: 700; }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 6px; border-radius: 3px;
+  outline: none; cursor: pointer;
+  user-select: auto; -webkit-user-select: auto;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+.slider-price::-webkit-slider-thumb { background: var(--green); }
+.slider-discount::-webkit-slider-thumb { background: var(--orange); }
+.slider-ad::-webkit-slider-thumb { background: #3B82F6; }
+.slider-shipping::-webkit-slider-thumb { background: #6366F1; }
+.slider-packaging::-webkit-slider-thumb { background: #EC4899; }
+.slider-review::-webkit-slider-thumb { background: #8B5CF6; }
+.slider-price { background: linear-gradient(to right, var(--green-light), var(--green)); }
+.slider-discount { background: linear-gradient(to right, #FEF3C7, var(--orange)); }
+.slider-ad { background: linear-gradient(to right, #DBEAFE, #3B82F6); }
+.slider-shipping { background: linear-gradient(to right, #E0E7FF, #6366F1); }
+.slider-packaging { background: linear-gradient(to right, #FCE7F3, #EC4899); }
+.slider-review { background: linear-gradient(to right, #EDE9FE, #8B5CF6); }
+
+.section-label {
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  margin: 6px 0 4px; padding-top: 6px;
+  border-top: 1px solid #F0F0F0;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* Divider */
+.pc-divider { height: 1px; background: #f0f0f0; margin: 8px 0; }
+
+/* Result chips */
+.result-chips { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.result-chip {
+  border-radius: 10px; padding: 8px 4px; text-align: center;
+}
+.rc-label { font-size: 9px; font-weight: 500; margin-bottom: 2px; }
+.rc-value { font-size: 14px; font-weight: 800; }
+.rc-unit { font-size: 9px; font-weight: 500; }
+
+/* Tab 2: Analysis */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kpi-card {
+  background: var(--surface); border-radius: var(--radius-sm);
+  padding: 12px; border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.kpi-header { display: flex; align-items: center; gap: 5px; margin-bottom: 4px; }
+.kpi-emoji { font-size: 14px; }
+.kpi-label { font-size: 10px; color: var(--text2); font-weight: 500; }
+.kpi-value { font-size: 20px; font-weight: 800; line-height: 1.1; }
+.kpi-unit { font-size: 10px; color: var(--text2); font-weight: 500; }
+.kpi-change { font-size: 10px; font-weight: 600; margin-top: 2px; }
+.kpi-change.up { color: var(--green); }
+.kpi-change.down { color: var(--red); }
+
+.analysis-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 14px; border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.ac-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+
+/* Horizontal bar */
+.hbar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.hbar-name { font-size: 11px; color: var(--text2); width: 64px; flex-shrink: 0; text-align: right; }
+.hbar-track { flex: 1; height: 24px; background: #F3F4F6; border-radius: 12px; overflow: hidden; position: relative; }
+.hbar-fill { height: 100%; border-radius: 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; transition: width 0.6s ease; min-width: 40px; }
+.hbar-val { font-size: 10px; font-weight: 700; color: #fff; }
+
+/* Effect card */
+.effect-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; }
+.effect-box { text-align: center; }
+.effect-label { font-size: 9px; color: var(--text3); margin-bottom: 2px; }
+.effect-val { font-size: 14px; font-weight: 700; }
+.effect-sub { font-size: 10px; color: var(--text2); }
+.effect-arrow { font-size: 16px; color: var(--green); font-weight: 700; }
+.effect-summary { text-align: center; margin-top: 8px; font-size: 12px; font-weight: 600; }
+
+/* Tab 3: AI Strategy */
+.score-card {
+  background: linear-gradient(135deg, #10B981, #059669);
+  border-radius: var(--radius); padding: 16px; color: #fff;
+  text-align: center;
+}
+.score-top { font-size: 12px; opacity: 0.9; margin-bottom: 4px; }
+.score-number { font-size: 40px; font-weight: 900; line-height: 1; }
+.score-grade { font-size: 14px; font-weight: 700; margin-top: 2px; }
+.score-bar-wrap {
+  width: 100%; height: 6px; background: rgba(255,255,255,0.25);
+  border-radius: 3px; margin: 10px 0 8px; overflow: hidden;
+}
+.score-bar-fill { height: 100%; background: #fff; border-radius: 3px; transition: width 0.6s; }
+.score-subs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.score-sub {
+  background: rgba(255,255,255,0.15); border-radius: 8px; padding: 6px 4px;
+  text-align: center;
+}
+.ss-label { font-size: 9px; opacity: 0.85; }
+.ss-value { font-size: 16px; font-weight: 800; }
+
+/* AI analysis */
+.ai-analysis {
+  background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+  border-radius: var(--radius); padding: 14px;
+  border: 1px solid var(--green-light);
+}
+.ai-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ai-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.ai-label { font-size: 12px; font-weight: 700; color: var(--green-dark); }
+.ai-text { font-size: 12px; color: var(--text); line-height: 1.7; }
+.ai-text b { color: var(--green-dark); }
+
+/* Strategy cards */
+.strategy-card {
+  background: var(--surface); border-radius: var(--radius-sm);
+  padding: 12px; border: 1px solid #E5E7EB;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.strat-num {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
+}
+.strat-info { flex: 1; }
+.strat-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.strat-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
+
+/* Scrollbar */
+.content::-webkit-scrollbar { width: 3px; }
+.content::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 2px; }
+
+/* Animations */
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+.fade-up { animation: fadeUp 0.35s ease forwards; }
+</style>
+</head>
+<body>
+
+<div class="app-frame">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="h-top">
+      <div class="h-left">
+        <span class="h-icon">🛍️</span>
+        <span class="h-title">모의 창업 쇼핑몰</span>
+      </div>
+      <button class="h-reset" onclick="resetAll()">↺ 초기화</button>
+    </div>
+    <div class="h-stats">
+      <div class="h-stat">
+        <div class="h-stat-value" id="h-revenue">580</div>
+        <div class="h-stat-label">총매출(만)</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-value" id="h-profit">256</div>
+        <div class="h-stat-label">순이익(만)</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-value" id="h-margin">44.1</div>
+        <div class="h-stat-label">이익률(%)</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-value" id="h-sales">200</div>
+        <div class="h-stat-label">판매(개)</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-item active" onclick="switchTab(0)">🏪 내 쇼핑몰</button>
+    <button class="tab-item" onclick="switchTab(1)">📊 판매 분석</button>
+    <button class="tab-item" onclick="switchTab(2)">🤖 AI 전략</button>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- TAB 0: My Shop -->
+    <div class="tab-content active" id="tab0"></div>
+
+    <!-- TAB 1: Analysis -->
+    <div class="tab-content" id="tab1"></div>
+
+    <!-- TAB 2: AI Strategy -->
+    <div class="tab-content" id="tab2"></div>
+
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const products = [
+  { id:0, name:"오버핏 맨투맨", desc:"유니섹스 캐주얼 · 프리사이즈", emoji:"👕",
+    cost:12000, basePrice:25000, baseSales:120,
+    color:"#3B82F6", colorLight:"#EBF2FF",
+    img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=200&h=200&fit=crop&q=80" },
+  { id:1, name:"와이드 데님 팬츠", desc:"스트릿 감성 · S / M / L", emoji:"👖",
+    cost:15000, basePrice:35000, baseSales:80,
+    color:"#8B5CF6", colorLight:"#EDE9FE",
+    img:"https://images.unsplash.com/photo-1542272604-787c3835535d?w=200&h=200&fit=crop&q=80" }
+];
+
+// State: current slider values
+const state = products.map(p => ({ price: p.basePrice, discount: 0, adBudget: 0, shipping: 0, packaging: 1, reviewBudget: 0 }));
+
+// ===== SIMULATION =====
+const packagingCosts = [0, 1000, 2500];
+const packagingLabels = ['기본', '표준', '프리미엄'];
+const ACTUAL_SHIPPING_COST = 3000;
+
+function simulate(pIdx) {
+  const p = products[pIdx];
+  const s = state[pIdx];
+  const realPrice = Math.round(s.price * (1 - s.discount / 100));
+  const priceRatio = p.basePrice / Math.max(realPrice, 1);
+  const discountBoost = s.discount > 0 ? 1 + (s.discount / 100) * 0.8 : 1;
+  const adBoost = 1 + (s.adBudget / 500000) * 0.5;
+  const shippingPenalty = 1 - (s.shipping / 5000) * 0.3;
+  const packagingBoost = [1.0, 1.1, 1.2][s.packaging - 1];
+  const reviewBoost = 1 + (s.reviewBudget / 200000) * 0.3;
+  const estSales = Math.round(p.baseSales * Math.pow(priceRatio, 1.5) * discountBoost
+    * adBoost * shippingPenalty * packagingBoost * reviewBoost);
+  const packagingCost = packagingCosts[s.packaging - 1];
+  const perUnitProfit = realPrice - p.cost - packagingCost + s.shipping - ACTUAL_SHIPPING_COST;
+  const profit = perUnitProfit * estSales - s.adBudget - s.reviewBudget;
+  const revenue = realPrice * estSales;
+  const margin = revenue > 0 ? (profit / revenue) * 100 : 0;
+  return { realPrice, estSales, revenue, profit, margin, adBoost, shippingPenalty, packagingBoost, reviewBoost, packagingCost, perUnitProfit };
+}
+
+function getTotals() {
+  let totalRev = 0, totalProfit = 0, totalSales = 0;
+  products.forEach((_, i) => {
+    const r = simulate(i);
+    totalRev += r.revenue;
+    totalProfit += r.profit;
+    totalSales += r.estSales;
+  });
+  const totalMargin = totalRev > 0 ? (totalProfit / totalRev) * 100 : 0;
+  return { totalRev, totalProfit, totalSales, totalMargin };
+}
+
+function getBaseTotals() {
+  let rev = 0, profit = 0, sales = 0;
+  products.forEach(p => {
+    rev += p.basePrice * p.baseSales;
+    profit += (p.basePrice - p.cost - ACTUAL_SHIPPING_COST) * p.baseSales;
+    sales += p.baseSales;
+  });
+  return { rev, profit, sales, margin: rev > 0 ? (profit / rev) * 100 : 0 };
+}
+
+// ===== FORMAT =====
+function fmtMan(v) { return (v / 10000).toFixed(0); }
+function fmtManDec(v) { const m = v / 10000; return Math.abs(m) >= 100 ? m.toFixed(0) : m.toFixed(1); }
+function fmtPrice(v) { return v.toLocaleString('ko-KR'); }
+function fmtPct(v) { return v.toFixed(1); }
+function fmtChange(curr, base) {
+  if (base === 0) return { text: '-', cls: '' };
+  const pct = ((curr - base) / Math.abs(base)) * 100;
+  if (pct > 0) return { text: `▲ ${pct.toFixed(1)}%`, cls: 'up' };
+  if (pct < 0) return { text: `▼ ${Math.abs(pct).toFixed(1)}%`, cls: 'down' };
+  return { text: '- 0%', cls: '' };
+}
+
+// ===== UPDATE HEADER =====
+function updateHeader() {
+  const t = getTotals();
+  document.getElementById('h-revenue').textContent = fmtMan(t.totalRev);
+  const profitEl = document.getElementById('h-profit');
+  profitEl.textContent = fmtMan(t.totalProfit);
+  profitEl.style.color = t.totalProfit < 0 ? '#FCA5A5' : '';
+  document.getElementById('h-margin').textContent = fmtPct(t.totalMargin);
+  document.getElementById('h-sales').textContent = t.totalSales;
+}
+
+// ===== TAB SWITCH =====
+const tabBtns = document.querySelectorAll('.tab-item');
+const tabPanels = document.querySelectorAll('.tab-content');
+function switchTab(idx) {
+  tabBtns.forEach((b, i) => b.classList.toggle('active', i === idx));
+  tabPanels.forEach((p, i) => p.classList.toggle('active', i === idx));
+  if (idx === 1) renderAnalysis();
+  if (idx === 2) renderAI();
+}
+
+// ===== TAB 0: MY SHOP =====
+function fmtBudget(v) { return v >= 10000 ? (v / 10000) + '만' : fmtPrice(v); }
+
+function renderShop() {
+  const el = document.getElementById('tab0');
+  el.innerHTML = products.map((p, i) => {
+    const s = state[i];
+    const r = simulate(i);
+    const profitColor = r.profit >= 0 ? 'var(--green)' : 'var(--red)';
+    const profitBg = r.profit >= 0 ? '#ECFDF5' : '#FEF2F2';
+    const discountTag = s.discount > 0 ? `<span class="pc-tag" style="background:#FEF3C7;color:#B45309;">🔥${s.discount}%</span>` : '';
+    return `
+    <div class="product-card fade-up">
+      <div class="pc-top">
+        <img class="pc-img" src="${p.img}" alt="${p.name}" loading="eager">
+        <div class="pc-info">
+          <div class="pc-name">${p.emoji} ${p.name}</div>
+          <div class="pc-desc">${p.desc}</div>
+          <div class="pc-tags">
+            <span class="pc-tag" style="background:${p.colorLight};color:${p.color};">원가 ${fmtPrice(p.cost)}</span>
+            <span class="pc-tag" style="background:${p.colorLight};color:${p.color};">기본 ${p.baseSales}개</span>
+            ${discountTag}
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">💰 가격 설정</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <span class="slider-label">💵 판매 가격</span>
+          <span class="slider-value" style="color:${p.color}" id="sv-price-${i}">${fmtPrice(s.price)}원</span>
+        </div>
+        <input type="range" class="slider-price" id="sl-price-${i}"
+          min="${p.cost}" max="${p.basePrice * 2}" step="500" value="${s.price}"
+          oninput="onSlider(${i},'price',this.value)">
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <span class="slider-label">🏷️ 할인율</span>
+          <span class="slider-value" style="color:var(--orange)" id="sv-disc-${i}">${s.discount}%</span>
+        </div>
+        <input type="range" class="slider-discount" id="sl-disc-${i}"
+          min="0" max="50" step="5" value="${s.discount}"
+          oninput="onSlider(${i},'discount',this.value)">
+      </div>
+
+      <div class="section-label">📣 마케팅</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <span class="slider-label">📢 광고비 (월)</span>
+          <span class="slider-value" style="color:#3B82F6" id="sv-ad-${i}">${fmtBudget(s.adBudget)}원</span>
+        </div>
+        <input type="range" class="slider-ad" id="sl-ad-${i}"
+          min="0" max="500000" step="50000" value="${s.adBudget}"
+          oninput="onSlider(${i},'ad',this.value)">
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <span class="slider-label">⭐ 리뷰 투자 (월)</span>
+          <span class="slider-value" style="color:#8B5CF6" id="sv-review-${i}">${fmtBudget(s.reviewBudget)}원</span>
+        </div>
+        <input type="range" class="slider-review" id="sl-review-${i}"
+          min="0" max="200000" step="20000" value="${s.reviewBudget}"
+          oninput="onSlider(${i},'review',this.value)">
+      </div>
+
+      <div class="section-label">📦 물류·포장</div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <span class="slider-label">🚚 배송비 (고객부담)</span>
+          <span class="slider-value" style="color:#6366F1" id="sv-ship-${i}">${s.shipping === 0 ? '무료배송' : fmtPrice(s.shipping) + '원'}</span>
+        </div>
+        <input type="range" class="slider-shipping" id="sl-ship-${i}"
+          min="0" max="5000" step="500" value="${s.shipping}"
+          oninput="onSlider(${i},'shipping',this.value)">
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <span class="slider-label">📦 포장 등급</span>
+          <span class="slider-value" style="color:#EC4899" id="sv-pkg-${i}">${packagingLabels[s.packaging - 1]}${s.packaging > 1 ? ' (+' + fmtPrice(packagingCosts[s.packaging - 1]) + ')' : ''}</span>
+        </div>
+        <input type="range" class="slider-packaging" id="sl-pkg-${i}"
+          min="1" max="3" step="1" value="${s.packaging}"
+          oninput="onSlider(${i},'packaging',this.value)">
+      </div>
+
+      <div class="pc-divider"></div>
+      <div class="result-chips">
+        <div class="result-chip" style="background:${p.colorLight}">
+          <div class="rc-label" style="color:${p.color}">실판매가</div>
+          <div class="rc-value" style="color:${p.color}" id="rc-real-${i}">${fmtPrice(r.realPrice)}</div>
+          <div class="rc-unit" style="color:${p.color}">원</div>
+        </div>
+        <div class="result-chip" style="background:var(--blue-light)">
+          <div class="rc-label" style="color:var(--blue)">예상 판매</div>
+          <div class="rc-value" style="color:var(--blue)" id="rc-sales-${i}">${r.estSales}</div>
+          <div class="rc-unit" style="color:var(--blue)">개/월</div>
+        </div>
+        <div class="result-chip" style="background:${profitBg}">
+          <div class="rc-label" style="color:${profitColor}">월 이익</div>
+          <div class="rc-value" style="color:${profitColor}" id="rc-profit-${i}">${fmtManDec(r.profit)}</div>
+          <div class="rc-unit" style="color:${profitColor}">만원</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function onSlider(idx, type, val) {
+  val = parseInt(val);
+  if (type === 'price') {
+    state[idx].price = val;
+    document.getElementById(`sv-price-${idx}`).textContent = fmtPrice(val) + '원';
+  } else if (type === 'discount') {
+    state[idx].discount = val;
+    document.getElementById(`sv-disc-${idx}`).textContent = val + '%';
+  } else if (type === 'ad') {
+    state[idx].adBudget = val;
+    document.getElementById(`sv-ad-${idx}`).textContent = fmtBudget(val) + '원';
+  } else if (type === 'review') {
+    state[idx].reviewBudget = val;
+    document.getElementById(`sv-review-${idx}`).textContent = fmtBudget(val) + '원';
+  } else if (type === 'shipping') {
+    state[idx].shipping = val;
+    document.getElementById(`sv-ship-${idx}`).textContent = val === 0 ? '무료배송' : fmtPrice(val) + '원';
+  } else if (type === 'packaging') {
+    state[idx].packaging = val;
+    document.getElementById(`sv-pkg-${idx}`).textContent = packagingLabels[val - 1] + (val > 1 ? ' (+' + fmtPrice(packagingCosts[val - 1]) + ')' : '');
+  }
+  // Update result chips
+  const r = simulate(idx);
+  const p = products[idx];
+  const profitColor = r.profit >= 0 ? 'var(--green)' : 'var(--red)';
+  const profitBg = r.profit >= 0 ? '#ECFDF5' : '#FEF2F2';
+  document.getElementById(`rc-real-${idx}`).textContent = fmtPrice(r.realPrice);
+  document.getElementById(`rc-sales-${idx}`).textContent = r.estSales;
+  const profitEl = document.getElementById(`rc-profit-${idx}`);
+  profitEl.textContent = fmtManDec(r.profit);
+  profitEl.style.color = profitColor;
+  profitEl.parentElement.querySelector('.rc-label').style.color = profitColor;
+  profitEl.parentElement.querySelector('.rc-unit').style.color = profitColor;
+  profitEl.parentElement.style.background = profitBg;
+  updateHeader();
+}
+
+// ===== TAB 1: ANALYSIS =====
+function renderAnalysis() {
+  const el = document.getElementById('tab1');
+  const t = getTotals();
+  const b = getBaseTotals();
+  const results = products.map((_, i) => simulate(i));
+  const revChange = fmtChange(t.totalRev, b.rev);
+  const salesChange = fmtChange(t.totalSales, b.sales);
+  const profitChange = fmtChange(t.totalProfit, b.profit);
+  const marginStatus = t.totalMargin >= 30 ? { text: '양호', cls: 'up' } : { text: '개선 필요', cls: 'down' };
+
+  // Revenue bars
+  const maxRev = Math.max(results[0].revenue, results[1].revenue, 1);
+
+  // Margin bars
+  const margins = results.map(r => r.margin);
+
+  // Most changed product
+  let maxDelta = -1, changedIdx = 0;
+  products.forEach((p, i) => {
+    const delta = Math.abs(state[i].price - p.basePrice) / p.basePrice + state[i].discount / 100;
+    if (delta > maxDelta) { maxDelta = delta; changedIdx = i; }
+  });
+  const cp = products[changedIdx];
+  const cr = results[changedIdx];
+  const cs = state[changedIdx];
+  const baseRev_c = cp.basePrice * cp.baseSales;
+  const baseProfit_c = (cp.basePrice - cp.cost - ACTUAL_SHIPPING_COST) * cp.baseSales;
+  const revChg_c = fmtChange(cr.revenue, baseRev_c);
+  const profitChg_c = fmtChange(cr.profit, baseProfit_c);
+
+  el.innerHTML = `
+    <div class="kpi-grid fade-up">
+      <div class="kpi-card">
+        <div class="kpi-header"><span class="kpi-emoji">💰</span><span class="kpi-label">월 매출</span></div>
+        <div><span class="kpi-value" style="color:var(--green)">${fmtMan(t.totalRev)}</span><span class="kpi-unit"> 만원</span></div>
+        <div class="kpi-change ${revChange.cls}">${revChange.text} 기본대비</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header"><span class="kpi-emoji">📦</span><span class="kpi-label">총 판매</span></div>
+        <div><span class="kpi-value" style="color:var(--blue)">${t.totalSales}</span><span class="kpi-unit"> 개</span></div>
+        <div class="kpi-change ${salesChange.cls}">${salesChange.text} 기본대비</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header"><span class="kpi-emoji">🏦</span><span class="kpi-label">순이익</span></div>
+        <div><span class="kpi-value" style="color:${t.totalProfit >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtMan(t.totalProfit)}</span><span class="kpi-unit"> 만원</span></div>
+        <div class="kpi-change ${profitChange.cls}">${profitChange.text} 기본대비</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-header"><span class="kpi-emoji">📊</span><span class="kpi-label">이익률</span></div>
+        <div><span class="kpi-value" style="color:var(--orange)">${fmtPct(t.totalMargin)}</span><span class="kpi-unit"> %</span></div>
+        <div class="kpi-change ${marginStatus.cls}">${marginStatus.text}</div>
+      </div>
+    </div>
+
+    <div class="analysis-card fade-up">
+      <div class="ac-title">📊 상품별 매출 비교</div>
+      ${products.map((p, i) => `
+        <div class="hbar-row">
+          <span class="hbar-name">${p.emoji} ${p.name.split(' ').pop()}</span>
+          <div class="hbar-track">
+            <div class="hbar-fill" style="width:${Math.max((results[i].revenue / maxRev) * 100, 8)}%;background:${p.color};">
+              <span class="hbar-val">${fmtMan(results[i].revenue)}만</span>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="analysis-card fade-up">
+      <div class="ac-title">💹 이익률 비교</div>
+      ${products.map((p, i) => {
+        const m = margins[i];
+        const barColor = m >= 40 ? 'var(--green)' : m >= 20 ? 'var(--orange)' : 'var(--red)';
+        const barW = Math.min(Math.max(Math.abs(m) / 80 * 100, 8), 100);
+        return `
+        <div class="hbar-row">
+          <span class="hbar-name">${p.emoji} ${p.name.split(' ').pop()}</span>
+          <div class="hbar-track">
+            <div class="hbar-fill" style="width:${barW}%;background:${barColor};">
+              <span class="hbar-val">${fmtPct(m)}%</span>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="analysis-card fade-up">
+      <div class="ac-title">🔄 가격 변경 효과 — ${cp.emoji} ${cp.name}</div>
+      <div class="effect-grid">
+        <div class="effect-box">
+          <div class="effect-label">기본 가격</div>
+          <div class="effect-val">${fmtPrice(cp.basePrice)}원</div>
+          <div class="effect-sub">${cp.baseSales}개/월</div>
+        </div>
+        <div class="effect-arrow">→</div>
+        <div class="effect-box">
+          <div class="effect-label">현재 설정</div>
+          <div class="effect-val" style="color:${cp.color}">${fmtPrice(cr.realPrice)}원</div>
+          <div class="effect-sub">${cr.estSales}개/월</div>
+        </div>
+      </div>
+      <div class="effect-summary">
+        매출 <span style="color:${revChg_c.cls === 'up' ? 'var(--green)' : 'var(--red)'}">${revChg_c.text}</span>
+        &nbsp;·&nbsp;
+        이익 <span style="color:${profitChg_c.cls === 'up' ? 'var(--green)' : 'var(--red)'}">${profitChg_c.text}</span>
+      </div>
+    </div>
+
+    <div class="analysis-card fade-up">
+      <div class="ac-title">💸 비용 구조 분석</div>
+      ${products.map((p, i) => {
+        const s = state[i];
+        const r = results[i];
+        const totalAd = s.adBudget;
+        const totalReview = s.reviewBudget;
+        const totalPkg = packagingCosts[s.packaging - 1] * r.estSales;
+        const totalShipCost = ACTUAL_SHIPPING_COST * r.estSales;
+        const totalShipIncome = s.shipping * r.estSales;
+        const shipNet = totalShipIncome - totalShipCost;
+        return `
+        <div style="margin-bottom:10px;">
+          <div style="font-size:11px;font-weight:700;margin-bottom:4px;">${p.emoji} ${p.name}</div>
+          <div style="font-size:10px;color:var(--text2);line-height:1.8;">
+            📢 광고비: <b style="color:#3B82F6">${fmtBudget(totalAd)}원</b>/월
+            &nbsp;·&nbsp;⭐ 리뷰: <b style="color:#8B5CF6">${fmtBudget(totalReview)}원</b>/월<br>
+            📦 포장비: <b style="color:#EC4899">${fmtBudget(totalPkg)}원</b>/월 (${packagingLabels[s.packaging - 1]})
+            &nbsp;·&nbsp;🚚 배송손익: <b style="color:${shipNet >= 0 ? '#6366F1' : 'var(--red)'}">${shipNet >= 0 ? '+' : ''}${fmtBudget(shipNet)}원</b>/월
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+// ===== TAB 2: AI STRATEGY =====
+function calcScores() {
+  const t = getTotals();
+  const b = getBaseTotals();
+  const results = products.map((_, i) => simulate(i));
+
+  // Price strategy score
+  let priceScore = 50;
+  products.forEach((p, i) => {
+    const diff = Math.abs(state[i].price - p.basePrice) / p.basePrice;
+    if (diff < 0.1) priceScore += 12;
+    else if (diff < 0.3) priceScore += 5;
+    else priceScore -= 5;
+    const d = state[i].discount;
+    if (d > 0 && d <= 20) priceScore += 5;
+    else if (d > 30) priceScore -= 5;
+  });
+  priceScore = Math.max(0, Math.min(100, priceScore));
+
+  // Profitability score
+  let profitScore = 50;
+  if (t.totalMargin >= 35) profitScore += 30;
+  else if (t.totalMargin >= 25) profitScore += 20;
+  else if (t.totalMargin >= 15) profitScore += 5;
+  else profitScore -= 15;
+  if (t.totalProfit > 0) profitScore += 10;
+  else profitScore -= 20;
+  results.forEach(r => { if (r.profit < 0) profitScore -= 15; });
+  profitScore = Math.max(0, Math.min(100, profitScore));
+
+  // Sales strategy score
+  let salesScore = 50;
+  const salesGrowth = (t.totalSales - b.sales) / b.sales;
+  if (salesGrowth > 0.3) salesScore += 25;
+  else if (salesGrowth > 0.1) salesScore += 15;
+  else if (salesGrowth > 0) salesScore += 5;
+  salesScore = Math.max(0, Math.min(100, salesScore));
+
+  // Marketing score (NEW)
+  let mktScore = 50;
+  products.forEach((p, i) => {
+    const s = state[i];
+    const r = results[i];
+    // Ad ROI: is the extra revenue from ads worth the cost?
+    if (s.adBudget > 0) {
+      const adRevBoost = (r.adBoost - 1) * r.estSales * r.realPrice;
+      const adROI = adRevBoost / s.adBudget;
+      if (adROI > 2) mktScore += 8;
+      else if (adROI > 1) mktScore += 3;
+      else mktScore -= 3;
+    }
+    // Review investment
+    if (s.reviewBudget > 0) {
+      const revRevBoost = (r.reviewBoost - 1) * r.estSales * r.realPrice;
+      const revROI = revRevBoost / s.reviewBudget;
+      if (revROI > 2) mktScore += 8;
+      else if (revROI > 1) mktScore += 3;
+      else mktScore -= 3;
+    }
+    // Shipping strategy
+    if (s.shipping === 0) mktScore += 5; // free shipping good for sales
+    else if (s.shipping >= ACTUAL_SHIPPING_COST) mktScore += 3; // covers cost
+    else mktScore -= 2;
+    // Packaging
+    if (s.packaging === 2) mktScore += 4; // balanced
+    else if (s.packaging === 3 && r.realPrice >= 30000) mktScore += 5; // premium for expensive items
+    else if (s.packaging === 3 && r.realPrice < 20000) mktScore -= 3; // overkill for cheap items
+  });
+  mktScore = Math.max(0, Math.min(100, mktScore));
+
+  const total = Math.round((priceScore + profitScore + salesScore + mktScore) / 4);
+  let grade, gradeEmoji;
+  if (total >= 85) { grade = '경영 천재!'; gradeEmoji = '🏆'; }
+  else if (total >= 70) { grade = '유능한 CEO'; gradeEmoji = '💎'; }
+  else if (total >= 55) { grade = '성장 중'; gradeEmoji = '📈'; }
+  else if (total >= 40) { grade = '배우는 중'; gradeEmoji = '🌱'; }
+  else { grade = '초보 창업자'; gradeEmoji = '⭐'; }
+
+  return { total, grade, gradeEmoji, priceScore, profitScore, salesScore, mktScore };
+}
+
+function genAnalysisText() {
+  const results = products.map((_, i) => simulate(i));
+  const t = getTotals();
+  const lines = [];
+
+  // Revenue share
+  const revs = results.map(r => r.revenue);
+  const topIdx = revs[0] >= revs[1] ? 0 : 1;
+  const share = t.totalRev > 0 ? (revs[topIdx] / t.totalRev * 100).toFixed(0) : 0;
+  lines.push(`📌 <b>${products[topIdx].name}</b>이(가) 매출의 <b>${share}%</b>를 차지해요 (월 ${fmtMan(revs[topIdx])}만원).`);
+
+  // Deficit warning
+  results.forEach((r, i) => {
+    if (r.profit < 0) lines.push(`🚨 <b>${products[i].name}</b>이(가) 적자! 가격 인상 또는 할인 축소가 필요해요.`);
+  });
+
+  // Discount analysis
+  const avgDisc = (state[0].discount + state[1].discount) / 2;
+  if (avgDisc > 20) lines.push(`⚠️ 평균 할인율 <b>${avgDisc.toFixed(0)}%</b>는 높은 편. 고객이 정가에 안 살 수 있어요.`);
+  else if (avgDisc === 0) lines.push(`💡 할인을 아직 안 쓰고 있네요. 적절한 할인은 판매량을 늘릴 수 있어요!`);
+
+  // Margin evaluation
+  if (t.totalMargin >= 35) lines.push(`✅ 이익률 <b>${fmtPct(t.totalMargin)}%</b> — 훌륭해요!`);
+  else if (t.totalMargin >= 20) lines.push(`📊 이익률 <b>${fmtPct(t.totalMargin)}%</b> — 괜찮지만 개선 여지가 있어요.`);
+  else lines.push(`⚠️ 이익률 <b>${fmtPct(t.totalMargin)}%</b> — 수익성이 낮아요.`);
+
+  // Ad ROI analysis
+  const totalAdSpend = state.reduce((sum, s) => sum + s.adBudget, 0);
+  if (totalAdSpend > 0) {
+    const adSalesBoost = results.reduce((sum, r, i) => sum + (r.adBoost - 1) * r.estSales * r.realPrice, 0);
+    const adROI = adSalesBoost / totalAdSpend;
+    if (adROI > 2) lines.push(`📢 광고 ROI <b>${adROI.toFixed(1)}배</b> — 광고 효율이 훌륭해요!`);
+    else if (adROI > 1) lines.push(`📢 광고 ROI <b>${adROI.toFixed(1)}배</b> — 괜찮지만 더 효율적인 집행이 가능해요.`);
+    else lines.push(`📢 광고 ROI <b>${adROI.toFixed(1)}배</b> — 광고비 대비 매출 증가가 부족해요. 광고비를 줄여보세요.`);
+  }
+
+  // Shipping strategy analysis
+  const hasFreeship = state.some(s => s.shipping === 0);
+  const hasPaidShip = state.some(s => s.shipping > 0);
+  if (hasFreeship && !hasPaidShip) {
+    lines.push(`🚚 무료배송은 판매량에 도움이 되지만 배송원가 <b>3,000원</b>이 이익을 깎고 있어요.`);
+  } else if (hasPaidShip) {
+    const avgShip = state.reduce((sum, s) => sum + s.shipping, 0) / state.length;
+    if (avgShip >= 3000) lines.push(`🚚 배송비가 원가를 커버하고 있어요! 하지만 판매량 감소 효과를 주의하세요.`);
+    else lines.push(`🚚 배송비 <b>${fmtPrice(Math.round(avgShip))}원</b> — 원가(3,000원)보다 낮아서 배송 적자가 발생해요.`);
+  }
+
+  // Packaging analysis
+  const hasProPkg = state.some(s => s.packaging === 3);
+  const hasStdPkg = state.some(s => s.packaging === 2);
+  if (hasProPkg) {
+    lines.push(`📦 프리미엄 포장은 판매량 +20%이지만 개당 <b>2,500원</b> 추가! 고가 상품에만 추천해요.`);
+  } else if (hasStdPkg) {
+    lines.push(`📦 표준 포장은 비용 대비 판매량 +10% — 균형 잡힌 선택이에요.`);
+  }
+
+  return lines.join('<br>');
+}
+
+function renderAI() {
+  const el = document.getElementById('tab2');
+  const sc = calcScores();
+  const analysisText = genAnalysisText();
+
+  el.innerHTML = `
+    <div class="score-card fade-up">
+      <div class="score-top">${sc.gradeEmoji} 경영 전략 점수</div>
+      <div class="score-number">${sc.total}</div>
+      <div class="score-grade">${sc.grade}</div>
+      <div class="score-bar-wrap">
+        <div class="score-bar-fill" style="width:${sc.total}%"></div>
+      </div>
+      <div class="score-subs">
+        <div class="score-sub"><div class="ss-label">가격전략</div><div class="ss-value">${sc.priceScore}</div></div>
+        <div class="score-sub"><div class="ss-label">수익성</div><div class="ss-value">${sc.profitScore}</div></div>
+        <div class="score-sub"><div class="ss-label">판매전략</div><div class="ss-value">${sc.salesScore}</div></div>
+        <div class="score-sub"><div class="ss-label">마케팅</div><div class="ss-value">${sc.mktScore}</div></div>
+      </div>
+    </div>
+
+    <div class="ai-analysis fade-up">
+      <div class="ai-header">
+        <div class="ai-icon">🤖</div>
+        <span class="ai-label">AI 경영 분석</span>
+      </div>
+      <div class="ai-text">${analysisText}</div>
+    </div>
+
+    <div class="strategy-card fade-up">
+      <div class="strat-num" style="background:var(--green)">1</div>
+      <div class="strat-info">
+        <div class="strat-name">🎯 고마진 유지 전략</div>
+        <div class="strat-desc">정가 판매를 유지하며 높은 이익률을 확보. 브랜드 가치를 높이는 프리미엄 전략이에요.</div>
+      </div>
+    </div>
+    <div class="strategy-card fade-up">
+      <div class="strat-num" style="background:var(--blue)">2</div>
+      <div class="strat-info">
+        <div class="strat-name">📦 볼륨 확대 전략</div>
+        <div class="strat-desc">가격을 소폭 인하하고 할인을 적용해 판매량을 늘려요. 박리다매로 시장 점유율을 확보!</div>
+      </div>
+    </div>
+    <div class="strategy-card fade-up">
+      <div class="strat-num" style="background:var(--orange)">3</div>
+      <div class="strat-info">
+        <div class="strat-name">💡 차별 가격 전략</div>
+        <div class="strat-desc">인기 상품은 정가를 유지하고, 나머지는 할인으로 재고를 관리하는 믹스 전략이에요.</div>
+      </div>
+    </div>
+  `;
+}
+
+// ===== RESET =====
+function resetAll() {
+  products.forEach((p, i) => {
+    state[i].price = p.basePrice;
+    state[i].discount = 0;
+    state[i].adBudget = 0;
+    state[i].shipping = 0;
+    state[i].packaging = 1;
+    state[i].reviewBudget = 0;
+  });
+  renderShop();
+  updateHeader();
+}
+
+// ===== INIT =====
+renderShop();
+updateHeader();
+</script>
+</body>
+</html>

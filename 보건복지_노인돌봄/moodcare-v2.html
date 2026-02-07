@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>MoodCare 마음돌봄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F6F8FA;
+  --surface: #FFFFFF;
+  --border: #E2E8F0;
+  --text: #1A2332;
+  --text2: #5A6B7F;
+  --text3: #94A3B8;
+  --teal: #0D9488;
+  --teal-dark: #0F766E;
+  --teal-light: #CCFBF1;
+  --lavender: #7C3AED;
+  --green: #10B981;
+  --green-light: #D1FAE5;
+  --blue: #3B82F6;
+  --blue-light: #DBEAFE;
+  --amber: #F59E0B;
+  --amber-light: #FEF3C7;
+  --coral: #F97066;
+  --coral-light: #FEE2E2;
+  --pink: #EC4899;
+  --header-h: 48px;
+  --tab-h: 56px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{height:100%;}
+body{
+  font-family:'Noto Sans KR',-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  overflow-x:hidden;min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:contain;
+  user-select:none;-webkit-user-select:none;
+}
+textarea,input{user-select:auto;-webkit-user-select:auto;}
+
+.app-frame{max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);}
+
+/* ===== Header ===== */
+.app-header{
+  height:var(--header-h);display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;background:var(--surface);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+}
+.header-logo{display:flex;align-items:center;gap:6px;}
+.header-logo-icon{
+  width:28px;height:28px;border-radius:8px;
+  background:linear-gradient(135deg,var(--teal),var(--lavender));
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.header-logo span{font-size:15px;font-weight:700;color:var(--text);}
+.header-logo .teal{color:var(--teal);}
+.header-badge{
+  font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;
+  background:var(--teal);color:#fff;padding:2px 6px;border-radius:4px;letter-spacing:.5px;
+}
+
+/* ===== Tab Bar ===== */
+.tab-bar{
+  display:flex;background:var(--surface);border-bottom:1px solid var(--border);
+  position:sticky;top:var(--header-h);z-index:99;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 0 6px;border:none;background:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:500;color:var(--text3);
+  transition:color .2s;position:relative;
+}
+.tab-btn .tab-icon{font-size:20px;}
+.tab-btn.active{color:var(--teal);font-weight:800;}
+.tab-btn.active::after{
+  content:'';position:absolute;bottom:0;left:20%;right:20%;height:2.5px;
+  background:var(--teal);border-radius:2px;
+}
+
+/* ===== Content ===== */
+.tab-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ===== Hero ===== */
+.hero{
+  position:relative;height:130px;overflow:hidden;margin:0;
+  background-size:cover;background-position:center;
+}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(26,35,50,0.1) 0%,rgba(26,35,50,0.7) 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;padding:16px;
+}
+.hero h2{font-size:18px;font-weight:900;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);}
+.hero p{font-size:11px;color:rgba(255,255,255,.8);margin-top:2px;}
+
+/* ===== Stats ===== */
+.stats-row{display:flex;gap:8px;padding:10px 12px 4px;}
+.stat-card{
+  flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:8px 0;text-align:center;
+}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:1.2;}
+.stat-label{font-size:9px;color:var(--text3);margin-top:1px;}
+
+/* ===== Client Cards ===== */
+.section-title{font-size:12px;font-weight:700;padding:10px 14px 6px;color:var(--text2);}
+.client-list{padding:0 12px 12px;display:flex;flex-direction:column;gap:6px;}
+.client-card{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:14px;
+  padding:10px 12px;cursor:pointer;transition:border-color .2s,transform .15s;
+}
+.client-card:active{transform:scale(.98);}
+.client-card.alert{border-color:var(--coral);background:#FFF5F5;}
+.avatar{
+  width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.client-info{flex:1;min-width:0;}
+.client-name{font-size:13px;font-weight:700;}
+.client-meta{font-size:10px;color:var(--text3);margin-top:1px;}
+.client-mood{font-size:11px;margin-top:2px;}
+.client-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.alert-badge{font-size:9px;font-weight:700;color:var(--coral);background:var(--coral-light);padding:2px 6px;border-radius:6px;}
+
+/* ===== Sparkline ===== */
+.sparkline-svg{width:56px;height:22px;}
+
+/* ===== Analysis Tab ===== */
+.analysis-section{padding:0 12px 100px;}
+
+/* Chips scroll */
+.chips-scroll{
+  display:flex;gap:8px;padding:10px 12px;overflow-x:auto;
+  scrollbar-width:none;-ms-overflow-style:none;
+}
+.chips-scroll::-webkit-scrollbar{display:none;}
+.chip{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px 5px 5px;border-radius:40px;border:1.5px solid var(--border);
+  background:var(--surface);cursor:pointer;white-space:nowrap;flex-shrink:0;
+  transition:all .2s;
+}
+.chip.selected{border-color:var(--teal);background:var(--teal-light);}
+.chip-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+.chip-name{font-size:12px;font-weight:700;}
+
+/* Observation */
+.observe-area{padding:0 12px;}
+.observe-label{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;}
+.observe-textarea{
+  width:100%;min-height:100px;padding:12px;border-radius:12px;
+  border:1.5px solid var(--border);background:var(--surface);
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;color:var(--text);
+  resize:none;outline:none;transition:border-color .2s;line-height:1.5;
+}
+.observe-textarea:focus{border-color:var(--teal);}
+.observe-textarea::placeholder{color:var(--text3);}
+
+/* Quick Tags */
+.quick-tags{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;}
+.tag-btn{
+  font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:600;
+  padding:5px 10px;border-radius:20px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text2);cursor:pointer;transition:all .2s;
+}
+.tag-btn.used{background:var(--teal-light);border-color:var(--teal);color:var(--teal-dark);}
+
+/* Analyze Button */
+.analyze-btn{
+  display:block;width:calc(100% - 24px);margin:10px 12px 0;padding:14px;
+  border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(135deg,var(--teal),var(--teal-dark));
+  color:#fff;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;
+  box-shadow:0 4px 16px rgba(13,148,136,.3);transition:opacity .2s;
+}
+.analyze-btn:disabled{opacity:.45;cursor:default;}
+
+/* ===== Loading Overlay ===== */
+.loading-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(26,35,50,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.loading-overlay.show{opacity:1;pointer-events:auto;}
+.loading-box{text-align:center;}
+.loading-brain{font-size:40px;animation:pulse 1.2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.08);opacity:.7;}}
+.loading-text{font-size:13px;font-weight:600;color:#fff;margin-top:12px;}
+.loading-bar-wrap{width:200px;height:4px;background:rgba(255,255,255,.2);border-radius:4px;margin:10px auto 0;}
+.loading-bar{height:100%;width:0;background:var(--teal);border-radius:4px;transition:width .4s ease;}
+.loading-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);margin-top:4px;}
+
+/* ===== Bottom Sheet ===== */
+.bs-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(26,35,50,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.bs-overlay.show{opacity:1;pointer-events:auto;}
+.bs-sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:601;
+  max-width:430px;margin:0 auto;
+  max-height:92vh;background:var(--surface);
+  border-radius:24px 24px 0 0;
+  padding:12px 16px 24px;overflow-y:auto;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);
+}
+.bs-sheet.show{transform:translateY(0);}
+.bs-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 12px;}
+.bs-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.bs-date{font-size:11px;color:var(--text3);margin-top:2px;}
+.bs-section-title{font-size:12px;font-weight:700;color:var(--text2);margin:14px 0 8px;display:flex;align-items:center;gap:4px;}
+
+/* Radar */
+.radar-wrap{display:flex;justify-content:center;padding:4px 0;}
+.radar-svg{overflow:visible;}
+
+/* Emotion grid */
+.emo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0;}
+.emo-cell{
+  text-align:center;padding:8px 4px;border-radius:10px;
+  border:1px solid var(--border);background:var(--bg);
+}
+.emo-cell .emo-emoji{font-size:18px;}
+.emo-cell .emo-name{font-size:9px;color:var(--text3);margin-top:1px;}
+.emo-cell .emo-score{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;margin-top:1px;}
+
+/* Risk card */
+.risk-card{padding:12px;border-radius:12px;margin:8px 0;}
+.risk-card.high{background:var(--coral-light);border:1px solid var(--coral);}
+.risk-card.mid{background:var(--amber-light);border:1px solid var(--amber);}
+.risk-card.low{background:var(--green-light);border:1px solid var(--green);}
+.risk-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.risk-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+
+/* Recs */
+.rec-list{display:flex;flex-direction:column;gap:6px;margin:6px 0;}
+.rec-item{font-size:11px;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px solid var(--border);}
+
+/* BS actions */
+.bs-actions{display:flex;gap:8px;margin-top:14px;}
+.bs-btn{
+  flex:1;padding:12px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;transition:opacity .2s;
+}
+.bs-btn.primary{background:var(--teal);color:#fff;}
+.bs-btn.secondary{background:var(--bg);color:var(--text2);border:1px solid var(--border);}
+
+/* ===== Trend Tab ===== */
+.trend-section{padding:0 12px 20px;}
+.trend-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin:10px 0;}
+.trend-card-title{font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px;justify-content:space-between;}
+.trend-card-title span{font-size:10px;color:var(--text3);font-weight:500;}
+.trend-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.trend-legend-item{display:flex;align-items:center;gap:3px;font-size:9px;color:var(--text2);}
+.trend-legend-dot{width:7px;height:7px;border-radius:50%;}
+
+/* Timeline */
+.timeline{padding:0 4px;position:relative;}
+.timeline::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--border);}
+.tl-item{position:relative;padding-left:24px;margin-bottom:12px;animation:fadeUp .4s ease both;}
+.tl-dot{
+  position:absolute;left:0;top:4px;width:12px;height:12px;border-radius:50%;
+  border:2px solid var(--surface);
+}
+.tl-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px;}
+.tl-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);}
+.tl-mood{font-size:12px;font-weight:700;margin-top:2px;display:flex;align-items:center;justify-content:space-between;}
+.tl-mood .tl-score{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;}
+.tl-note{font-size:11px;color:var(--text2);line-height:1.4;margin-top:4px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* Toast */
+.toast{
+  position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);
+  max-width:340px;padding:10px 18px;border-radius:12px;
+  background:var(--text);color:#fff;font-size:12px;font-weight:600;
+  opacity:0;pointer-events:none;transition:all .3s;z-index:900;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="app-frame">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="header-logo-icon">💚</div>
+      <span>Mood<span class="teal">Care</span></span>
+    </div>
+  </header>
+
+  <!-- Tab Bar -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('home',this)">
+      <span class="tab-icon">🏠</span>홈
+    </button>
+    <button class="tab-btn" onclick="switchTab('analysis',this)">
+      <span class="tab-icon">🧠</span>분석
+    </button>
+    <button class="tab-btn" onclick="switchTab('trend',this)">
+      <span class="tab-icon">📈</span>추이
+    </button>
+  </nav>
+
+  <!-- Content -->
+  <div class="tab-content" id="tabContent">
+
+    <!-- ======= HOME TAB ======= -->
+    <div class="tab-panel active" id="panel-home">
+      <div class="hero" style="background-image:url('https://images.unsplash.com/photo-1516307365426-bea591f05011?w=800&q=80');">
+        <div class="hero-overlay">
+          <h2>오늘의 마음 돌봄</h2>
+          <p>AI가 어르신들의 감정 상태를 분석합니다</p>
+        </div>
+      </div>
+      <div class="stats-row" id="statsRow"></div>
+      <div class="section-title">대상자 현황</div>
+      <div class="client-list" id="clientList"></div>
+    </div>
+
+    <!-- ======= ANALYSIS TAB ======= -->
+    <div class="tab-panel" id="panel-analysis">
+      <div class="hero" style="background-image:url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80');">
+        <div class="hero-overlay">
+          <h2>감정 분석</h2>
+          <p>대화/관찰 기록을 AI가 분석합니다</p>
+        </div>
+      </div>
+      <div class="chips-scroll" id="chipsScroll"></div>
+      <div class="observe-area">
+        <div class="observe-label">관찰 기록</div>
+        <textarea class="observe-textarea" id="observeText" placeholder="어르신과의 대화 내용이나 관찰한 행동을 기록해주세요...&#10;&#10;예: 오늘 아침 식사 시간에 밥을 거의 드시지 않으셨어요. 자녀분 얘기를 하시면서 눈시울을 붉히셨습니다."></textarea>
+      </div>
+      <div class="quick-tags" id="quickTags"></div>
+      <button class="analyze-btn" id="analyzeBtn" disabled onclick="startAnalysis()">🧠 AI 감정 분석 시작</button>
+    </div>
+
+    <!-- ======= TREND TAB ======= -->
+    <div class="tab-panel" id="panel-trend">
+      <div class="hero" style="background-image:url('https://images.unsplash.com/photo-1544027993-37dbfe43562a?w=800&q=80');">
+        <div class="hero-overlay">
+          <h2>감정 추이</h2>
+          <p>대상자별 심리 변화를 추적합니다</p>
+        </div>
+      </div>
+      <div class="trend-section">
+        <div class="trend-card" id="trendChart"></div>
+        <div class="section-title">🕐 최근 분석 기록</div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+</div><!-- /app-frame -->
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="loading-brain">🧠</div>
+    <div class="loading-text" id="loadingText">대화 텍스트 분석 중...</div>
+    <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
+    <div class="loading-pct" id="loadingPct">0%</div>
+  </div>
+</div>
+
+<!-- Bottom Sheet -->
+<div class="bs-overlay" id="bsOverlay" onclick="closeSheet()"></div>
+<div class="bs-sheet" id="bsSheet"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DATA ===== */
+const clients = [
+  {id:1,name:'김순자',age:78,gender:'여',condition:'경도 치매',mood:'sad',moodLabel:'슬픔',moodFace:'😢',alert:true,avatarInitial:'김',avatarColor:'#E57373',sparkline:[65,58,52,48,42,55,40]},
+  {id:2,name:'이영호',age:82,gender:'남',condition:'우울증',mood:'lonely',moodLabel:'외로움',moodFace:'🫤',alert:true,avatarInitial:'이',avatarColor:'#7986CB',sparkline:[45,50,42,38,45,40,35]},
+  {id:3,name:'박옥순',age:75,gender:'여',condition:'관절염',mood:'calm',moodLabel:'평온',moodFace:'😌',alert:false,avatarInitial:'박',avatarColor:'#81C784',sparkline:[70,72,68,75,78,80,76]},
+  {id:4,name:'정대현',age:80,gender:'남',condition:'당뇨',mood:'happy',moodLabel:'기쁨',moodFace:'😊',alert:false,avatarInitial:'정',avatarColor:'#4DB6AC',sparkline:[75,78,82,80,85,83,88]},
+  {id:5,name:'한미경',age:77,gender:'여',condition:'고혈압',mood:'calm',moodLabel:'평온',moodFace:'😌',alert:false,avatarInitial:'한',avatarColor:'#FF8A65',sparkline:[68,65,70,72,70,74,72]},
+  {id:6,name:'최병수',age:85,gender:'남',condition:'파킨슨',mood:'anxious',moodLabel:'불안',moodFace:'😰',alert:false,avatarInitial:'최',avatarColor:'#9575CD',sparkline:[55,58,52,50,48,52,55]}
+];
+
+const emotions = [
+  {key:'happy',name:'기쁨',emoji:'😊',color:'#10B981'},
+  {key:'calm',name:'평온',emoji:'😌',color:'#0D9488'},
+  {key:'sad',name:'슬픔',emoji:'😢',color:'#3B82F6'},
+  {key:'anxious',name:'불안',emoji:'😰',color:'#F59E0B'},
+  {key:'angry',name:'분노',emoji:'😠',color:'#F97066'},
+  {key:'lonely',name:'외로움',emoji:'🫤',color:'#7C3AED'}
+];
+
+const sampleResults = {
+  1:{scores:{happy:15,calm:20,sad:72,anxious:45,angry:10,lonely:65},risk:'high',riskText:'심리 상태 주의 필요',riskDesc:'슬픔과 외로움 지수가 매우 높습니다. 자녀와의 분리감이 주요 원인으로 보이며, 우울 증세가 심화될 가능성이 있습니다.',recs:['🎵 음악치료 프로그램 참여 권유','📞 자녀와 정기 영상통화 스케줄 설정','👥 또래 그룹 활동 참여 유도','📋 주치의 상담 일정 확인']},
+  2:{scores:{happy:20,calm:25,sad:55,anxious:40,angry:15,lonely:78},risk:'high',riskText:'외로움 수치 경고',riskDesc:'외로움 지수가 78로 매우 높습니다. 사회적 고립감이 심화되고 있으며, 적극적인 사회 활동 프로그램 참여가 필요합니다.',recs:['👥 주간보호센터 프로그램 확대','🎯 취미 활동 그룹 매칭','📞 일 1회 안부 전화 설정','🏥 정신건강의학과 정기 상담']},
+  3:{scores:{happy:55,calm:78,sad:20,anxious:15,angry:8,lonely:18},risk:'low',riskText:'안정적',riskDesc:'전반적으로 안정된 심리 상태입니다. 평온함과 기쁨 지수가 높아 현재 돌봄 환경에 잘 적응하고 있습니다.',recs:['✅ 현재 돌봄 패턴 유지','🌿 야외 활동 기회 확대','📖 독서/원예 등 취미 활동 지속','💊 기존 약물 복용 스케줄 유지']},
+  4:{scores:{happy:82,calm:70,sad:10,anxious:12,angry:5,lonely:15},risk:'low',riskText:'매우 안정',riskDesc:'매우 긍정적인 심리 상태입니다. 기쁨 지수가 높고 부정 감정이 낮아 현재 생활에 만족감을 느끼고 계십니다.',recs:['✅ 현재 돌봄 프로그램 유지','🎉 사회 활동 리더 역할 부여','📝 긍정 일기 쓰기 권장','🤝 또래 멘토링 활동 참여']},
+  5:{scores:{happy:50,calm:72,sad:22,anxious:28,angry:12,lonely:25},risk:'low',riskText:'안정적',riskDesc:'평온한 심리 상태를 유지하고 있습니다. 약간의 불안감이 있으나 정상 범위 내입니다.',recs:['🧘 이완 요법/명상 프로그램','🚶 규칙적 산책 유지','📞 가족 연락 빈도 유지','💊 혈압 관리 모니터링 병행']},
+  6:{scores:{happy:30,calm:35,sad:40,anxious:62,angry:25,lonely:45},risk:'mid',riskText:'불안 수치 관찰 필요',riskDesc:'불안 지수가 62로 다소 높습니다. 파킨슨 증상 진행에 대한 걱정이 주요 원인으로 보이며, 지속적인 관찰이 필요합니다.',recs:['🧘 불안 완화 프로그램 참여','🗣️ 질환 불안에 대한 상담','🎵 음악/미술 치료 활동','📋 증상 변화 기록 및 주치의 공유']}
+};
+
+const quickTags = ['😢 눈물을 보이심','🍚 식사를 거르심','😴 수면 어려움 호소','👨‍👩‍👧 가족 이야기','😊 웃으심','🚶 산책을 즐기심','📺 TV 시청에 집중','🗣️ 대화에 적극적','😶 말수가 줄어듦','😠 짜증을 내심'];
+
+const historyData = [
+  {clientId:1,date:'2/6 09:30',mood:'sad',moodFace:'😢',moodLabel:'슬픔',score:28,note:'자녀 면회 약속이 취소되어 매우 슬퍼하심. 식사도 거르심.',dotColor:'#3B82F6'},
+  {clientId:4,date:'2/5 14:00',mood:'happy',moodFace:'😊',moodLabel:'기쁨',score:85,note:'손주 사진을 보며 즐거워하심. 다른 어르신들과 활발히 대화.',dotColor:'#10B981'},
+  {clientId:2,date:'2/5 10:15',mood:'lonely',moodFace:'🫤',moodLabel:'외로움',score:32,note:'혼자 창밖을 바라보시며 말수가 줄어듦. 가족 연락이 없었음.',dotColor:'#7C3AED'},
+  {clientId:6,date:'2/4 15:30',mood:'anxious',moodFace:'😰',moodLabel:'불안',score:45,note:'손 떨림이 심해졌다며 걱정을 표현하심. 여러 번 확인 행동.',dotColor:'#F59E0B'},
+  {clientId:3,date:'2/4 11:00',mood:'calm',moodFace:'😌',moodLabel:'평온',score:78,note:'원예 활동에 적극 참여. 꽃 이름을 기억하시며 기뻐하심.',dotColor:'#0D9488'},
+  {clientId:5,date:'2/3 09:45',mood:'calm',moodFace:'😌',moodLabel:'평온',score:72,note:'산책 후 기분이 좋아지심. 혈압도 안정적.',dotColor:'#0D9488'}
+];
+
+const trendData = {
+  period:'1/27 ~ 2/2',days:['월','화','수','목','금','토','일'],
+  emotions:{happy:[65,70,68,72,75,78,80],calm:[70,68,72,70,74,72,75],sad:[35,38,40,35,30,28,32],anxious:[30,35,38,32,28,30,25],lonely:[40,42,38,45,40,35,38]},
+  colors:{happy:'#10B981',calm:'#0D9488',sad:'#3B82F6',anxious:'#F59E0B',lonely:'#7C3AED'}
+};
+
+/* ===== STATE ===== */
+let selectedClient = null;
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  renderStats();
+  renderClients();
+  renderChips();
+  renderQuickTags();
+  renderTrendChart();
+  renderTimeline();
+  updateAnalyzeBtn();
+});
+
+/* ===== RENDER: Home Stats ===== */
+function renderStats() {
+  const alertCount = clients.filter(c => c.alert).length;
+  const stableCount = clients.length - alertCount;
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-num" style="color:var(--teal)">${clients.length}</div><div class="stat-label">총 대상자</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--coral)">${alertCount}</div><div class="stat-label">주의 필요</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${stableCount}</div><div class="stat-label">안정적</div></div>`;
+}
+
+/* ===== RENDER: Client Cards ===== */
+function renderClients() {
+  document.getElementById('clientList').innerHTML = clients.map(c => {
+    const spark = buildSparkline(c.sparkline, c.alert);
+    return `<div class="client-card${c.alert?' alert':''}" onclick="goToAnalysis(${c.id})">
+      <div class="avatar" style="background:${c.avatarColor}">${c.avatarInitial}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name}</div>
+        <div class="client-meta">${c.age}세 · ${c.gender} · ${c.condition}</div>
+        <div class="client-mood">${c.moodFace} ${c.moodLabel}</div>
+      </div>
+      <div class="client-right">
+        ${c.alert?'<div class="alert-badge">⚠ 주의</div>':''}
+        ${spark}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ===== Sparkline SVG ===== */
+function buildSparkline(data, isAlert) {
+  const w=56,h=22;
+  const pts = data.map((v,i) => `${i*(w/6)},${h - v/100*h}`).join(' ');
+  const color = isAlert ? 'var(--coral)' : 'var(--teal)';
+  return `<svg class="sparkline-svg" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+/* ===== RENDER: Analysis Chips ===== */
+function renderChips() {
+  document.getElementById('chipsScroll').innerHTML = clients.map(c =>
+    `<div class="chip${selectedClient===c.id?' selected':''}" onclick="selectClient(${c.id})">
+      <div class="chip-avatar" style="background:${c.avatarColor}">${c.avatarInitial}</div>
+      <span class="chip-name">${c.name}</span>
+    </div>`
+  ).join('');
+}
+
+/* ===== RENDER: Quick Tags ===== */
+function renderQuickTags() {
+  document.getElementById('quickTags').innerHTML = quickTags.map(t =>
+    `<button class="tag-btn" onclick="addTag(this,'${t}')">${t}</button>`
+  ).join('');
+}
+
+/* ===== Tag Click ===== */
+function addTag(el, text) {
+  const ta = document.getElementById('observeText');
+  const clean = text.replace(/^[\s\S]?\s/, '');
+  ta.value += (ta.value ? '\n' : '') + clean;
+  el.classList.add('used');
+  updateAnalyzeBtn();
+}
+
+/* ===== Select Client ===== */
+function selectClient(id) {
+  selectedClient = id;
+  renderChips();
+  updateAnalyzeBtn();
+}
+
+/* ===== Go to Analysis ===== */
+function goToAnalysis(id) {
+  selectedClient = id;
+  const btns = document.querySelectorAll('.tab-btn');
+  switchTab('analysis', btns[1]);
+  renderChips();
+  updateAnalyzeBtn();
+  // scroll chip into view
+  setTimeout(() => {
+    const sel = document.querySelector('.chip.selected');
+    if (sel) sel.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  }, 100);
+}
+
+/* ===== Tab Switch ===== */
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+tabId).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('tabContent').scrollTop = 0;
+}
+
+/* ===== Update Analyze Btn ===== */
+function updateAnalyzeBtn() {
+  const btn = document.getElementById('analyzeBtn');
+  const text = document.getElementById('observeText').value.trim();
+  btn.disabled = !selectedClient || !text;
+}
+document.addEventListener('input', e => { if(e.target.id==='observeText') updateAnalyzeBtn(); });
+
+/* ===== Start Analysis ===== */
+function startAnalysis() {
+  if (!selectedClient) { showToast('⚠️ 대상자를 선택해주세요'); return; }
+  const text = document.getElementById('observeText').value.trim();
+  if (!text) { showToast('⚠️ 관찰 기록을 입력해주세요'); return; }
+
+  const ol = document.getElementById('loadingOverlay');
+  const bar = document.getElementById('loadingBar');
+  const lt = document.getElementById('loadingText');
+  const pct = document.getElementById('loadingPct');
+  ol.classList.add('show');
+
+  const steps = [
+    {t:100,  w:'25%', txt:'대화 텍스트 분석 중...', p:'25%'},
+    {t:600,  w:'50%', txt:'감정 키워드 추출 중...', p:'50%'},
+    {t:1200, w:'75%', txt:'심리 패턴 매칭 중...',   p:'75%'},
+    {t:1800, w:'100%',txt:'종합 평가 생성 중...',   p:'100%'}
+  ];
+  steps.forEach(s => {
+    setTimeout(() => { bar.style.width=s.w; lt.textContent=s.txt; pct.textContent=s.p; }, s.t);
+  });
+  setTimeout(() => {
+    ol.classList.remove('show');
+    bar.style.width='0';
+    showResult();
+  }, 2400);
+}
+
+/* ===== Show Result Bottom Sheet ===== */
+function showResult() {
+  const c = clients.find(x => x.id===selectedClient);
+  const r = sampleResults[selectedClient];
+  if(!c||!r) return;
+
+  const riskIcon = r.risk==='high'?'🔴':r.risk==='mid'?'🟡':'🟢';
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}. ${today.getMonth()+1}. ${today.getDate()}.`;
+
+  const emoGridHTML = emotions.map(e =>
+    `<div class="emo-cell"><div class="emo-emoji">${e.emoji}</div><div class="emo-name">${e.name}</div><div class="emo-score" style="color:${e.color}">${r.scores[e.key]}</div></div>`
+  ).join('');
+
+  const recsHTML = r.recs.map(rc => `<div class="rec-item">${rc}</div>`).join('');
+
+  document.getElementById('bsSheet').innerHTML = `
+    <div class="bs-handle"></div>
+    <div class="bs-header">
+      <div class="avatar" style="background:${c.avatarColor};width:36px;height:36px;font-size:14px;">${c.avatarInitial}</div>
+      <div><div style="font-size:14px;font-weight:700;">${c.name} (${c.age}세)</div><div class="bs-date">${dateStr} 분석 결과</div></div>
+    </div>
+    <div class="bs-section-title">🎯 감정 레이더 분석</div>
+    <div class="radar-wrap" id="radarWrap"></div>
+    <div class="emo-grid">${emoGridHTML}</div>
+    <div class="risk-card ${r.risk}">
+      <div class="risk-title">${riskIcon} ${r.riskText}</div>
+      <div class="risk-desc">${r.riskDesc}</div>
+    </div>
+    <div class="bs-section-title">💡 추천 조치</div>
+    <div class="rec-list">${recsHTML}</div>
+    <div class="bs-actions">
+      <button class="bs-btn primary" onclick="saveRecord()">💾 기록 저장</button>
+      <button class="bs-btn secondary" onclick="closeSheet()">닫기</button>
+    </div>`;
+
+  // Build radar
+  buildRadar(r.scores);
+
+  // Show sheet
+  document.getElementById('bsOverlay').classList.add('show');
+  requestAnimationFrame(() => {
+    document.getElementById('bsSheet').classList.add('show');
+  });
+
+  // Animate radar after sheet opens
+  setTimeout(() => animateRadar(), 400);
+}
+
+/* ===== Radar Chart ===== */
+function buildRadar(scores) {
+  const size=240, cx=size/2, cy=size/2, R=85;
+  const keys = emotions.map(e=>e.key);
+  const N=6;
+
+  // Grid polygons (25%,50%,75%,100%)
+  let gridSVG = '';
+  [0.25,0.5,0.75,1].forEach(pct => {
+    const pts = [];
+    for(let i=0;i<N;i++){
+      const a = Math.PI*2/N*i - Math.PI/2;
+      pts.push(`${cx+R*pct*Math.cos(a)},${cy+R*pct*Math.sin(a)}`);
+    }
+    gridSVG += `<polygon points="${pts.join(' ')}" fill="none" stroke="#E2E8F0" stroke-width="${pct===1?1.5:0.7}"/>`;
+  });
+
+  // Axes
+  let axesSVG = '';
+  for(let i=0;i<N;i++){
+    const a = Math.PI*2/N*i - Math.PI/2;
+    axesSVG += `<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}" stroke="#E2E8F0" stroke-width="0.7"/>`;
+  }
+
+  // Labels
+  let labelsSVG = '';
+  emotions.forEach((e,i)=>{
+    const a = Math.PI*2/N*i - Math.PI/2;
+    const lx = cx + (R+22)*Math.cos(a);
+    const ly = cy + (R+22)*Math.sin(a);
+    labelsSVG += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#5A6B7F">${e.emoji}</text>`;
+    const sx = cx + (R+36)*Math.cos(a);
+    const sy = cy + (R+36)*Math.sin(a);
+    labelsSVG += `<text x="${sx}" y="${sy}" text-anchor="middle" dominant-baseline="central" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="${e.color}">${scores[e.key]}</text>`;
+  });
+
+  // Data polygon (start collapsed at center)
+  const centerPts = Array(N).fill(`${cx},${cy}`).join(' ');
+
+  // Dots (start at center)
+  let dotsSVG = '';
+  for(let i=0;i<N;i++){
+    dotsSVG += `<circle class="radar-dot" data-idx="${i}" cx="${cx}" cy="${cy}" r="4" fill="#0D9488" stroke="#fff" stroke-width="2" style="transition:cx 1s ease,cy 1s ease;"/>`;
+  }
+
+  const svg = `<svg class="radar-svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    ${gridSVG}${axesSVG}
+    <polygon id="radarPoly" points="${centerPts}" fill="rgba(13,148,136,0.15)" stroke="#0D9488" stroke-width="2.5" stroke-linejoin="round" style="transition:all 1s ease;"/>
+    ${dotsSVG}${labelsSVG}
+  </svg>`;
+
+  document.getElementById('radarWrap').innerHTML = svg;
+  // Store target for animation
+  window._radarTarget = {scores, cx, cy, R, N};
+}
+
+function animateRadar() {
+  const t = window._radarTarget;
+  if(!t) return;
+  const keys = emotions.map(e=>e.key);
+  const pts = [];
+  for(let i=0;i<t.N;i++){
+    const a = Math.PI*2/t.N*i - Math.PI/2;
+    const v = t.scores[keys[i]]/100;
+    const x = t.cx + t.R*v*Math.cos(a);
+    const y = t.cy + t.R*v*Math.sin(a);
+    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
+  }
+  document.getElementById('radarPoly').setAttribute('points', pts.join(' '));
+  document.querySelectorAll('.radar-dot').forEach(dot => {
+    const i = parseInt(dot.dataset.idx);
+    const a = Math.PI*2/t.N*i - Math.PI/2;
+    const v = t.scores[keys[i]]/100;
+    dot.setAttribute('cx', (t.cx + t.R*v*Math.cos(a)).toFixed(1));
+    dot.setAttribute('cy', (t.cy + t.R*v*Math.sin(a)).toFixed(1));
+  });
+}
+
+/* ===== Close Sheet ===== */
+function closeSheet() {
+  document.getElementById('bsSheet').classList.remove('show');
+  document.getElementById('bsOverlay').classList.remove('show');
+}
+
+/* ===== Save Record ===== */
+function saveRecord() {
+  showToast('✅ 기록이 저장되었습니다');
+  setTimeout(closeSheet, 400);
+}
+
+/* ===== Toast ===== */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+/* ===== RENDER: Trend Chart ===== */
+function renderTrendChart() {
+  const d = trendData;
+  const W=300, H=120, padL=24, padR=8, padT=8, padB=20;
+  const cw = W-padL-padR, ch = H-padT-padB;
+
+  // Grid lines
+  let gridSVG = '';
+  [0,25,50,75,100].forEach(v => {
+    const y = padT + ch - (v/100)*ch;
+    gridSVG += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#E2E8F0" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+    if(v>0) gridSVG += `<text x="${padL-4}" y="${y+3}" text-anchor="end" font-size="7" fill="#94A3B8" font-family="JetBrains Mono">${v}</text>`;
+  });
+
+  // Day labels
+  let daysSVG = '';
+  d.days.forEach((day,i) => {
+    const x = padL + i*(cw/6);
+    daysSVG += `<text x="${x}" y="${H-2}" text-anchor="middle" font-size="8" fill="#94A3B8">${day}</text>`;
+  });
+
+  // Lines
+  let linesSVG = '';
+  const emoKeys = ['happy','calm','sad','anxious','lonely'];
+  emoKeys.forEach(key => {
+    const vals = d.emotions[key];
+    const pts = vals.map((v,i) => `${padL+i*(cw/6)},${padT+ch-(v/100)*ch}`).join(' ');
+    linesSVG += `<polyline points="${pts}" fill="none" stroke="${d.colors[key]}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  });
+
+  // Legend
+  const emoNames = {happy:'기쁨',calm:'평온',sad:'슬픔',anxious:'불안',lonely:'외로움'};
+  const legendHTML = emoKeys.map(k =>
+    `<div class="trend-legend-item"><div class="trend-legend-dot" style="background:${d.colors[k]}"></div>${emoNames[k]}</div>`
+  ).join('');
+
+  document.getElementById('trendChart').innerHTML = `
+    <div class="trend-card-title">📈 주간 감정 추이 <span>${d.period}</span></div>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;margin-top:8px;">${gridSVG}${daysSVG}${linesSVG}</svg>
+    <div class="trend-legend">${legendHTML}</div>`;
+}
+
+/* ===== RENDER: Timeline ===== */
+function renderTimeline() {
+  document.getElementById('timeline').innerHTML = historyData.map((h,i) => {
+    const c = clients.find(x=>x.id===h.clientId);
+    return `<div class="tl-item" style="animation-delay:${i*0.08}s">
+      <div class="tl-dot" style="background:${h.dotColor}"></div>
+      <div class="tl-card">
+        <div class="tl-date">${h.date} · ${c?c.name:''}</div>
+        <div class="tl-mood">${h.moodFace} ${h.moodLabel} <span class="tl-score">${h.score}점</span></div>
+        <div class="tl-note">${h.note}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

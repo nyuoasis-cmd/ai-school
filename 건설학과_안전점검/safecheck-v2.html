@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>SafeCheck 건설현장 안전점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFCF5;--bg2:#FFF7E6;--surface:#FFFFFF;--surface2:#FFF9EE;
+  --border:#F0E4CC;--border2:#E6D5AA;
+  --text:#2A2010;--text2:#7A6B4E;--text3:#B0A080;
+  --amber:#E8960C;--amber-dark:#C47E08;--amber-light:#FFF3D6;--amber-glow:rgba(232,150,12,0.12);
+  --green:#1B9E3E;--green-light:#EAFAEF;
+  --red:#DC3545;--red-light:#FFF0F0;
+  --orange:#E86B0C;--orange-light:#FFF2E6;
+  --header-h:52px;--tab-h:56px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{height:100%;}
+body{
+  font-family:'Noto Sans KR',-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  overflow-x:hidden;min-height:100dvh;
+  -webkit-font-smoothing:antialiased;overscroll-behavior-y:contain;
+  user-select:none;-webkit-user-select:none;
+}
+.app-frame{max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;position:relative;background:var(--bg);}
+
+/* Header */
+.app-header{
+  height:var(--header-h);display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;background:var(--surface);border-bottom:1.5px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+.header-left{display:flex;align-items:center;gap:8px;}
+.header-img{width:32px;height:32px;border-radius:8px;object-fit:cover;}
+.header-title{font-size:15px;font-weight:800;}
+.header-title .hl{color:var(--amber);}
+
+/* Tab bar */
+.tab-bar{
+  display:flex;background:var(--surface);border-bottom:1.5px solid var(--border);
+  position:sticky;top:var(--header-h);z-index:99;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 0 6px;border:none;background:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:500;color:var(--text3);
+  transition:color .2s;position:relative;
+}
+.tab-btn .ti{font-size:20px;}
+.tab-btn.active{color:var(--amber);font-weight:800;}
+.tab-btn.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2.5px;background:var(--amber);border-radius:2px;}
+
+/* Content */
+.tab-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.tab-panel{display:none;}.tab-panel.active{display:block;}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;background-size:cover;background-position:center;}
+.hero-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(42,32,16,0.2),rgba(42,32,16,0.75));display:flex;flex-direction:column;justify-content:flex-end;padding:16px;}
+.hero h2{font-family:'Archivo Black',sans-serif;font-size:20px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);}
+.hero p{font-size:11px;color:rgba(255,255,255,.8);margin-top:2px;}
+
+/* Section title */
+.sec-title{font-size:12px;font-weight:700;color:var(--text2);padding:10px 14px 6px;display:flex;align-items:center;gap:4px;}
+
+/* Zone cards */
+.zone-list{padding:0 12px 16px;display:flex;flex-direction:column;gap:8px;}
+.zone-card{
+  display:flex;overflow:hidden;background:var(--surface);border:1.5px solid var(--border);border-radius:16px;
+  cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .15s;
+}
+.zone-card:active{transform:scale(.98);}
+.zone-img{width:100px;height:90px;object-fit:cover;flex-shrink:0;}
+.zone-body{flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;}
+.zone-name{font-size:14px;font-weight:800;}
+.zone-desc{font-size:10px;color:var(--text3);}
+.zone-meta{display:flex;gap:6px;margin-top:2px;}
+.zone-badge{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;padding:2px 7px;border-radius:6px;}
+.badge-items{background:var(--bg2);color:var(--text2);}
+.badge-high{background:var(--red-light);color:var(--red);}
+.badge-mid{background:var(--orange-light);color:var(--orange);}
+
+/* ===== WIZARD ===== */
+.wizard{display:none;}.wizard.active{display:block;}
+.zone-select{}.zone-select.hidden{display:none;}
+
+/* Wizard header image */
+.wiz-hero{position:relative;height:110px;background-size:cover;background-position:center;}
+.wiz-hero-ov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(42,32,16,0.7));display:flex;align-items:flex-end;padding:12px 14px;}
+.wiz-hero-info{color:#fff;}
+.wiz-hero-info h3{font-family:'Archivo Black',sans-serif;font-size:17px;}
+.wiz-back{
+  position:absolute;top:8px;left:8px;width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.risk-pill{font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;}
+.risk-pill.high{background:rgba(220,53,69,.8);color:#fff;}
+.risk-pill.mid{background:rgba(232,107,12,.8);color:#fff;}
+
+/* Step progress */
+.step-progress{display:flex;align-items:center;justify-content:center;padding:12px 16px 8px;gap:0;}
+.step-dot{
+  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  border:2px solid var(--border);background:var(--bg2);color:var(--text3);flex-shrink:0;
+  transition:all .3s;
+}
+.step-dot.active{background:var(--amber);color:#fff;border-color:var(--amber);box-shadow:0 0 0 4px var(--amber-glow);}
+.step-dot.done{background:var(--green);color:#fff;border-color:var(--green);}
+.step-line{flex:1;height:3px;background:var(--border);margin:0 -1px;transition:background .3s;}
+.step-line.done{background:var(--green);}
+.step-counter{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);margin-left:10px;}
+
+/* Category header */
+.cat-header{display:flex;align-items:center;gap:10px;padding:8px 14px;}
+.cat-img{width:44px;height:44px;border-radius:10px;object-fit:cover;border:2px solid var(--border);}
+.cat-info h4{font-size:16px;font-weight:800;}
+.cat-info p{font-size:11px;color:var(--text3);}
+
+/* Check items */
+.check-list{padding:0 12px 8px;display:flex;flex-direction:column;gap:6px;}
+.check-item{
+  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  cursor:pointer;transition:all .2s;
+}
+.check-item.checked{border-color:var(--green);background:var(--green-light);}
+.check-item.flagged{border-color:var(--red);background:var(--red-light);}
+.check-box{
+  width:24px;height:24px;border-radius:6px;border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:13px;font-weight:700;color:#fff;transition:all .2s;
+}
+.check-item.checked .check-box{background:var(--green);border-color:var(--green);}
+.check-item.flagged .check-box{background:var(--red);border-color:var(--red);}
+.check-text{flex:1;font-size:13px;font-weight:500;transition:color .2s;}
+.check-item.checked .check-text{color:var(--green);}
+.check-item.flagged .check-text{color:var(--red);}
+.flag-btn{
+  width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border:none;background:none;font-size:16px;cursor:pointer;opacity:.3;transition:opacity .2s;
+}
+.check-item.flagged .flag-btn{opacity:1;}
+
+/* Step nav */
+.step-nav{display:flex;gap:8px;padding:10px 12px 16px;}
+.step-nav button{
+  flex:1;padding:13px;border-radius:14px;border:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;transition:transform .1s;
+}
+.step-nav button:active{transform:scale(.97);}
+.btn-prev{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.btn-next{background:var(--amber);color:#fff;box-shadow:0 4px 16px var(--amber-glow);}
+.btn-finish{background:var(--green);color:#fff;box-shadow:0 4px 16px rgba(27,158,62,.2);}
+
+/* ===== Result Bottom Sheet ===== */
+.bs-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(42,32,16,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.bs-overlay.show{opacity:1;pointer-events:auto;}
+.bs-sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:601;max-width:430px;margin:0 auto;
+  max-height:92vh;background:var(--surface);border-radius:24px 24px 0 0;
+  padding:0 0 24px;overflow-y:auto;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);
+}
+.bs-sheet.show{transform:translateY(0);}
+.bs-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:10px auto;}
+
+/* Result zone banner */
+.res-banner{position:relative;height:100px;background-size:cover;background-position:center;margin-bottom:0;}
+.res-banner::after{content:'';position:absolute;inset:0;background:rgba(42,32,16,.55);}
+.res-banner-text{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;}
+.res-banner-text h3{font-family:'Archivo Black',sans-serif;font-size:17px;}
+.res-banner-text span{font-size:11px;opacity:.8;margin-top:2px;}
+
+/* Score ring */
+.score-area{text-align:center;padding:16px 0 8px;}
+.score-ring-wrap{display:inline-block;position:relative;width:130px;height:130px;}
+.score-ring-bg{fill:none;stroke:var(--bg2);stroke-width:10;}
+.score-ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset 1s ease,stroke .5s;}
+.score-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-num{font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1;}
+.score-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);}
+.score-grade{font-size:16px;font-weight:800;margin-top:6px;}
+.score-comment{font-size:12px;color:var(--text2);margin-top:2px;}
+
+/* Summary cards */
+.sum-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:12px 16px 0;}
+.sum-card{text-align:center;padding:10px 4px;background:var(--bg);border:1px solid var(--border);border-radius:12px;}
+.sum-icon{font-size:18px;}
+.sum-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;margin-top:2px;}
+.sum-label{font-size:9px;color:var(--text3);margin-top:1px;}
+
+/* Flagged list */
+.flagged-section{margin:12px 16px 0;padding:12px;background:var(--red-light);border:1px solid var(--red);border-radius:14px;}
+.flagged-title{font-size:12px;font-weight:700;color:var(--red);margin-bottom:8px;}
+.flagged-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;
+  background:rgba(255,255,255,.7);border-radius:8px;margin-bottom:4px;font-size:12px;
+}
+.flagged-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;}
+.flagged-cat{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text3);margin-left:auto;flex-shrink:0;}
+
+/* Result buttons */
+.res-actions{display:flex;gap:8px;padding:14px 16px 0;}
+.res-btn{
+  flex:1;padding:13px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;
+}
+.res-btn.primary{background:var(--amber);color:#fff;}
+.res-btn.secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+
+/* ===== History Tab ===== */
+.hist-section{padding:0 12px 16px;}
+.hist-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px 4px;}
+.hist-stat{text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 0;}
+.hist-stat-num{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;line-height:1.2;}
+.hist-stat-label{font-size:9px;color:var(--text3);margin-top:1px;}
+
+.hist-list{display:flex;flex-direction:column;gap:8px;padding:0 12px;}
+.hist-card{
+  display:flex;overflow:hidden;background:var(--surface);border:1.5px solid var(--border);border-radius:14px;
+  animation:fadeUp .3s ease both;
+}
+.hist-img{width:72px;object-fit:cover;flex-shrink:0;}
+.hist-body{flex:1;padding:10px 12px;display:flex;flex-direction:column;gap:3px;}
+.hist-name{font-size:13px;font-weight:800;}
+.hist-date{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text3);}
+.hist-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px;}
+.hist-tag{font-size:9px;font-weight:600;padding:2px 7px;border-radius:6px;}
+.hist-score-pill{
+  width:42px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;
+  border-radius:0 12px 12px 0;
+}
+
+/* Empty state */
+.empty-state{text-align:center;padding:48px 20px;}
+.empty-state .em-icon{font-size:44px;}
+.empty-state h3{font-size:15px;font-weight:700;margin-top:10px;color:var(--text2);}
+.empty-state p{font-size:12px;color:var(--text3);margin-top:4px;}
+
+/* Toast */
+.toast{
+  position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);
+  max-width:340px;padding:10px 18px;border-radius:12px;
+  background:var(--surface);color:var(--text);font-size:12px;font-weight:600;
+  border:1.5px solid var(--amber);box-shadow:0 8px 32px rgba(42,32,16,.1);
+  opacity:0;pointer-events:none;transition:all .3s;z-index:900;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+<div class="app-frame">
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <img class="header-img" src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=80&h=80&fit=crop" alt="">
+      <span class="header-title">Safe<span class="hl">Check</span></span>
+    </div>
+  </header>
+
+  <!-- Tab Bar -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('inspect',this)"><span class="ti">✅</span>점검</button>
+    <button class="tab-btn" onclick="switchTab('history',this)"><span class="ti">📋</span>기록</button>
+  </nav>
+
+  <!-- Content -->
+  <div class="tab-content" id="tabContent">
+
+    <!-- ===== INSPECT TAB ===== -->
+    <div class="tab-panel active" id="panel-inspect">
+
+      <!-- Zone Select -->
+      <div class="zone-select" id="zoneSelect">
+        <div class="hero" style="height:150px;background-image:url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=860&h=360&fit=crop');">
+          <div class="hero-ov">
+            <h2>건설현장 안전점검</h2>
+            <p>점검할 현장 구역을 선택하세요</p>
+          </div>
+        </div>
+        <div class="sec-title">📍 점검 구역</div>
+        <div class="zone-list" id="zoneList"></div>
+      </div>
+
+      <!-- Wizard -->
+      <div class="wizard" id="wizard">
+        <div class="wiz-hero" id="wizHero">
+          <div class="wiz-hero-ov">
+            <button class="wiz-back" onclick="backToZones()">←</button>
+            <div class="wiz-hero-info" id="wizHeroInfo"></div>
+          </div>
+        </div>
+        <div class="step-progress" id="stepProgress"></div>
+        <div class="cat-header" id="catHeader"></div>
+        <div class="check-list" id="checkList"></div>
+        <div class="step-nav" id="stepNav"></div>
+      </div>
+
+    </div>
+
+    <!-- ===== HISTORY TAB ===== -->
+    <div class="tab-panel" id="panel-history">
+      <div class="hero" style="height:110px;background-image:url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=860&h=240&fit=crop');">
+        <div class="hero-ov">
+          <h2>점검 기록</h2>
+          <p>최근 점검 결과를 확인하세요</p>
+        </div>
+      </div>
+      <div class="hist-stats" id="histStats"></div>
+      <div class="sec-title">최근 기록</div>
+      <div class="hist-section" id="histSection"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Sheet -->
+<div class="bs-overlay" id="bsOverlay" onclick="closeSheet()"></div>
+<div class="bs-sheet" id="bsSheet"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DATA ===== */
+const zones=[
+  {id:'excavation',name:'굴착 현장',desc:'토공사·터파기 작업 구역',risk:'high',items:16,img:'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=400&h=200&fit=crop'},
+  {id:'steel',name:'철골 작업',desc:'철골 조립·용접 작업 구역',risk:'high',items:14,img:'https://images.unsplash.com/photo-1513467535987-fd81bc7d62f8?w=400&h=200&fit=crop'},
+  {id:'scaffold',name:'비계 작업',desc:'외부 비계 설치·해체 구역',risk:'high',items:15,img:'https://images.unsplash.com/photo-1590644365607-1c5e64562a95?w=400&h=200&fit=crop'},
+  {id:'heights',name:'고소 작업',desc:'2m 이상 높이 작업 구역',risk:'high',items:14,img:'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&h=200&fit=crop'},
+  {id:'electrical',name:'전기 작업',desc:'전기 배선·배전 작업 구역',risk:'mid',items:12,img:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=200&fit=crop'},
+  {id:'crane',name:'크레인 작업',desc:'양중기·크레인 운반 구역',risk:'mid',items:13,img:'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=400&h=200&fit=crop'}
+];
+
+const categories={
+  excavation:[
+    {name:'개인보호구',img:'https://images.unsplash.com/photo-1611843467160-25afb8df1074?w=100&h=100&fit=crop',items:['안전모 착용 여부','안전화 착용 상태','안전조끼 반사 기능 정상','보호안경 착용 확인']},
+    {name:'굴착 장비',img:'https://images.unsplash.com/photo-1580901368919-7738efb0f87e?w=100&h=100&fit=crop',items:['굴착기 작동 전 점검 완료','후방 경고음 장치 정상','장비 주변 안전거리 확보','유압 호스 누유 없음']},
+    {name:'현장 환경',img:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=100&h=100&fit=crop',items:['지반 붕괴 위험도 확인','배수 시설 정상 작동','가스 검지 측정 완료','조명 밝기 적정 (75lux 이상)']},
+    {name:'법규 준수',img:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=100&h=100&fit=crop',items:['작업 허가서 비치 확인','안전관리자 현장 배치','비상연락망 게시 확인','안전교육 이수 확인']}
+  ],
+  steel:[
+    {name:'개인보호구',img:'https://images.unsplash.com/photo-1611843467160-25afb8df1074?w=100&h=100&fit=crop',items:['안전모 턱끈 체결 확인','안전대 착용 및 걸이 확인','안전화 상태 점검','용접 보호면 구비']},
+    {name:'철골 장비',img:'https://images.unsplash.com/photo-1567361808960-dec9cb578182?w=100&h=100&fit=crop',items:['볼트·너트 체결 상태','용접 장비 절연 확인','와이어로프 마모도 점검','고력볼트 토크 확인']},
+    {name:'작업 환경',img:'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=100&h=100&fit=crop',items:['추락방지망 설치 확인','안전난간 설치 상태','작업 발판 고정 확인']},
+    {name:'법규 준수',img:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=100&h=100&fit=crop',items:['작업계획서 비치 확인','유자격자 배치 확인','안전교육 실시 확인']}
+  ],
+  scaffold:[
+    {name:'개인보호구',img:'https://images.unsplash.com/photo-1611843467160-25afb8df1074?w=100&h=100&fit=crop',items:['안전모 착용 확인','안전대 이중 걸이 확인','미끄럼 방지 안전화','안전장갑 착용']},
+    {name:'비계 구조',img:'https://images.unsplash.com/photo-1590644365607-1c5e64562a95?w=100&h=100&fit=crop',items:['수직·수평 연결 상태','벽이음 간격 규정 준수','작업 발판 폭 40cm 이상','발판 틈새 3cm 이하']},
+    {name:'안전 시설',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=100&h=100&fit=crop',items:['안전난간 높이 90cm 이상','중간난간 설치 확인','발끝막이판 설치','승강 사다리 고정']},
+    {name:'점검 기준',img:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=100&h=100&fit=crop',items:['조립도 현장 비치','자재 적재 하중 준수','악천후 작업중지 기준 게시']}
+  ],
+  heights:[
+    {name:'개인보호구',img:'https://images.unsplash.com/photo-1611843467160-25afb8df1074?w=100&h=100&fit=crop',items:['전신 안전대 착용','랜야드 손상 여부','안전모 턱끈 체결','안전화 미끄럼 방지']},
+    {name:'추락 방지',img:'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=100&h=100&fit=crop',items:['안전난간 설치 확인','추락방지망 설치','개구부 덮개 설치','수직 보호망 설치']},
+    {name:'작업 환경',img:'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=100&h=100&fit=crop',items:['풍속 10m/s 이하 확인','비·눈 등 기상 확인','작업 발판 상태 양호']},
+    {name:'법규 준수',img:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=100&h=100&fit=crop',items:['2m 이상 작업 허가 확인','안전관리자 입회','비상 구조 계획 수립']}
+  ],
+  electrical:[
+    {name:'개인보호구',img:'https://images.unsplash.com/photo-1611843467160-25afb8df1074?w=100&h=100&fit=crop',items:['절연장갑 착용 확인','절연 안전화 상태','절연 보호구 구비']},
+    {name:'전기 안전',img:'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=100&h=100&fit=crop',items:['전원 차단 확인 (LOTO)','검전기 작동 시험','접지 상태 확인','절연저항 측정 완료']},
+    {name:'작업 환경',img:'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=100&h=100&fit=crop',items:['습기 제거 확인','충전부 방호 조치','감전 경고 표지 설치']},
+    {name:'법규 준수',img:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=100&h=100&fit=crop',items:['전기작업 허가서 확인','유자격자 작업 확인']}
+  ],
+  crane:[
+    {name:'개인보호구',img:'https://images.unsplash.com/photo-1611843467160-25afb8df1074?w=100&h=100&fit=crop',items:['안전모 착용 확인','안전조끼 착용','신호수 배치 확인']},
+    {name:'크레인 점검',img:'https://images.unsplash.com/photo-1565008447742-97f6f38c985c?w=100&h=100&fit=crop',items:['와이어로프 마모도','과부하 방지장치 정상','권과 방지장치 작동','브레이크 작동 확인']},
+    {name:'작업 반경',img:'https://images.unsplash.com/photo-1517089596392-fb9a9033e05b?w=100&h=100&fit=crop',items:['인양 하중표 비치','작업 반경 내 통제','지반 지지력 확인','아웃리거 설치 확인']},
+    {name:'법규 준수',img:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=100&h=100&fit=crop',items:['크레인 검사증 비치','운전원 자격 확인']}
+  ]
+};
+
+/* ===== STATE ===== */
+let currentZone=null, currentStep=0, checkStates={};
+const STORAGE_KEY='safecheck_history';
+
+function getHistory(){try{return JSON.parse(sessionStorage.getItem(STORAGE_KEY))||[];}catch{return[];}}
+function setHistory(h){try{sessionStorage.setItem(STORAGE_KEY,JSON.stringify(h));}catch{}}
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded',()=>{renderZones();renderHistoryTab();});
+
+/* ===== RENDER ZONES ===== */
+function renderZones(){
+  document.getElementById('zoneList').innerHTML=zones.map(z=>`
+    <div class="zone-card" onclick="selectZone('${z.id}')">
+      <img class="zone-img" src="${z.img}" alt="${z.name}">
+      <div class="zone-body">
+        <div class="zone-name">${z.name}</div>
+        <div class="zone-desc">${z.desc}</div>
+        <div class="zone-meta">
+          <span class="zone-badge badge-items">${z.items}개 항목</span>
+          <span class="zone-badge ${z.risk==='high'?'badge-high':'badge-mid'}">${z.risk==='high'?'⚠ 고위험':'⚠ 중위험'}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ===== SELECT ZONE → START WIZARD ===== */
+function selectZone(id){
+  currentZone=id; currentStep=0; checkStates={};
+  document.getElementById('zoneSelect').classList.add('hidden');
+  document.getElementById('wizard').classList.add('active');
+  renderWizard();
+}
+
+function backToZones(){
+  document.getElementById('wizard').classList.remove('active');
+  document.getElementById('zoneSelect').classList.remove('hidden');
+  currentZone=null;
+}
+
+/* ===== RENDER WIZARD ===== */
+function renderWizard(){
+  const z=zones.find(x=>x.id===currentZone);
+  const cats=categories[currentZone];
+  const cat=cats[currentStep];
+  const totalSteps=cats.length;
+
+  // Hero
+  document.getElementById('wizHero').style.backgroundImage=`url('${z.img}')`;
+  document.getElementById('wizHeroInfo').innerHTML=`<h3>${z.name}<span class="risk-pill ${z.risk}">${z.risk==='high'?'고위험':'중위험'}</span></h3>`;
+
+  // Step progress
+  let progHTML='';
+  for(let i=0;i<totalSteps;i++){
+    const cls=i<currentStep?'done':i===currentStep?'active':'';
+    const label=i<currentStep?'✓':(i+1);
+    progHTML+=`<div class="step-dot ${cls}">${label}</div>`;
+    if(i<totalSteps-1){
+      progHTML+=`<div class="step-line ${i<currentStep?'done':''}"></div>`;
+    }
+  }
+  progHTML+=`<span class="step-counter">${currentStep+1} / ${totalSteps} 단계</span>`;
+  document.getElementById('stepProgress').innerHTML=progHTML;
+
+  // Category header
+  document.getElementById('catHeader').innerHTML=`
+    <img class="cat-img" src="${cat.img}" alt="">
+    <div class="cat-info"><h4>${cat.name}</h4><p>탭: ✅ 적합 · 🚩 위반</p></div>`;
+
+  // Check items
+  document.getElementById('checkList').innerHTML=cat.items.map((item,idx)=>{
+    const key=`${currentStep}-${idx}`;
+    const st=checkStates[key]||'';
+    const boxIcon=st==='checked'?'✓':st==='flagged'?'!':'';
+    return `<div class="check-item ${st}" onclick="toggleCheck('${key}')">
+      <div class="check-box">${boxIcon}</div>
+      <span class="check-text">${item}</span>
+      <button class="flag-btn" onclick="event.stopPropagation();toggleFlag('${key}')">🚩</button>
+    </div>`;
+  }).join('');
+
+  // Step nav
+  let navHTML='';
+  if(currentStep===0){
+    navHTML=`<button class="btn-prev" onclick="backToZones()">← 구역 선택</button>`;
+  } else {
+    navHTML=`<button class="btn-prev" onclick="prevStep()">← 이전</button>`;
+  }
+  if(currentStep<totalSteps-1){
+    navHTML+=`<button class="btn-next" onclick="nextStep()">다음 →</button>`;
+  } else {
+    navHTML+=`<button class="btn-finish" onclick="finishInspection()">🏁 점검 완료</button>`;
+  }
+  document.getElementById('stepNav').innerHTML=navHTML;
+}
+
+/* ===== CHECK/FLAG TOGGLE ===== */
+function toggleCheck(key){
+  checkStates[key]=checkStates[key]==='checked'?undefined:'checked';
+  renderWizard();
+}
+function toggleFlag(key){
+  checkStates[key]=checkStates[key]==='flagged'?undefined:'flagged';
+  renderWizard();
+}
+
+/* ===== STEP NAV ===== */
+function prevStep(){if(currentStep>0){currentStep--;renderWizard();}}
+function nextStep(){const cats=categories[currentZone];if(currentStep<cats.length-1){currentStep++;renderWizard();}}
+
+/* ===== SCORING ===== */
+function calculateScore(){
+  const cats=categories[currentZone];
+  let total=0,checked=0,flagged=0,unchecked=0;
+  const flaggedItems=[];
+  cats.forEach((cat,ci)=>{
+    cat.items.forEach((item,ii)=>{
+      total++;
+      const st=checkStates[`${ci}-${ii}`];
+      if(st==='checked') checked++;
+      else if(st==='flagged'){flagged++;flaggedItems.push({text:item,cat:cat.name});}
+      else unchecked++;
+    });
+  });
+  const base=Math.round(checked/total*100);
+  const fp=Math.round(flagged/total*40);
+  const up=Math.round(unchecked/total*10);
+  const score=Math.max(0,Math.min(100,base-fp-up));
+  return{score,checked,flagged,unchecked,total,flaggedItems};
+}
+
+/* ===== FINISH → RESULT BOTTOM SHEET ===== */
+function finishInspection(){
+  const z=zones.find(x=>x.id===currentZone);
+  const r=calculateScore();
+  const color=r.score>=80?'var(--green)':r.score>=50?'var(--amber)':'var(--red)';
+  const grade=r.score>=80?'🟢 안전':r.score>=50?'🟡 주의':'🔴 위험';
+  const comment=r.score>=80?'현장 안전 상태가 양호합니다':r.score>=50?'일부 항목의 개선이 필요합니다':'즉시 작업 중지 및 시정 조치가 필요합니다';
+  const circ=377;
+  const offset=circ-(r.score/100)*circ;
+
+  let flagHTML='';
+  if(r.flaggedItems.length>0){
+    flagHTML=`<div class="flagged-section"><div class="flagged-title">🚨 위반 사항 (${r.flaggedItems.length}건)</div>${r.flaggedItems.map(f=>`<div class="flagged-item"><div class="flagged-dot"></div><span>${f.text}</span><span class="flagged-cat">${f.cat}</span></div>`).join('')}</div>`;
+  }
+
+  document.getElementById('bsSheet').innerHTML=`
+    <div class="bs-handle"></div>
+    <div class="res-banner" style="background-image:url('${z.img}')">
+      <div class="res-banner-text"><h3>${z.name}</h3><span>${z.risk==='high'?'고위험':'중위험'} 구역 점검 결과</span></div>
+    </div>
+    <div class="score-area">
+      <div class="score-ring-wrap">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle class="score-ring-bg" cx="65" cy="65" r="55"/>
+          <circle class="score-ring-fill" id="scoreRing" cx="65" cy="65" r="55"
+            stroke="${color}" stroke-dasharray="${circ}" stroke-dashoffset="${circ}"
+            transform="rotate(-90 65 65)"/>
+        </svg>
+        <div class="score-val">
+          <span class="score-num" style="color:${color}">${r.score}</span>
+          <span class="score-sub">/ 100</span>
+        </div>
+      </div>
+      <div class="score-grade" style="color:${color}">${grade}</div>
+      <div class="score-comment">${comment}</div>
+    </div>
+    <div class="sum-row">
+      <div class="sum-card"><div class="sum-icon">✅</div><div class="sum-val" style="color:var(--green)">${r.checked}</div><div class="sum-label">적합</div></div>
+      <div class="sum-card"><div class="sum-icon">🚩</div><div class="sum-val" style="color:var(--red)">${r.flagged}</div><div class="sum-label">위반</div></div>
+      <div class="sum-card"><div class="sum-icon">⬜</div><div class="sum-val" style="color:var(--text3)">${r.unchecked}</div><div class="sum-label">미점검</div></div>
+    </div>
+    ${flagHTML}
+    <div class="res-actions">
+      <button class="res-btn primary" onclick="saveRecord()">📋 기록 저장</button>
+      <button class="res-btn secondary" onclick="resetInspection()">다시 점검</button>
+    </div>`;
+
+  // Show sheet
+  document.getElementById('bsOverlay').classList.add('show');
+  requestAnimationFrame(()=>{document.getElementById('bsSheet').classList.add('show');});
+  // Animate ring
+  setTimeout(()=>{
+    const ring=document.getElementById('scoreRing');
+    if(ring){ring.style.strokeDashoffset=offset;ring.style.transition='stroke-dashoffset 1s ease';}
+  },350);
+  // Store result for saving
+  window._lastResult=r;
+}
+
+/* ===== SAVE RECORD ===== */
+function saveRecord(){
+  const z=zones.find(x=>x.id===currentZone);
+  const r=window._lastResult;
+  if(!r)return;
+  const now=new Date();
+  const record={
+    zone:currentZone,score:r.score,checked:r.checked,flagged:r.flagged,
+    unchecked:r.unchecked,total:r.total,flaggedItems:r.flaggedItems,
+    date:now.toISOString()
+  };
+  const h=[record,...getHistory()].slice(0,10);
+  setHistory(h);
+  showToast('✅ 점검 기록이 저장되었습니다');
+  setTimeout(()=>{closeSheet();resetInspection();renderHistoryTab();},500);
+}
+
+/* ===== RESET ===== */
+function resetInspection(){
+  closeSheet();
+  backToZones();
+}
+
+/* ===== CLOSE SHEET ===== */
+function closeSheet(){
+  document.getElementById('bsSheet').classList.remove('show');
+  document.getElementById('bsOverlay').classList.remove('show');
+}
+
+/* ===== TAB SWITCH ===== */
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='history') renderHistoryTab();
+}
+
+/* ===== RENDER HISTORY TAB ===== */
+function renderHistoryTab(){
+  const h=getHistory();
+  const safe=h.filter(r=>r.score>=80).length;
+  const totalFlags=h.reduce((s,r)=>s+r.flagged,0);
+
+  document.getElementById('histStats').innerHTML=`
+    <div class="hist-stat"><div class="hist-stat-num" style="color:var(--amber)">${h.length}</div><div class="hist-stat-label">총 점검</div></div>
+    <div class="hist-stat"><div class="hist-stat-num" style="color:var(--green)">${safe}</div><div class="hist-stat-label">안전 통과</div></div>
+    <div class="hist-stat"><div class="hist-stat-num" style="color:var(--red)">${totalFlags}</div><div class="hist-stat-label">위반 발견</div></div>`;
+
+  if(h.length===0){
+    document.getElementById('histSection').innerHTML=`
+      <div class="empty-state"><div class="em-icon">🏗️</div><h3>점검 기록이 없어요</h3><p>점검 탭에서 구역을 선택하고 점검을 시작하세요</p></div>`;
+    return;
+  }
+
+  document.getElementById('histSection').innerHTML=`<div class="hist-list">${h.map((rec,i)=>{
+    const z=zones.find(x=>x.id===rec.zone);
+    if(!z) return '';
+    const d=new Date(rec.date);
+    const ds=`${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const gc=rec.score>=80?'var(--green)':rec.score>=50?'var(--amber)':'var(--red)';
+    const gl=rec.score>=80?'안전':rec.score>=50?'주의':'위험';
+    const glc=rec.score>=80?'background:var(--green-light);color:var(--green)':rec.score>=50?'background:var(--amber-light);color:var(--amber)':'background:var(--red-light);color:var(--red)';
+    return `<div class="hist-card" style="animation-delay:${i*.05}s">
+      <img class="hist-img" src="${z.img}" alt="">
+      <div class="hist-body">
+        <div class="hist-name">${z.name}</div>
+        <div class="hist-date">${ds}</div>
+        <div class="hist-tags">
+          <span class="hist-tag" style="${glc}">${gl}</span>
+          ${rec.flagged>0?`<span class="hist-tag" style="background:var(--red-light);color:var(--red)">🚩 ${rec.flagged}건</span>`:''}
+          <span class="hist-tag" style="background:var(--bg2);color:var(--text2)">✅ ${rec.checked}/${rec.total}</span>
+        </div>
+      </div>
+      <div class="hist-score-pill" style="background:${gc}">${rec.score}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+/* ===== TOAST ===== */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>

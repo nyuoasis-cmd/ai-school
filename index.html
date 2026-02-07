@@ -431,14 +431,14 @@ body {
   opacity: 0;
   transition: opacity 0.4s;
 }
-.dept-card:nth-child(1) .dept-card-glow { background: linear-gradient(90deg, transparent, #F59E0B, transparent); }
-.dept-card:nth-child(2) .dept-card-glow { background: linear-gradient(90deg, transparent, #3B82F6, transparent); }
-.dept-card:nth-child(3) .dept-card-glow { background: linear-gradient(90deg, transparent, #10B981, transparent); }
-.dept-card:nth-child(4) .dept-card-glow { background: linear-gradient(90deg, transparent, #EC4899, transparent); }
-.dept-card:nth-child(5) .dept-card-glow { background: linear-gradient(90deg, transparent, #F97316, transparent); }
-.dept-card:nth-child(6) .dept-card-glow { background: linear-gradient(90deg, transparent, #6366F1, transparent); }
+.dept-card:nth-child(1) .dept-card-glow { background: linear-gradient(90deg, transparent, #EC4899, transparent); }
+.dept-card:nth-child(2) .dept-card-glow { background: linear-gradient(90deg, transparent, #8B6832, transparent); }
+.dept-card:nth-child(3) .dept-card-glow { background: linear-gradient(90deg, transparent, #EF4444, transparent); }
+.dept-card:nth-child(4) .dept-card-glow { background: linear-gradient(90deg, transparent, #3B82F6, transparent); }
+.dept-card:nth-child(5) .dept-card-glow { background: linear-gradient(90deg, transparent, #EAB308, transparent); }
+.dept-card:nth-child(6) .dept-card-glow { background: linear-gradient(90deg, transparent, #22C55E, transparent); }
 .dept-card:nth-child(7) .dept-card-glow { background: linear-gradient(90deg, transparent, #8B5CF6, transparent); }
-.dept-card:nth-child(8) .dept-card-glow { background: linear-gradient(90deg, transparent, #22C55E, transparent); }
+.dept-card:nth-child(8) .dept-card-glow { background: linear-gradient(90deg, transparent, #F97316, transparent); }
 
 .dept-card-visual {
   height: 100px;
@@ -461,12 +461,13 @@ body {
   background-size: cover !important;
   background-position: center top !important;
   background-repeat: no-repeat !important;
+  min-height: 258px;
 }
 .dept-card--thumb::before { display: none; }
 .dept-card:nth-child(1).dept-card--thumb .dept-card-visual-bg,
 .dept-card:nth-child(2).dept-card--thumb .dept-card-visual-bg { display: none; }
 /* 조리과 썸네일 */
-.dept-card--thumb:nth-child(1) {
+.dept-card--thumb-calorie {
   background:
     linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
     url('image/calorie-thumb.jpg') center top / cover no-repeat !important;
@@ -476,6 +477,42 @@ body {
   background:
     linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
     url('image/roomglow-thumb.jpg') center top / cover no-repeat !important;
+}
+/* 기계과 썸네일 */
+.dept-card--thumb-parts {
+  background:
+    linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
+    url('image/parts-thumb.jpg') center top / cover no-repeat !important;
+}
+/* 정보통신과 썸네일 */
+.dept-card--thumb-chatbot {
+  background:
+    linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
+    url('image/chatbot-thumb.jpg') center top / cover no-repeat !important;
+}
+/* 전기전자과 썸네일 */
+.dept-card--thumb-power {
+  background:
+    linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
+    url('image/power-thumb.jpg') center top / cover no-repeat !important;
+}
+/* 경영금융과 썸네일 */
+.dept-card--thumb-shop {
+  background:
+    linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
+    url('image/shop-thumb.jpg') center top / cover no-repeat !important;
+}
+/* 보건복지과 썸네일 */
+.dept-card--thumb-moodcare {
+  background:
+    linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
+    url('image/moodcare-thumb.jpg') center top / cover no-repeat !important;
+}
+/* 건설과 썸네일 */
+.dept-card--thumb-safecheck {
+  background:
+    linear-gradient(to top, #000 0%, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.5) 22%, transparent 35%),
+    url('image/safecheck-thumb.jpg') center top / cover no-repeat !important;
 }
 .dept-card-thumb-bottom {
   padding: 48px 16px 18px;
@@ -560,14 +597,14 @@ body {
   align-items: center;
   gap: 6px;
 }
-.dept-card:nth-child(1) .dept-card-app { color: #F59E0B; }
-.dept-card:nth-child(2) .dept-card-app { color: #3B82F6; }
-.dept-card:nth-child(3) .dept-card-app { color: #10B981; }
-.dept-card:nth-child(4) .dept-card-app { color: #EC4899; }
-.dept-card:nth-child(5) .dept-card-app { color: #F97316; }
-.dept-card:nth-child(6) .dept-card-app { color: #6366F1; }
+.dept-card:nth-child(1) .dept-card-app { color: #EC4899; }
+.dept-card:nth-child(2) .dept-card-app { color: #8B6832; }
+.dept-card:nth-child(3) .dept-card-app { color: #EF4444; }
+.dept-card:nth-child(4) .dept-card-app { color: #3B82F6; }
+.dept-card:nth-child(5) .dept-card-app { color: #EAB308; }
+.dept-card:nth-child(6) .dept-card-app { color: #22C55E; }
 .dept-card:nth-child(7) .dept-card-app { color: #8B5CF6; }
-.dept-card:nth-child(8) .dept-card-app { color: #22C55E; }
+.dept-card:nth-child(8) .dept-card-app { color: #F97316; }
 
 .dept-card-app-dot {
   width: 4px; height: 4px;
@@ -1209,21 +1246,12 @@ body {
         VOCATIONAL AI LAB
       </div>
       <h2 class="section-title">학과별 맞춤 AI 교육</h2>
-      <p class="section-desc">8개 학과 특성에 맞춘 AI 앱 개발 실습.<br>전공 지식 × AI 기술로 실무형 프로젝트를 완성합니다.</p>
+      <p class="section-desc">학과 특성에 맞춘 AI 앱 개발 실습.<br>전공 지식 × AI 기술로 실무형 프로젝트를 완성합니다.</p>
     </div>
   </div>
 
   <div class="dept-grid reveal">
-    <!-- 1. 조리과 -->
-    <div class="dept-card dept-card--thumb" onclick="openDemo('calorie')">
-      <div class="dept-card-glow"></div>
-      <div class="dept-card-thumb-bottom">
-        <div class="dept-card-dept">조리과</div>
-        <div class="dept-card-app">AI 칼로리 계산기</div>
-      </div>
-    </div>
-
-    <!-- 2. 디자인과 -->
+    <!-- 1. 디자인과 -->
     <div class="dept-card dept-card--thumb dept-card--thumb-roomglow" onclick="openDemo('roomglow')">
       <div class="dept-card-glow"></div>
       <div class="dept-card-thumb-bottom">
@@ -1232,93 +1260,66 @@ body {
       </div>
     </div>
 
-    <!-- 3. 기계자동차과 -->
-    <div class="dept-card" onclick="openDemo('parts')">
+    <!-- 2. 조리과 -->
+    <div class="dept-card dept-card--thumb dept-card--thumb-calorie" onclick="openDemo('calorie')">
       <div class="dept-card-glow"></div>
-      <div class="dept-card-visual">
-        <div class="dept-card-visual-bg"></div>
-        <div class="dept-card-icon">🔧</div>
-
+      <div class="dept-card-thumb-bottom">
+        <div class="dept-card-dept">조리과</div>
+        <div class="dept-card-app">AI 칼로리 계산기</div>
       </div>
-      <div class="dept-card-body">
+    </div>
+
+    <!-- 3. 기계자동차과 -->
+    <div class="dept-card dept-card--thumb dept-card--thumb-parts" onclick="openDemo('parts')">
+      <div class="dept-card-glow"></div>
+      <div class="dept-card-thumb-bottom">
         <div class="dept-card-dept">기계자동차과</div>
-        <div class="dept-card-app"><span class="dept-card-app-dot"></span>파츠피디아 부품 도감</div>
-        <div class="dept-card-desc">자동차 부품을 촬영하면 AI가 부품명과 정비 가이드를 제공. 정비 현장에서 바로 쓸 수 있는 AI 도구를 만듭니다.</div>
+        <div class="dept-card-app">파츠피디아 부품 도감</div>
       </div>
     </div>
 
     <!-- 4. 정보통신과 -->
-    <div class="dept-card" onclick="openDemo('chatbot')">
+    <div class="dept-card dept-card--thumb dept-card--thumb-chatbot" onclick="openDemo('chatbot')">
       <div class="dept-card-glow"></div>
-      <div class="dept-card-visual">
-        <div class="dept-card-visual-bg"></div>
-        <div class="dept-card-icon">🌐</div>
-
-      </div>
-      <div class="dept-card-body">
+      <div class="dept-card-thumb-bottom">
         <div class="dept-card-dept">정보통신과</div>
-        <div class="dept-card-app"><span class="dept-card-app-dot"></span>교내 AI 상담 도우미</div>
-        <div class="dept-card-desc">학교 정보를 학습한 AI 챗봇을 직접 제작. 급식, 시간표, 행사 안내까지 교내 맞춤형 AI 서비스를 구축합니다.</div>
+        <div class="dept-card-app">교내 AI 상담 도우미</div>
       </div>
     </div>
 
     <!-- 5. 전기전자과 -->
-    <div class="dept-card" onclick="openDemo('power')">
+    <div class="dept-card dept-card--thumb dept-card--thumb-power" onclick="openDemo('power')">
       <div class="dept-card-glow"></div>
-      <div class="dept-card-visual">
-        <div class="dept-card-visual-bg"></div>
-        <div class="dept-card-icon">⚡</div>
-
-      </div>
-      <div class="dept-card-body">
+      <div class="dept-card-thumb-bottom">
         <div class="dept-card-dept">전기전자과</div>
-        <div class="dept-card-app"><span class="dept-card-app-dot"></span>스마트 전력 모니터링</div>
-        <div class="dept-card-desc">실시간 전력 데이터를 시각화하고 AI로 이상 패턴을 감지. 전기전자 전공 지식을 스마트 에너지 관리에 적용합니다.</div>
+        <div class="dept-card-app">스마트 전력 모니터링</div>
       </div>
     </div>
 
     <!-- 6. 경영금융과 -->
-    <div class="dept-card" onclick="openDemo('shop')">
+    <div class="dept-card dept-card--thumb dept-card--thumb-shop" onclick="openDemo('shop')">
       <div class="dept-card-glow"></div>
-      <div class="dept-card-visual">
-        <div class="dept-card-visual-bg"></div>
-        <div class="dept-card-icon">📊</div>
-
-      </div>
-      <div class="dept-card-body">
+      <div class="dept-card-thumb-bottom">
         <div class="dept-card-dept">경영금융과</div>
-        <div class="dept-card-app"><span class="dept-card-app-dot"></span>모의 창업 쇼핑몰</div>
-        <div class="dept-card-desc">AI로 상품 설명과 마케팅 문구를 생성하고 온라인 쇼핑몰을 직접 구축. 기획부터 런칭까지 경영 실무를 체험합니다.</div>
+        <div class="dept-card-app">모의 창업 쇼핑몰</div>
       </div>
     </div>
 
     <!-- 7. 보건복지과 -->
-    <div class="dept-card" onclick="openDemo('moodcare')">
+    <div class="dept-card dept-card--thumb dept-card--thumb-moodcare" onclick="openDemo('moodcare')">
       <div class="dept-card-glow"></div>
-      <div class="dept-card-visual">
-        <div class="dept-card-visual-bg"></div>
-        <div class="dept-card-icon">💚</div>
-
-      </div>
-      <div class="dept-card-body">
+      <div class="dept-card-thumb-bottom">
         <div class="dept-card-dept">보건복지과</div>
-        <div class="dept-card-app"><span class="dept-card-app-dot"></span>MoodCare 감정분석</div>
-        <div class="dept-card-desc">AI로 돌봄 대상자의 감정 상태를 모니터링하고 케어 알림을 자동 생성. 복지 현장의 디지털 전환을 체험합니다.</div>
+        <div class="dept-card-app">MoodCare 감정분석</div>
       </div>
     </div>
 
     <!-- 8. 건설과 -->
-    <div class="dept-card" onclick="openDemo('safecheck')">
+    <div class="dept-card dept-card--thumb dept-card--thumb-safecheck" onclick="openDemo('safecheck')">
       <div class="dept-card-glow"></div>
-      <div class="dept-card-visual">
-        <div class="dept-card-visual-bg"></div>
-        <div class="dept-card-icon">🦺</div>
-
-      </div>
-      <div class="dept-card-body">
+      <div class="dept-card-thumb-bottom">
         <div class="dept-card-dept">건설과</div>
-        <div class="dept-card-app"><span class="dept-card-app-dot"></span>SafeCheck 안전점검</div>
-        <div class="dept-card-desc">현장 사진 속 안전 위험 요소를 AI가 자동 감지. 건설 안전 관리에 AI 비전 기술을 적용하는 실습입니다.</div>
+        <div class="dept-card-app">SafeCheck 안전점검</div>
       </div>
     </div>
   </div>
@@ -1562,13 +1563,13 @@ function closeMobileMenu() {
 // Demo mapping (하위 폴더 경로)
 const demos = {
   calorie:   { title: 'CALORIE_AI // AI 칼로리 계산기',       file: '조리과_칼로리계산기/calorie-app-v2.html' },
-  power:     { title: 'POWER_MONITOR // 스마트 전력 모니터링', file: '전기과_스마트전력대시보드/power-dashboard-design.html' },
-  moodcare:  { title: 'MOOD_CARE // 감정 모니터링',            file: '보건복지_노인돌봄/moodcare-design.html' },
+  power:     { title: 'POWER_MONITOR // 스마트 전력 모니터링', file: '전기과_스마트전력대시보드/power-dashboard-v2.html' },
+  moodcare:  { title: 'MOOD_CARE // 감정 모니터링',            file: '보건복지_노인돌봄/moodcare-v2.html' },
   roomglow:  { title: 'ROOM_GLOW // AI 인테리어',             file: '디자인미디어학과_인테리어디자인/room-glow-v2.html' },
-  safecheck: { title: 'SAFE_CHECK // AI 안전점검',            file: '건설학과_안전점검/safecheck-design.html' },
-  parts:     { title: 'PARTS_PEDIA // 부품 도감',             file: '기계차량_부품도감/parts-guide-design.html' },
-  shop:      { title: 'SHOP_SIMULATOR // 모의 창업 쇼핑몰',   file: '경영금융_쇼핑몰경영/shop-simulator-design.html' },
-  chatbot:   { title: 'AI_ASSISTANT // 교내 AI 상담 도우미',   file: '정보통신과_교내상담AI챗봇/school-chatbot-design.html' }
+  safecheck: { title: 'SAFE_CHECK // AI 안전점검',            file: '건설학과_안전점검/safecheck-v2.html' },
+  parts:     { title: 'PARTS_PEDIA // 부품 도감',             file: '기계차량_부품도감/parts-guide-v2.html' },
+  shop:      { title: 'SHOP_SIMULATOR // 모의 창업 쇼핑몰',   file: '경영금융_쇼핑몰경영/shop-simulator-v2.html' },
+  chatbot:   { title: 'AI_ASSISTANT // 교내 AI 상담 도우미',   file: '정보통신과_교내상담AI챗봇/school-chatbot-v2.html' }
 };
 
 function openDemo(key) {
