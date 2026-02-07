@@ -88,7 +88,7 @@ body {
   height: 56px;
   background: rgba(8,9,13,0.95);
   backdrop-filter: blur(16px) saturate(1.2);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255,255,255,0.4);
   transition: transform 0.3s ease;
 }
 @supports (backdrop-filter: blur(16px)) {
@@ -1199,9 +1199,15 @@ body {
     <!-- 우측: 서비스 탭 + 구분선 + CTA 버튼 -->
     <div class="nav-right">
       <div class="nav-tabs">
-        <a href="https://tools.teachermate.co.kr" class="nav-tab">수업도구</a>
-        <a href="https://teachermate.co.kr" class="nav-tab">문서행정</a>
-        <a href="#" class="nav-tab accent-dot">위탁교육</a>
+        <a href="https://tools.teachermate.co.kr" class="nav-tab" id="nav-tools">수업도구</a>
+        <a href="https://teachermate.co.kr" class="nav-tab" id="nav-docs">문서행정</a>
+        <a href="#" class="nav-tab accent-dot">AI교육</a>
+        <script>
+          if(location.hostname==='localhost'){
+            document.getElementById('nav-tools').href='http://localhost:5001';
+            document.getElementById('nav-docs').href='http://localhost:5000';
+          }
+        </script>
       </div>
       <div class="nav-divider"></div>
       <a href="#cta" class="nav-cta">
@@ -1218,8 +1224,14 @@ body {
   <a href="#bizcool" onclick="closeMobileMenu()">비즈쿨 프로그램</a>
   <a href="#process" onclick="closeMobileMenu()">교육 프로세스</a>
   <a href="#cta" onclick="closeMobileMenu()">교육 문의</a>
-  <a href="https://teachermate.co.kr">문서행정</a>
-  <a href="https://tools.teachermate.co.kr" class="filled-m">수업도구 바로가기</a>
+  <a href="https://teachermate.co.kr" id="mobile-nav-docs">문서행정</a>
+  <a href="https://tools.teachermate.co.kr" class="filled-m" id="mobile-nav-tools">수업도구 바로가기</a>
+  <script>
+    if(location.hostname==='localhost'){
+      document.getElementById('mobile-nav-docs').href='http://localhost:5000';
+      document.getElementById('mobile-nav-tools').href='http://localhost:5001';
+    }
+  </script>
 </div>
 
 <!-- ========== HERO ========== -->
@@ -1229,7 +1241,7 @@ body {
     <div class="hero-terminal-cursor"></div>
   </div>
   <h1>
-    학교 맞춤형 모바일로 배우는<br>
+    모바일 기기로 배우는<br>
     <span class="gradient-text">청소년 AI 스쿨</span>
   </h1>
 </section>
