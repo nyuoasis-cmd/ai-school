@@ -34,7 +34,7 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
   font-family: var(--font-body);
@@ -236,6 +236,64 @@ body {
   display: flex; align-items: center; gap: 4px;
 }
 
+/* ============ MOBILE SERVICE BAR ============ */
+.mobile-service-bar {
+  display: none;
+  position: fixed;
+  top: 56px; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(8,9,13,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: transform 0.3s ease;
+}
+@supports (backdrop-filter: blur(16px)) {
+  .mobile-service-bar { background: rgba(8,9,13,0.80); }
+}
+.mobile-service-bar-inner {
+  display: flex;
+}
+.mobile-service-tab {
+  flex: 1;
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+  text-decoration: none;
+  transition: color 0.2s;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+}
+.mobile-service-tab:hover {
+  color: var(--text-secondary);
+}
+.mobile-service-tab.active {
+  color: var(--accent);
+  border-bottom: 2.5px solid var(--accent);
+  font-weight: 700;
+}
+.mobile-service-tab.accent-orange {
+  color: var(--accent);
+  font-weight: 700;
+  position: relative;
+}
+.mobile-service-tab.accent-orange::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 24px);
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+@media (max-width: 900px) {
+  .mobile-service-bar { display: block; }
+  .nav-mobile-menu { top: 99px !important; }
+}
+
 /* ============ MOBILE MENU ============ */
 .nav-mobile-menu {
   display: none;
@@ -291,6 +349,7 @@ body {
   text-align: center;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 .hero::before {
   content: '';
@@ -1160,17 +1219,39 @@ body {
   .section-header { flex-direction: column; align-items: flex-start; }
 }
 @media (max-width: 640px) {
-  .dept-grid { grid-template-columns: 1fr; }
+  /* 카드 그리드: 2열 유지 (teacher-toolkit 패턴) */
+  .dept-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  /* 썸네일 카드 컴팩트화 */
+  .dept-card--thumb { min-height: 160px; }
+  .dept-card-thumb-bottom { padding: 32px 12px 12px; }
+  .dept-card-thumb-bottom .dept-card-dept { font-size: 14px; }
+  .dept-card-thumb-bottom .dept-card-app { font-size: 10px; }
+
   .process-track { grid-template-columns: 1fr; }
+  .process-step { padding: 20px 16px; }
   .cta-actions { flex-direction: column; align-items: center; }
-  .cta-card { padding: 40px 24px; }
+  .cta-card { padding: 32px 20px; }
   .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
-  .hero { padding: 126px 24px 60px; }
-  .section { padding: 60px 24px; }
+  /* 히어로: 서비스바(43px) 고려하여 상단 패딩 조정 */
+  .hero { padding: 110px 20px 48px; }
+  .hero h1 { letter-spacing: -1px; }
+  .hero-terminal { font-size: 10px; margin-bottom: 20px; }
+  .section { padding: 48px 20px; }
+  .section-title { font-size: 24px; }
+  .section-desc { font-size: 14px; }
   .nav-inner { padding: 0 16px; }
   .nav-cta { font-size: 12px; padding: 6px 14px; }
-  .hero h1 { letter-spacing: -1px; }
-  .program-card-preview { height: 180px; }
+  .program-card-preview { height: 160px; }
+  .program-card-body { padding: 16px; }
+  .program-card-title { font-size: 17px; }
+  .program-card-desc { font-size: 13px; }
+  .curriculum-item { padding: 8px 10px; }
+  .cta-card h2 { font-size: 20px; }
+  .divider { padding: 0 20px; }
+}
+@media (max-width: 380px) {
+  .dept-card--thumb { min-height: 140px; }
+  .hero h1 { font-size: 28px; }
 }
 </style>
 </head>
@@ -1218,9 +1299,24 @@ body {
   </div>
 </nav>
 
+<!-- Mobile Service Bar (900px 이하에서만 표시) -->
+<div class="mobile-service-bar" id="mobileServiceBar">
+  <div class="mobile-service-bar-inner">
+    <a href="https://tools.teachermate.co.kr" class="mobile-service-tab" id="msb-tools">수업도구</a>
+    <a href="https://teachermate.co.kr" class="mobile-service-tab" id="msb-docs">문서행정</a>
+    <button class="mobile-service-tab active">AI교육</button>
+  </div>
+  <script>
+    if(location.hostname==='localhost'){
+      document.getElementById('msb-tools').href='http://localhost:5001';
+      document.getElementById('msb-docs').href='http://localhost:5000';
+    }
+  </script>
+</div>
+
 <!-- Mobile Menu -->
 <div class="nav-mobile-menu" id="mobileMenu">
-  <a href="#vocational" class="active" onclick="closeMobileMenu()">직업계고 AI 교육</a>
+  <a href="#vocational" class="active" onclick="closeMobileMenu()">청소년 AI 교육</a>
   <a href="#bizcool" onclick="closeMobileMenu()">비즈쿨 프로그램</a>
   <a href="#process" onclick="closeMobileMenu()">교육 프로세스</a>
   <a href="#cta" onclick="closeMobileMenu()">교육 문의</a>
@@ -1617,13 +1713,16 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 // Nav hide on scroll down, show on scroll up
 let lastScroll = 0;
 const nav = document.querySelector('.nav');
+const serviceBar = document.getElementById('mobileServiceBar');
 window.addEventListener('scroll', () => {
   const currentScroll = window.scrollY;
   if (currentScroll > lastScroll && currentScroll > 120) {
     nav.style.transform = 'translateY(-100%)';
+    serviceBar.style.transform = 'translateY(-100%)';
     closeMobileMenu();
   } else {
     nav.style.transform = 'translateY(0)';
+    serviceBar.style.transform = 'translateY(0)';
   }
   lastScroll = currentScroll;
 }, { passive: true });
