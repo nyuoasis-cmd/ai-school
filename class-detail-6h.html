@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 앱 유저리서치 수업 · 6시간 상세</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F8F6;
+  --surface: #FFFFFF;
+  --surface-dim: #F2F1ED;
+  --border: #E5E3DE;
+  --text: #1A1A1A;
+  --text-sub: #555550;
+  --text-muted: #999892;
+  --blue: #2563EB;
+  --blue-light: #EEF4FF;
+  --green: #16A34A;
+  --green-light: #EDFCF2;
+  --violet: #7C3AED;
+  --violet-light: #F4F0FF;
+  --rose: #E11D48;
+  --rose-light: #FFF0F3;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+  --teal: #0D9488;
+  --teal-light: #F0FDFA;
+  --indigo: #4F46E5;
+  --indigo-light: #EEF2FF;
+  --cyan: #0891B2;
+  --cyan-light: #ECFEFF;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  border-radius: 0 0 24px 24px;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+
+.hero-img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px 32px 32px;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 100%);
+  color: white;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.hero-overlay h1 {
+  font-size: clamp(24px, 5vw, 36px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.hero-overlay p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 8px;
+}
+
+/* ===== INFO BAR ===== */
+.info-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.info-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.info-chip .ic {
+  font-size: 15px;
+}
+
+/* ===== JOURNEY ===== */
+.journey-section {
+  margin-bottom: 48px;
+}
+
+.journey-section h2 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.journey-flow {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.journey-item {
+  flex: 1;
+  text-align: center;
+  padding: 20px 8px;
+  position: relative;
+  border-right: 1px solid var(--border);
+}
+
+.journey-item:last-child {
+  border-right: none;
+}
+
+.journey-item .emoji {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.journey-item .jlabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.journey-item .jsub {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.journey-item.is-active {
+  background: var(--indigo-light);
+}
+
+.journey-item.is-active .jlabel {
+  color: var(--indigo);
+}
+
+/* ===== CONTEXT BAR ===== */
+.context-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+
+.context-bar h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.context-steps {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.context-step {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.context-step.done {
+  background: var(--surface-dim);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.context-step.current {
+  background: var(--indigo);
+  color: white;
+}
+
+.context-step.upcoming {
+  background: var(--surface-dim);
+  color: var(--text-sub);
+}
+
+.context-arrow {
+  color: var(--text-muted);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+}
+
+/* ===== PHASE DIVIDER ===== */
+.phase-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 48px 0 32px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #312E81, #4338CA);
+  border-radius: 14px;
+  color: white;
+}
+
+.phase-divider .phase-icon {
+  font-size: 32px;
+}
+
+.phase-divider h2 {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.phase-divider p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 2px;
+}
+
+/* ===== CLASS BLOCK ===== */
+.class-section {
+  margin-bottom: 20px;
+}
+
+.class-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.class-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.class-badge.period-5 {
+  background: var(--indigo);
+}
+
+.class-badge.period-6 {
+  background: var(--cyan);
+}
+
+.class-badge.break {
+  background: var(--text-muted);
+}
+
+.class-label h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.class-label .dur {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* ===== ACTIVITY CARD ===== */
+.activity {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.activity:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.activity-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.activity-body {
+  padding: 20px;
+}
+
+.activity-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.activity-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--surface-dim);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.activity-dur {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--indigo);
+  font-weight: 600;
+}
+
+.activity h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.activity p {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+.activity-tags {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 5px;
+}
+
+.tag.tool { background: var(--violet-light); color: var(--violet); }
+.tag.output { background: var(--green-light); color: var(--green); }
+.tag.student { background: var(--blue-light); color: var(--blue); }
+.tag.highlight { background: var(--rose-light); color: var(--rose); }
+.tag.concept { background: var(--indigo-light); color: var(--indigo); }
+
+/* ===== HIGHLIGHT CARD ===== */
+.activity.is-highlight {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 1px var(--indigo), 0 4px 20px rgba(79, 70, 229, 0.08);
+}
+
+.highlight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--indigo);
+  background: var(--indigo-light);
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+}
+
+/* ===== CONCEPT BOX ===== */
+.concept-box {
+  background: linear-gradient(135deg, var(--indigo-light), #F8F6FF);
+  border: 1px solid #C7D2FE;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 10px;
+}
+
+.concept-box h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--indigo);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.concept-box p {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+.concept-box .formula {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--indigo);
+  text-align: center;
+  padding: 12px;
+  margin-top: 8px;
+  background: white;
+  border-radius: 8px;
+}
+
+/* ===== COMPACT CARD ===== */
+.compact {
+  display: flex;
+  gap: 14px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+.compact .c-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.compact .c-body {
+  flex: 1;
+}
+
+.compact .c-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.compact h4 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.compact p {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* ===== BREAK ===== */
+.break-card {
+  background: var(--surface-dim);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.break-card .emoji {
+  font-size: 24px;
+}
+
+.break-card .break-text {
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+.break-card .break-text strong {
+  color: var(--text);
+}
+
+/* ===== PREP SECTION ===== */
+.prep-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.prep-section h3 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prep-section ul {
+  list-style: none;
+}
+
+.prep-section li {
+  font-size: 14px;
+  color: var(--text-sub);
+  padding: 5px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.6;
+}
+
+.prep-section li::before {
+  content: '\2022';
+  color: var(--indigo);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.prep-code {
+  background: #1E293B;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #E2E8F0;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* ===== FOLLOWUP ===== */
+.followup {
+  background: linear-gradient(135deg, #1E293B, #334155);
+  border-radius: 18px;
+  padding: 28px 24px;
+  color: white;
+  margin: 48px 0;
+}
+
+.followup h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.followup p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+.followup ul {
+  list-style: none;
+  margin-top: 16px;
+}
+
+.followup li {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.followup li::before {
+  content: '\2192';
+  color: #818CF8;
+  font-weight: 700;
+}
+
+/* ===== FOOTER ===== */
+.page-footer {
+  text-align: center;
+  padding: 32px 0 48px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== OBJECTIVES ===== */
+.objectives {
+  background: var(--blue-light);
+  border: 1px solid #D0DFFF;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.objectives .obj-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.objectives .obj-text {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+.objectives .obj-text strong {
+  color: var(--text);
+}
+
+/* ===== TOOLS ===== */
+.tools-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.tool-item {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.tool-item .t-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.tool-item .t-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.tool-item .t-note {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .hero-img { height: 260px; }
+  .activity-img { height: 180px; }
+  .journey-item { padding: 14px 4px; }
+  .journey-item .emoji { font-size: 20px; }
+  .journey-item .jlabel { font-size: 11px; }
+  .journey-item .jsub { font-size: 10px; }
+  .info-bar { gap: 6px; }
+  .info-chip { font-size: 12px; padding: 6px 12px; }
+  .phase-divider { padding: 16px 20px; }
+  .phase-divider .phase-icon { font-size: 26px; }
+  .phase-divider h2 { font-size: 16px; }
+  .context-steps { gap: 4px; }
+  .context-step { font-size: 11px; padding: 4px 10px; }
+  .objectives { padding: 24px 20px; }
+  .tools-bar { gap: 6px; }
+  .tool-item { padding: 12px 8px; }
+  .tool-item .t-icon { font-size: 20px; }
+  .tool-item .t-name { font-size: 11px; }
+  .tool-item .t-note { font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="image/hero-6h.jpg" alt="유저리서치 수업 교실 전경" class="hero-img">
+  <div class="hero-overlay">
+    <div class="hero-tag">3회차 · 5~6교시</div>
+    <h1>AI 앱 검증</h1>
+    <p>유저리서치 — 만든 사람이 아닌, 쓰는 사람의 눈으로</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INFO BAR -->
+  <div class="info-bar">
+    <div class="info-chip"><span class="ic">⏱</span> 50분 × 2교시</div>
+    <div class="info-chip"><span class="ic">👥</span> 모둠 교차 활동</div>
+    <div class="info-chip"><span class="ic">🔍</span> 유저리서치 체험</div>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999892;margin-bottom:12px;">수업 목표</h2>
+  <div class="objectives">
+    <div class="obj-icon">🎯</div>
+    <div class="obj-text">2회차에서 완성한 미니앱을 다른 모둠과 <strong>교차 테스트</strong>하며 실제 사용자 관점의 피드백을 수집한다. AI를 활용해 피드백을 분석·우선순위화하고, 이를 반영하여 앱을 고도화하는 <strong>유저리서치 사이클</strong>을 체험한다.</div>
+  </div>
+
+  <!-- TOOLS -->
+  <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999892;margin-bottom:12px;">수업 도구</h2>
+  <div class="tools-bar">
+    <div class="tool-item">
+      <div class="t-icon">💬</div>
+      <div class="t-name">ChatGPT</div>
+      <div class="t-note">피드백 분석</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">💻</div>
+      <div class="t-name">강사용 PC</div>
+      <div class="t-note">코드 수정</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">📌</div>
+      <div class="t-name">패들렛</div>
+      <div class="t-note">피드백+제출</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">📱</div>
+      <div class="t-name">스마트폰</div>
+      <div class="t-note">학생 기기</div>
+    </div>
+  </div>
+
+  <!-- ==================== 3회차 ==================== -->
+  <div class="phase-divider">
+    <div class="phase-icon">🔍</div>
+    <div>
+      <h2>3회차 — 유저리서치 + 고도화</h2>
+      <p>내가 좋다고 생각한 앱 → 사용자가 검증한 앱으로</p>
+    </div>
+  </div>
+
+  <!-- CONCEPT: 유저리서치란 -->
+  <div class="concept-box">
+    <h4>💡 유저리서치란?</h4>
+    <p>실제 사용자가 제품을 써보고 피드백을 주는 과정입니다. 배달앱이 버튼 위치를 바꾸고, 게임이 튜토리얼을 고치는 것도 모두 유저리서치 결과입니다.</p>
+    <div class="formula">만든 사람의 생각 ≠ 쓰는 사람의 경험</div>
+  </div>
+
+  <!-- ========== 5교시 ========== -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge period-5">5교시</span>
+      <h2>네 앱을 내가 써볼게</h2>
+      <span class="dur">50분</span>
+    </div>
+
+    <!-- 리캡 + 개념 -->
+    <div class="compact">
+      <div class="c-icon">🔄</div>
+      <div class="c-body">
+        <h4>리캡 + 유저리서치 개념 소개</h4>
+        <p>4교시 앱을 다시 열어보고, 실제 사례와 함께 유저리서치 개념을 소개합니다.</p>
+        <div class="activity-tags">
+          <span class="tag concept">유저리서치 개념</span>
+          <span class="tag student">4교시 앱 재확인</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 피드백 카드 안내 -->
+    <div class="activity">
+      <img src="image/feedback-card.jpg" alt="강사가 피드백 카드 작성법을 시연하는 모습" class="activity-img">
+      <div class="activity-body">
+        <h3>📋 피드백 카드 작성법 안내</h3>
+        <p>강사가 예시 앱으로 피드백 카드 4가지 항목(첫인상·좋은점·불편한점·추가기능) 작성법을 시연합니다.</p>
+        <div class="activity-tags">
+          <span class="tag concept">피드백 프레임워크</span>
+          <span class="tag tool">패들렛 양식</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 교차 테스트 — 하이라이트 -->
+    <div class="activity is-highlight">
+      <img src="image/cross-test.jpg" alt="학생들이 다른 모둠의 앱을 체험하는 모습" class="activity-img">
+      <div class="activity-body">
+        <div class="highlight-badge">🔥 핵심 활동</div>
+        <h3>🔄 교차 테스트 (2라운드)</h3>
+        <p>시계방향 로테이션으로 2개 모둠의 앱을 사용자 입장에서 체험하고 피드백 카드를 작성합니다.</p>
+        <div class="activity-tags">
+          <span class="tag highlight">교차 테스트</span>
+          <span class="tag student">2라운드 × 10분</span>
+          <span class="tag output">피드백 카드 2장 작성</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 피드백 분석 -->
+    <div class="compact">
+      <div class="c-icon">📊</div>
+      <div class="c-body">
+        <h4>피드백 열람 + AI로 분석</h4>
+        <p>받은 피드백을 ChatGPT로 정리·우선순위화하여 수정할 TOP 3를 확정합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag output">수정 우선순위 TOP 3</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 고도화 시작 -->
+    <div class="compact">
+      <div class="c-icon">🛠️</div>
+      <div class="c-body">
+        <h4>고도화 시작 — TOP 1부터</h4>
+        <p>우선순위 1번부터 ChatGPT에 수정 요청하고 CodePen에 반영합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT + CodePen</span>
+          <span class="tag output">고도화 시작</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========== 쉬는시간 ========== -->
+  <div class="break-card">
+    <div class="emoji">☕</div>
+    <div class="break-text">
+      <strong>쉬는시간 · 10분</strong><br>
+      학생들은 다른 모둠의 피드백을 다시 읽어보고, 강사는 진행 상황을 점검합니다.
+    </div>
+  </div>
+
+  <!-- ========== 6교시 ========== -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge period-6">6교시</span>
+      <h2>피드백이 앱을 바꾼다</h2>
+      <span class="dur">50분</span>
+    </div>
+
+    <!-- 리캡 -->
+    <div class="compact">
+      <div class="c-icon">🔄</div>
+      <div class="c-body">
+        <h4>빠른 리캡</h4>
+        <p>5교시에 확정한 피드백 TOP 3를 이번 시간에 전부 반영할 것임을 안내합니다.</p>
+      </div>
+    </div>
+
+    <!-- 집중 고도화 -->
+    <div class="activity">
+      <img src="image/deep-upgrade.jpg" alt="학생들이 집중해서 앱을 고도화하는 모습" class="activity-img">
+      <div class="activity-body">
+        <h3>⚡ 집중 고도화</h3>
+        <p>TOP 3 수정사항을 ChatGPT에 요청하고 CodePen에 반영하며 강사가 순회 코칭합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT + CodePen</span>
+          <span class="tag student">피드백 반영 실습</span>
+          <span class="tag output">미니앱 v4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Before/After -->
+    <div class="activity">
+      <img src="image/before-after.jpg" alt="Before/After 비교 화면" class="activity-img">
+      <div class="activity-body">
+        <h3>📸 Before / After 비교</h3>
+        <p>v3와 v4 스크린샷을 나란히 패들렛에 올리고 변화 포인트를 한줄로 정리합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">패들렛</span>
+          <span class="tag output">✅ Before/After 포트폴리오</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 최종 제출 -->
+    <div class="compact">
+      <div class="c-icon">🏁</div>
+      <div class="c-body">
+        <h4>최종 제출</h4>
+        <p>패들렛에 CodePen URL, Before/After 스크린샷, 가장 도움된 피드백 1개를 제출합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">패들렛</span>
+          <span class="tag output">✅ 검증된 앱 제출</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 마무리 -->
+    <div class="compact">
+      <div class="c-icon">💬</div>
+      <div class="c-body">
+        <h4>마무리 — 유저리서치의 힘</h4>
+        <p>'내가 만든 앱'에서 '사용자가 검증한 앱'으로 바뀐 경험을 정리하며 마무리합니다.</p>
+        <div class="activity-tags">
+          <span class="tag concept">유저리서치 사이클 체험 완료</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-footer">
+    © 2025 TeacherMate · AI 교육을 더 쉽게
+  </div>
+
+</div>
+
+</body>
+</html>

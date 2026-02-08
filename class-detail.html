@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 앱 기획 수업 · 2시간 상세</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F8F6;
+  --surface: #FFFFFF;
+  --surface-dim: #F2F1ED;
+  --border: #E5E3DE;
+  --text: #1A1A1A;
+  --text-sub: #555550;
+  --text-muted: #999892;
+  --blue: #2563EB;
+  --blue-light: #EEF4FF;
+  --green: #16A34A;
+  --green-light: #EDFCF2;
+  --violet: #7C3AED;
+  --violet-light: #F4F0FF;
+  --rose: #E11D48;
+  --rose-light: #FFF0F3;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  border-radius: 0 0 24px 24px;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+
+.hero-img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px 32px 32px;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 100%);
+  color: white;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  padding: 5px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.hero-overlay h1 {
+  font-size: clamp(24px, 5vw, 36px);
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.hero-overlay p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 8px;
+}
+
+/* ===== INFO BAR ===== */
+.info-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+
+.info-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+}
+
+.info-chip .ic {
+  font-size: 15px;
+}
+
+/* ===== JOURNEY ===== */
+.journey-section {
+  margin-bottom: 48px;
+}
+
+.journey-section h2 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.journey-flow {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.journey-item {
+  flex: 1;
+  text-align: center;
+  padding: 20px 8px;
+  position: relative;
+  border-right: 1px solid var(--border);
+}
+
+.journey-item:last-child {
+  border-right: none;
+}
+
+.journey-item .emoji {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.journey-item .jlabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.journey-item .jsub {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.journey-item .arrow {
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(-50%) rotate(-45deg);
+  z-index: 1;
+}
+
+/* ===== CLASS BLOCK ===== */
+.class-section {
+  margin-bottom: 20px;
+}
+
+.class-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.class-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  background: var(--blue);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.class-badge.break {
+  background: var(--text-muted);
+}
+
+.class-label h2 {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.class-label .dur {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* ===== ACTIVITY CARD ===== */
+.activity {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.activity:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.activity-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+}
+
+.activity-body {
+  padding: 20px;
+}
+
+.activity-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.activity-time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--surface-dim);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.activity-dur {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.activity h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.activity p {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+
+.activity-tags {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 5px;
+}
+
+.tag.tool { background: var(--violet-light); color: var(--violet); }
+.tag.output { background: var(--green-light); color: var(--green); }
+.tag.student { background: var(--blue-light); color: var(--blue); }
+.tag.highlight { background: var(--rose-light); color: var(--rose); }
+
+/* ===== HIGHLIGHT CARD ===== */
+.activity.is-highlight {
+  border-color: var(--rose);
+  box-shadow: 0 0 0 1px var(--rose), 0 4px 20px rgba(225, 29, 72, 0.08);
+}
+
+.highlight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rose);
+  background: var(--rose-light);
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+}
+
+/* ===== BREAK ===== */
+.break-card {
+  background: var(--surface-dim);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.break-card .emoji { font-size: 24px; }
+
+.break-card .break-text {
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+.break-card .break-text strong {
+  color: var(--text);
+}
+
+/* ===== COMPACT ACTIVITY ===== */
+.compact {
+  display: flex;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+  transition: box-shadow 0.2s;
+}
+
+.compact:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.compact .c-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.compact .c-body { flex: 1; }
+
+.compact .c-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.compact h4 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.compact p {
+  font-size: 13px;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+/* ===== FOLLOW UP ===== */
+.followup {
+  background: linear-gradient(135deg, #0F172A, #1E293B);
+  border-radius: 16px;
+  padding: 32px;
+  color: white;
+  margin: 48px 0;
+}
+
+.followup h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.followup p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+.followup ul {
+  list-style: none;
+  margin-top: 16px;
+}
+
+.followup li {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.followup li::before {
+  content: '→';
+  color: #60A5FA;
+  font-weight: 700;
+}
+
+/* ===== FOOTER ===== */
+.page-footer {
+  text-align: center;
+  padding: 32px 0 48px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .hero-img { height: 260px; }
+  .activity-img { height: 180px; }
+  .journey-item { padding: 14px 4px; }
+  .journey-item .emoji { font-size: 20px; }
+  .journey-item .jlabel { font-size: 11px; }
+  .journey-item .jsub { font-size: 10px; }
+  .info-bar { gap: 6px; }
+  .info-chip { font-size: 12px; padding: 6px 12px; }
+  .objectives { padding: 24px 20px; }
+  .obj-item { padding: 10px 0; }
+}
+
+/* ===== OBJECTIVES ===== */
+.objectives {
+  background: var(--blue-light);
+  border: 1px solid #D0DFFF;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.objectives .obj-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.objectives .obj-text {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.7;
+}
+.objectives .obj-text strong {
+  color: var(--text);
+}
+
+/* ===== TOOLS ===== */
+.tools-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+.tool-item {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+}
+.tool-item .t-icon { font-size: 24px; margin-bottom: 6px; }
+.tool-item .t-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.tool-item .t-note {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+@media (max-width: 600px) {
+  .tools-bar { gap: 6px; }
+  .tool-item { padding: 12px 8px; }
+  .tool-item .t-icon { font-size: 20px; }
+  .tool-item .t-name { font-size: 11px; }
+  .tool-item .t-note { font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="mockup/image/Gemini_Generated_Image_ejsad3ejsad3ejsa.png" alt="AI 앱 기획 수업 교실 전경" class="hero-img">
+  <div class="hero-overlay">
+    <div class="hero-tag">2시간 · 1회 수업</div>
+    <h1>AI 앱 기획</h1>
+    <p>학생이 직접 아이디어를 발견하고, AI와 함께 앱을 기획하는 프로젝트 수업</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INFO BAR -->
+  <div class="info-bar">
+    <div class="info-chip"><span class="ic">⏱</span> 50분 × 2교시</div>
+    <div class="info-chip"><span class="ic">👥</span> 4~5인 모둠 활동</div>
+    <div class="info-chip"><span class="ic">📱</span> 스마트폰만 준비</div>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999892;margin-bottom:12px;">수업 목표</h2>
+  <div class="objectives">
+    <div class="obj-icon">🎯</div>
+    <div class="obj-text">일상 속 문제를 스스로 발견하고, 이를 인공지능을 활용한 앱 아이디어로 구체화하는 기획 역량을 기른다. 대화형 인공지능 도구를 활용해 기능, 화면 흐름, 사용자 대상까지 포함한 기초 앱 기획서를 완성한다.</div>
+  </div>
+
+  <!-- TOOLS -->
+  <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999892;margin-bottom:12px;">수업 도구</h2>
+  <div class="tools-bar">
+    <div class="tool-item">
+      <div class="t-icon">💬</div>
+      <div class="t-name">ChatGPT</div>
+      <div class="t-note">무료 앱</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">📝</div>
+      <div class="t-name">메모장</div>
+      <div class="t-note">기본 앱</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">📌</div>
+      <div class="t-name">패들렛</div>
+      <div class="t-note">제출용</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">💻</div>
+      <div class="t-name">PC</div>
+      <div class="t-note">강사 전용</div>
+    </div>
+  </div>
+
+  <!-- ========== 1교시 ========== -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge">1교시</span>
+      <h2>내 앱 아이디어 발견하기</h2>
+      <span class="dur">50분</span>
+    </div>
+
+    <!-- 오프닝 -->
+    <div class="compact">
+      <div class="c-icon">🎬</div>
+      <div class="c-body">
+        <h4>오프닝 — 데모 앱 체험</h4>
+        <p>강사가 만든 예시 앱을 QR로 바로 체험하며 수업 목표를 확인합니다.</p>
+        <div class="activity-tags">
+          <span class="tag student">QR 스캔 → 앱 체험</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 체험 -->
+    <div class="activity">
+      <img src="mockup/image/Gemini_Generated_Image_k88egnk88egnk88e.png" alt="학생들이 스마트폰으로 AI 챗봇을 체험하는 모습" class="activity-img">
+      <div class="activity-body">
+        <h3>🤖 AI 자유 체험</h3>
+        <p>ChatGPT에 재미있는 미션을 수행하며 AI와 대화하는 감각을 잡습니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT 앱 (무료)</span>
+          <span class="tag output">캡처 이미지</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 불편함 수집 -->
+    <div class="compact">
+      <div class="c-icon">😤</div>
+      <div class="c-body">
+        <h4>불편함 수집 + AI 브레인스토밍</h4>
+        <p>일상 속 불편함을 메모하고 ChatGPT에게 앱 아이디어로 발전시킬 수 있는지 질문합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">메모장 + ChatGPT</span>
+          <span class="tag output">앱 아이디어 후보</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모둠 확정 -->
+    <div class="activity">
+      <img src="mockup/image/Gemini_Generated_Image_99dt7k99dt7k99dt.png" alt="학생들이 모둠별로 포스트잇과 스마트폰으로 기획하는 모습" class="activity-img">
+      <div class="activity-body">
+        <h3>⭐ 모둠 아이디어 확정</h3>
+        <p>모둠원이 각자의 아이디어를 공유하고 투표로 1개를 선택합니다.</p>
+        <div class="activity-tags">
+          <span class="tag student">모둠 토의 + 투표</span>
+          <span class="tag output">모둠 아이디어 1개 확정</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 기획 시작 -->
+    <div class="compact">
+      <div class="c-icon">📝</div>
+      <div class="c-body">
+        <h4>AI와 기획서(PRD) 작성 시작</h4>
+        <p>ChatGPT와 대화하며 앱 이름, 타겟 사용자, 핵심 기능을 포함한 미니 PRD를 작성합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag output">PRD 초안</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 쉬는시간 ========== -->
+  <div class="break-card">
+    <div class="emoji">☕</div>
+    <div class="break-text">
+      <strong>쉬는시간 · 10분</strong><br>
+      강사는 제출된 기획서를 확인하고, 라이브 시연 준비를 합니다.
+    </div>
+  </div>
+
+  <!-- ========== 2교시 ========== -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge">2교시</span>
+      <h2>기획 완성 + 마법의 순간</h2>
+      <span class="dur">50분</span>
+    </div>
+
+    <!-- 리캡 -->
+    <div class="compact">
+      <div class="c-icon">🔄</div>
+      <div class="c-body">
+        <h4>리캡 + 2교시 안내</h4>
+        <p>1교시 내용을 빠르게 확인하고 기획서 완성 목표를 안내합니다.</p>
+      </div>
+    </div>
+
+    <!-- 화면 설계 -->
+    <div class="compact">
+      <div class="c-icon">📱</div>
+      <div class="c-body">
+        <h4>화면 설계 워크</h4>
+        <p>ChatGPT와 함께 홈·입력·결과 화면 흐름을 모둠별로 스케치합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT + 종이/메모장</span>
+          <span class="tag output">화면 흐름도</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 앱 이름 + 제출 -->
+    <div class="compact">
+      <div class="c-icon">✨</div>
+      <div class="c-body">
+        <h4>앱 이름 확정 + PRD 완성 → 제출</h4>
+        <p>ChatGPT로 앱 이름을 정하고 완성된 PRD를 패들렛에 제출합니다.</p>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT + 패들렛</span>
+          <span class="tag output">✅ 완성 PRD 제출</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 30초 피칭 -->
+    <div class="activity">
+      <img src="mockup/image/Gemini_Generated_Image_utz4oeutz4oeutz4.png" alt="학생이 앞에서 앱 기획을 발표하는 모습" class="activity-img">
+      <div class="activity-body">
+        <h3>🎤 모둠별 30초 피칭</h3>
+        <p>모둠 대표가 한줄 발표 후 전체 학생이 가장 만들고 싶은 앱에 투표합니다.</p>
+        <div class="activity-tags">
+          <span class="tag student">한줄 피칭 + 투표</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 라이브 시연 — 하이라이트 -->
+    <div class="activity is-highlight">
+      <div class="activity-body">
+        <h3>라이브 시연 — 기획이 진짜 앱이 되는 순간</h3>
+        <p>투표 1등 모둠의 기획서를 강사가 실시간으로 구현하고, QR로 전원이 직접 테스트합니다.</p>
+        <div class="activity-tags">
+          <span class="tag highlight">라이브 구현</span>
+          <span class="tag tool">Replit (강사)</span>
+          <span class="tag output">🎉 실제 작동 앱 URL</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="page-footer">
+    © 2025 TeacherMate · AI 교육을 더 쉽게
+  </div>
+
+</div>
+
+</body>
+</html>
