@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>비즈쿨 고객검증 & 실전 마케팅 · 12차시 상세</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F8F8F6;
+  --surface: #FFFFFF;
+  --surface-dim: #F2F1ED;
+  --border: #E5E3DE;
+  --text: #1A1A1A;
+  --text-sub: #555550;
+  --text-muted: #999892;
+  --green: #00d68f;
+  --green-light: #EDFCF8;
+  --blue: #4e8cff;
+  --blue-light: #EEF4FF;
+  --violet: #a855f7;
+  --violet-light: #F4F0FF;
+  --amber: #F59E0B;
+  --amber-light: #FFFBEB;
+  --rose: #E11D48;
+  --rose-light: #FFF0F3;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  border-radius: 0 0 24px 24px;
+  overflow: hidden;
+  margin-bottom: 48px;
+  background: linear-gradient(135deg, #2a1a3a 0%, #150d25 60%, #1a0e30 100%);
+  min-height: 280px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-pattern {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(168,85,247,0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 60%, rgba(168,85,247,0.08) 0%, transparent 40%);
+}
+
+.hero-overlay {
+  position: relative; padding: 40px 32px 32px; color: white; width: 100%;
+}
+
+.hero-tag {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: rgba(168,85,247,0.2); backdrop-filter: blur(8px);
+  padding: 5px 12px; border-radius: 6px; margin-bottom: 12px;
+  color: #a855f7; border: 1px solid rgba(168,85,247,0.3);
+}
+
+.hero-overlay h1 { font-size: clamp(24px, 5vw, 36px); font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; }
+.hero-overlay p { font-size: 15px; color: rgba(255,255,255,0.7); margin-top: 8px; }
+
+/* ===== INFO BAR ===== */
+.info-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+.info-chip { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: var(--text-sub); }
+.info-chip .ic { font-size: 15px; }
+
+/* ===== GRADUATION BADGE ===== */
+.grad-badge { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-radius: 12px; background: var(--violet-light); border: 1px solid rgba(168,85,247,0.2); margin-bottom: 32px; }
+.grad-badge .grad-icon { font-size: 20px; }
+.grad-badge .grad-text { font-size: 14px; font-weight: 700; color: #7C3AED; }
+
+/* ===== JOURNEY ===== */
+.journey-section { margin-bottom: 40px; }
+.journey-section h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 16px; }
+.journey-flow { display: flex; align-items: stretch; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.journey-item { flex: 1; text-align: center; padding: 20px 8px; position: relative; border-right: 1px solid var(--border); }
+.journey-item:last-child { border-right: none; }
+.journey-item .emoji { font-size: 26px; margin-bottom: 6px; }
+.journey-item .jlabel { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.journey-item .jsub { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+
+/* ===== PHASE DIVIDER ===== */
+.phase-divider { display: flex; align-items: center; gap: 16px; margin: 48px 0 32px; padding: 20px 24px; border-radius: 14px; color: white; }
+.phase-divider.block-1 { background: linear-gradient(135deg, #0a3d2a, #0d5534); }
+.phase-divider.block-2 { background: linear-gradient(135deg, #0d2652, #1a3a6b); }
+.phase-divider.block-3 { background: linear-gradient(135deg, #2d1650, #3d2268); }
+.phase-divider .phase-icon { font-size: 32px; }
+.phase-divider h2 { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
+.phase-divider p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+/* ===== BLOCK BANNER ===== */
+.block-banner { display: flex; align-items: center; gap: 14px; margin: 48px 0 16px; padding: 16px 20px; border-radius: 12px; font-size: 14px; font-weight: 700; }
+.block-banner.block-1-banner { background: rgba(0,214,143,0.08); border: 1px solid rgba(0,214,143,0.15); color: #00b377; }
+.block-banner.block-2-banner { background: rgba(78,140,255,0.08); border: 1px solid rgba(78,140,255,0.15); color: #4e8cff; }
+.block-banner.block-3-banner { background: rgba(168,85,247,0.08); border: 1px solid rgba(168,85,247,0.15); color: #a855f7; }
+.block-banner .block-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; padding: 3px 8px; border-radius: 4px; }
+.block-banner.block-1-banner .block-label { background: rgba(0,214,143,0.15); }
+.block-banner.block-2-banner .block-label { background: rgba(78,140,255,0.15); }
+.block-banner.block-3-banner .block-label { background: rgba(168,85,247,0.15); }
+
+/* ===== CLASS BLOCK ===== */
+.class-section { margin-bottom: 20px; }
+.class-label { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.class-badge { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: white; padding: 4px 10px; border-radius: 6px; }
+.class-badge.green { background: #00b377; }
+.class-badge.blue { background: #4e8cff; }
+.class-badge.violet { background: #a855f7; }
+.class-label h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.class-label .dur { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+/* ===== TYPE BADGE ===== */
+.type-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; margin-bottom: 8px; }
+.type-badge.theory { background: #EEF4FF; color: #4e8cff; }
+.type-badge.practice { background: #EDFCF8; color: #00b377; }
+.type-badge.presentation { background: #FFFBEB; color: #D97706; }
+
+/* ===== ACTIVITY CARD ===== */
+.activity { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; transition: box-shadow 0.2s; }
+.activity:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+.activity-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
+.activity-body { padding: 20px; }
+.activity-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.activity-ref { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-muted); }
+.activity h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.activity p { font-size: 14px; color: var(--text-sub); line-height: 1.7; }
+
+/* ===== ACTIVITIES LIST ===== */
+.act-list { margin-top: 14px; padding: 14px 16px; background: var(--surface-dim); border-radius: 10px; }
+.act-list-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 8px; }
+.act-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-sub); padding: 4px 0; line-height: 1.6; }
+.act-item::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 8px; }
+.block-1-section .act-item::before { background: var(--green); }
+.block-2-section .act-item::before { background: var(--blue); }
+.block-3-section .act-item::before { background: var(--violet); }
+
+/* ===== TAGS ===== */
+.activity-tags { display: flex; gap: 5px; margin-top: 14px; flex-wrap: wrap; }
+.tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 5px; }
+.tag.tool { background: var(--violet-light); color: #7C3AED; }
+.tag.output { background: var(--green-light); color: #059669; }
+
+/* ===== COMPACT / BREAK ===== */
+.compact { display: flex; gap: 14px; padding: 16px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; }
+.compact .c-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.compact .c-body { flex: 1; }
+.compact h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.compact p { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+.break-card { background: var(--surface-dim); border: 1px dashed var(--border); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+.break-card .emoji { font-size: 24px; }
+.break-card .break-text { font-size: 13px; color: var(--text-sub); }
+.break-card .break-text strong { color: var(--text); }
+
+/* ===== TOOLS BAR ===== */
+.tools-bar { display: flex; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
+.tool-item { flex: 1; min-width: 70px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; }
+.tool-item .t-icon { font-size: 24px; margin-bottom: 6px; }
+.tool-item .t-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-item .t-note { font-size: 11px; color: var(--text-muted); }
+
+/* ===== OBJECTIVES ===== */
+.objectives { background: var(--violet-light); border: 1px solid rgba(168,85,247,0.2); border-radius: 14px; padding: 20px 24px; margin-bottom: 32px; display: flex; align-items: flex-start; gap: 12px; }
+.objectives .obj-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.objectives .obj-text { font-size: 14px; color: var(--text-sub); line-height: 1.7; }
+.objectives .obj-text strong { color: var(--text); }
+
+/* ===== FINAL ===== */
+.final-card { background: linear-gradient(135deg, #2d1650, #3d2268); border-radius: 18px; padding: 28px 24px; color: white; margin: 48px 0; }
+.final-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.final-card p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; }
+.final-card ul { list-style: none; margin-top: 16px; }
+.final-card li { font-size: 14px; color: rgba(255,255,255,0.8); padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+.final-card li::before { content: '✓'; color: #a855f7; font-weight: 700; }
+
+/* ===== FOOTER ===== */
+.page-footer { text-align: center; padding: 32px 0 48px; font-size: 13px; color: var(--text-muted); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .hero { min-height: 220px; }
+  .journey-item { padding: 14px 4px; }
+  .journey-item .emoji { font-size: 20px; }
+  .journey-item .jlabel { font-size: 11px; }
+  .journey-item .jsub { font-size: 10px; }
+  .info-bar { gap: 6px; }
+  .info-chip { font-size: 12px; padding: 6px 12px; }
+  .phase-divider { padding: 16px 20px; }
+  .phase-divider .phase-icon { font-size: 26px; }
+  .phase-divider h2 { font-size: 16px; }
+  .tools-bar { gap: 6px; }
+  .tool-item { padding: 12px 8px; min-width: 60px; }
+  .tool-item .t-icon { font-size: 20px; }
+  .tool-item .t-name { font-size: 11px; }
+  .tool-item .t-note { font-size: 10px; }
+  .objectives { padding: 16px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="img/bizcool/hero-12h.webp" class="hero-img" alt="학생들이 태블릿으로 리뷰하는 모습">
+  <div class="hero-pattern"></div>
+  <div class="hero-overlay">
+    <div class="hero-tag">프로 · 12차시 · 6회 방문</div>
+    <h1>고객검증 & 실전 마케팅</h1>
+    <p>사용자 테스트로 앱을 검증하고, STP 마케팅 전략과 AI 콘텐츠 제작으로 실전을 경험합니다</p>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- INFO BAR -->
+  <div class="info-bar">
+    <div class="info-chip"><span class="ic">⏱</span> 50분 × 12교시</div>
+    <div class="info-chip"><span class="ic">👥</span> 4~5인 모둠 활동</div>
+    <div class="info-chip"><span class="ic">💻</span> 노트북 필수</div>
+    <div class="info-chip"><span class="ic">⬆</span> 8차시 포함</div>
+  </div>
+
+  <!-- GRADUATION BADGE -->
+  <div class="grad-badge">
+    <span class="grad-icon">🎓</span>
+    <span class="grad-text">졸업 산출물: 최종 AI 앱 + 마케팅 키트 + 사업계획서</span>
+  </div>
+
+  <!-- OBJECTIVES -->
+  <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999892;margin-bottom:12px;">수업 목표</h2>
+  <div class="objectives">
+    <div class="obj-icon">🎯</div>
+    <div class="obj-text">Block 1~2(8차시)에서 완성한 AI 앱을 <strong>실제 사용자에게 테스트</strong>하고, 피드백을 반영해 최종 버전으로 완성합니다. <strong>STP 마케팅 전략</strong>을 수립하고 AI로 마케팅 콘텐츠를 제작합니다. <strong>최종 데모데이</strong>로 전 과정을 집대성합니다.</div>
+  </div>
+
+  <!-- JOURNEY -->
+  <div class="journey-section">
+    <h2>전체 학습 흐름 (12차시)</h2>
+    <div class="journey-flow">
+      <div class="journey-item">
+        <div class="emoji">🔍</div>
+        <div class="jlabel">발견</div>
+        <div class="jsub">1~2회차</div>
+      </div>
+      <div class="journey-item">
+        <div class="emoji">💻</div>
+        <div class="jlabel">개발</div>
+        <div class="jsub">3~4회차</div>
+      </div>
+      <div class="journey-item">
+        <div class="emoji">🔬</div>
+        <div class="jlabel">검증</div>
+        <div class="jsub">5회차</div>
+      </div>
+      <div class="journey-item">
+        <div class="emoji">📢</div>
+        <div class="jlabel">마케팅</div>
+        <div class="jsub">6회차</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <h2 style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999892;margin-bottom:12px;">수업 도구</h2>
+  <div class="tools-bar">
+    <div class="tool-item">
+      <div class="t-icon">💬</div>
+      <div class="t-name">ChatGPT</div>
+      <div class="t-note">리서치 & 코드</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">💻</div>
+      <div class="t-name">Replit</div>
+      <div class="t-note">앱 개발</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">🤖</div>
+      <div class="t-name">Claude</div>
+      <div class="t-note">분석 & 코드</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">🔍</div>
+      <div class="t-name">Genspark</div>
+      <div class="t-note">리서치</div>
+    </div>
+    <div class="tool-item">
+      <div class="t-icon">🍌</div>
+      <div class="t-name">나노바나나</div>
+      <div class="t-note">발표 자료</div>
+    </div>
+  </div>
+
+  <div class="block-3-section">
+
+  <!-- 5회차 -->
+  <div class="phase-divider block-3">
+    <div class="phase-icon">🔬</div>
+    <div>
+      <h2>5회차 — 고객검증 & 앱 고도화</h2>
+      <p>진짜 사용자에게 검증받고, 데이터로 개선한다</p>
+    </div>
+  </div>
+
+  <!-- STEP 09 -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge violet">STEP 09</span>
+      <h2>사용자 테스트 & 데이터 수집</h2>
+      <span class="dur">50분</span>
+    </div>
+    <div class="type-badge practice">⚡ 실습</div>
+    <div class="activity">
+      <img src="img/bizcool/step09-test.webp" class="activity-img" alt="학생들이 앱을 스마트폰으로 테스트하는 모습">
+      <div class="activity-body">
+        <div class="activity-top"><span class="activity-ref">스타트업 바이블 23단계</span></div>
+        <h3>진짜 사용자 앞에서 검증하라</h3>
+        <p>우리 앱을 실제로 쓸 사람에게 직접 보여주고 반응을 확인합니다. 5명 이상의 사용자에게 MVP를 테스트하고, 정량/정성 피드백 데이터를 체계적으로 수집합니다.</p>
+        <div class="act-list">
+          <div class="act-list-title">ACTIVITIES</div>
+          <div class="act-item">사용자 테스트 프로토콜 설계 (과제·관찰·질문)</div>
+          <div class="act-item">최소 5명 대상 MVP 테스트 진행</div>
+          <div class="act-item">피드백 데이터 정리 & 핵심 인사이트 도출</div>
+        </div>
+        <div class="activity-tags">
+          <span class="tag tool">Genspark</span>
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag output">📦 테스트 결과 보고서</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-card"><div class="emoji">☕</div><div class="break-text"><strong>쉬는시간 · 10분</strong></div></div>
+
+  <!-- STEP 10 -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge violet">STEP 10</span>
+      <h2>피드백 반영 & 앱 고도화</h2>
+      <span class="dur">50분</span>
+    </div>
+    <div class="type-badge practice">⚡ 실습</div>
+    <div class="activity">
+      <img src="img/bizcool/step10-feedback.webp" class="activity-img" alt="우선순위 매트릭스로 피드백을 분석하는 학생">
+      <div class="activity-body">
+        <div class="activity-top"><span class="activity-ref">스타트업 바이블 23단계</span></div>
+        <h3>'가장 많이 나온 불만 1순위'부터 해결하라</h3>
+        <p>수집된 피드백을 우선순위로 정리하고, 핵심 개선점을 반영하여 앱을 최종 버전으로 업데이트합니다.</p>
+        <div class="act-list">
+          <div class="act-list-title">ACTIVITIES</div>
+          <div class="act-item">피드백 우선순위 매트릭스 작성 (임팩트 × 난이도)</div>
+          <div class="act-item">핵심 개선점 Top 3 반영 & 앱 v3 업데이트</div>
+          <div class="act-item">개선 전후 비교 시연</div>
+        </div>
+        <div class="activity-tags">
+          <span class="tag tool">Replit</span>
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag output">📦 AI 앱 v3 (최종 버전)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6회차 -->
+  <div class="phase-divider block-3">
+    <div class="phase-icon">📢</div>
+    <div>
+      <h2>6회차 — 실전 마케팅 & 최종 데모데이</h2>
+      <p>알리고, 보여주고, 마무리한다</p>
+    </div>
+  </div>
+
+  <!-- STEP 11 -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge violet">STEP 11</span>
+      <h2>STP 마케팅 전략 & AI 콘텐츠 제작</h2>
+      <span class="dur">50분</span>
+    </div>
+    <div class="type-badge practice">⚡ 실습</div>
+    <div class="activity">
+      <img src="img/bizcool/step11-marketing.webp" class="activity-img" alt="SNS 마케팅 콘텐츠를 제작하는 학생들">
+      <div class="activity-body">
+        <div class="activity-top"><span class="activity-ref">창업실무 마케팅 전략</span></div>
+        <h3>STP로 전략을 세우고, AI로 콘텐츠를 만들어라</h3>
+        <p>STP(시장세분화-타겟팅-포지셔닝) 전략을 수립하고 4P 마케팅 믹스를 설계합니다. AI 도구로 로고, SNS 콘텐츠, 홍보 영상을 직접 제작합니다.</p>
+        <div class="act-list">
+          <div class="act-list-title">ACTIVITIES</div>
+          <div class="act-item">STP 전략 수립 워크숍 (세분화 → 타겟 → 포지셔닝맵)</div>
+          <div class="act-item">4P 마케팅 믹스 설계 (제품·가격·유통·촉진)</div>
+          <div class="act-item">AI로 로고 · SNS 콘텐츠 · 30초 홍보영상 제작</div>
+        </div>
+        <div class="activity-tags">
+          <span class="tag tool">ChatGPT</span>
+          <span class="tag tool">나노바나나</span>
+          <span class="tag tool">Genspark</span>
+          <span class="tag output">📦 마케팅 키트 (전략서 + 콘텐츠)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="break-card"><div class="emoji">☕</div><div class="break-text"><strong>쉬는시간 · 10분</strong><br>최종 발표 준비! 앱 시연 + 사업발표 리허설</div></div>
+
+  <!-- STEP 12 -->
+  <div class="class-section">
+    <div class="class-label">
+      <span class="class-badge violet">STEP 12</span>
+      <h2>최종 쇼케이스: 데모데이</h2>
+      <span class="dur">50분</span>
+    </div>
+    <div class="type-badge presentation">🎤 발표</div>
+    <div class="activity">
+      <img src="img/bizcool/step12-demoday.webp" class="activity-img" alt="데모데이에서 발표하는 학생과 관객들">
+      <div class="activity-body">
+        <div class="activity-top"><span class="activity-ref">데모데이</span></div>
+        <h3>전 과정의 집대성, 최종 무대에 서라</h3>
+        <p>AI 앱 라이브 시연과 3분 사업발표를 진행하고, 심사위원 Q&A와 카테고리별 시상으로 전체 교육을 마무리합니다.</p>
+        <div class="act-list">
+          <div class="act-list-title">ACTIVITIES</div>
+          <div class="act-item">AI 앱 라이브 시연 + 3분 사업발표 (앱·마케팅·BM 종합)</div>
+          <div class="act-item">심사위원 Q&A & 동료 피드백</div>
+          <div class="act-item">카테고리별 시상 & 최종 포트폴리오 전달</div>
+        </div>
+        <div class="activity-tags">
+          <span class="tag tool">나노바나나</span>
+          <span class="tag tool">Replit</span>
+          <span class="tag output">📦 사업계획서 + 최종 포트폴리오</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end block-3-section -->
+
+  <!-- FINAL CARD -->
+  <div class="final-card">
+    <h3>12차시 완주 시 획득 산출물</h3>
+    <p>포트폴리오급 결과물을 가져갑니다</p>
+    <ul>
+      <li>아이디어 제안서 + 비즈니스 모델 캔버스</li>
+      <li>작동하는 AI 앱 (v3 최종 버전)</li>
+      <li>마케팅 키트 (STP 전략서 + SNS 콘텐츠 + 홍보영상)</li>
+      <li>사업계획서 + 최종 발표 슬라이드</li>
+      <li>데모데이 피칭 영상</li>
+    </ul>
+  </div>
+
+  <div class="page-footer">
+    © 2025 TeacherMate · 비즈쿨 AI 창업교육
+  </div>
+
+</div>
+
+</body>
+</html>
