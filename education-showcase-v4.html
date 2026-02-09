@@ -99,15 +99,26 @@ body {
   display: flex; align-items: center; gap: 8px;
   text-decoration: none;
 }
-.nav-logo-blocks {
-  display: flex; gap: 3px;
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  position: relative;
 }
-.nav-logo-block {
-  width: 10px; height: 18px;
+.nav-logo-bar1 {
+  position: absolute;
+  width: 8px; height: 28px;
+  left: 3px; bottom: 1px;
+  background: #1B2A4A;
+  border-radius: 3px;
+  transform: rotate(10deg);
+  transform-origin: bottom center;
+}
+.nav-logo-bar2 {
+  position: absolute;
+  width: 10px; height: 17px;
+  left: 16px; bottom: 1px;
+  background: #7EC8B5;
   border-radius: 3px;
 }
-.nav-logo-block:nth-child(1) { background: #34D399; }
-.nav-logo-block:nth-child(2) { background: #1E293B; }
 .nav-logo-text {
   font-family: var(--font-body);
   font-weight: 700;
@@ -1002,9 +1013,9 @@ body {
 <nav class="nav">
   <div class="nav-inner">
     <a href="https://teachermate.co.kr" class="nav-logo">
-      <div class="nav-logo-blocks">
-        <div class="nav-logo-block"></div>
-        <div class="nav-logo-block"></div>
+      <div class="nav-logo-icon">
+        <div class="nav-logo-bar1"></div>
+        <div class="nav-logo-bar2"></div>
       </div>
       <span class="nav-logo-text">teachermate</span>
     </a>
