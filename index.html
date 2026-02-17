@@ -1601,7 +1601,7 @@ body {
         </script>
       </div>
       <div class="nav-divider"></div>
-      <a href="https://forms.gle/pPMjKstXj8EJHLvs6" target="_blank" class="nav-cta">
+      <a href="#" onclick="openContactModal();return false;" class="nav-cta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         교육 문의
       </a>
@@ -1630,7 +1630,7 @@ body {
   <a href="#curriculum" onclick="closeMobileMenu()">AI 커리큘럼</a>
   <a href="#bizcool" onclick="closeMobileMenu()">비즈쿨 프로그램</a>
   <a href="#process" onclick="closeMobileMenu()">교육 프로세스</a>
-  <a href="https://forms.gle/pPMjKstXj8EJHLvs6" target="_blank" onclick="closeMobileMenu()">교육 문의</a>
+  <a href="#" onclick="closeMobileMenu();openContactModal();return false;">교육 문의</a>
   <a href="https://teachermate.co.kr" id="mobile-nav-docs">문서행정</a>
   <a href="https://tools.teachermate.co.kr" class="filled-m" id="mobile-nav-tools">수업도구 바로가기</a>
   <script>
@@ -2099,7 +2099,7 @@ body {
     <h2>우리 학교에 맞는 AI 교육을 설계합니다</h2>
     <p>학교 일정, 학과, 학생 수에 맞춘 최적의 커리큘럼을 제안드립니다.</p>
     <div class="cta-actions">
-      <a href="https://forms.gle/pPMjKstXj8EJHLvs6" target="_blank" class="cta-btn-primary">교육 문의하기 →</a>
+      <a href="#" onclick="openContactModal();return false;" class="cta-btn-primary">교육 문의하기 →</a>
       <a href="#" class="cta-btn-secondary" style="display:none;">프로그램 안내서 다운로드</a>
     </div>
   </div>
@@ -2231,6 +2231,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeDemo();
     closeCurriculum();
+    closeContactModal();
     closeMobileMenu();
   }
 });
@@ -2268,6 +2269,81 @@ document.addEventListener('click', (e) => {
     closeMobileMenu();
   }
 });
+
+// Contact Modal
+function openContactModal() {
+  document.getElementById('contactModal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('contactModal').classList.remove('active');
+  document.body.style.overflow = '';
+  // reset form after close
+  setTimeout(() => {
+    document.getElementById('contactForm').style.display = '';
+    document.getElementById('contactSuccess').style.display = 'none';
+    document.getElementById('contactError').style.display = 'none';
+    document.getElementById('contactForm').reset();
+  }, 300);
+}
+async function submitContact(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button[type="submit"]');
+  const errEl = document.getElementById('contactError');
+  btn.disabled = true;
+  btn.textContent = '전송 중...';
+  errEl.style.display = 'none';
+  const data = {
+    name: form.cname.value,
+    school: form.cschool.value,
+    phone: form.cphone.value,
+    email: form.cemail.value,
+    message: form.cmessage.value,
+    source: 'ai-school',
+  };
+  try {
+    const res = await fetch('https://teachermate.co.kr/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    if (!res.ok) throw new Error();
+    form.style.display = 'none';
+    document.getElementById('contactSuccess').style.display = 'flex';
+  } catch {
+    errEl.style.display = 'block';
+    errEl.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해주세요.';
+    btn.disabled = false;
+    btn.textContent = '문의하기';
+  }
+}
 </script>
+
+<!-- ========== CONTACT MODAL ========== -->
+<div class="modal-overlay" id="contactModal" onclick="closeContactModal(event)" style="display:none;">
+  <div onclick="event.stopPropagation()" style="background:#fff;border-radius:20px;padding:32px;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.15);position:relative;animation:fadeUp .3s ease;">
+    <button onclick="closeContactModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:#94A3B8;line-height:1;">✕</button>
+    <div id="contactSuccess" style="display:none;flex-direction:column;align-items:center;padding:20px 0;text-align:center;">
+      <div style="font-size:48px;margin-bottom:16px;">✅</div>
+      <h3 style="font-size:20px;font-weight:800;color:#1E293B;margin:0 0 8px;">문의가 전송되었습니다</h3>
+      <p style="font-size:14px;color:#64748B;margin:0 0 24px;line-height:1.6;">빠른 시일 내에 연락드리겠습니다.</p>
+      <button onclick="closeContactModal()" style="background:#16A34A;color:#fff;font-size:14px;font-weight:700;padding:10px 28px;border-radius:10px;border:none;cursor:pointer;">확인</button>
+    </div>
+    <form id="contactForm" onsubmit="submitContact(event)">
+      <div style="display:inline-block;padding:4px 12px;border-radius:16px;background:#F0FDF4;color:#16A34A;font-size:12px;font-weight:700;margin-bottom:12px;">교육 문의</div>
+      <h3 style="font-size:20px;font-weight:800;color:#1E293B;margin:0 0 4px;">교육 프로그램 문의하기</h3>
+      <p style="font-size:13px;color:#94A3B8;margin:0 0 24px;">연락처를 남겨주시면 빠르게 안내드리겠습니다.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div><label style="font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;display:block;">이름 <span style="color:#16A34A;">*</span></label><input name="cname" required placeholder="홍길동" style="width:100%;padding:10px 14px;font-size:14px;border:1.5px solid #E2E8F0;border-radius:10px;outline:none;box-sizing:border-box;font-family:inherit;"></div>
+        <div><label style="font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;display:block;">학교 / 기관명</label><input name="cschool" placeholder="OO고등학교" style="width:100%;padding:10px 14px;font-size:14px;border:1.5px solid #E2E8F0;border-radius:10px;outline:none;box-sizing:border-box;font-family:inherit;"></div>
+        <div><label style="font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;display:block;">연락처 <span style="color:#16A34A;">*</span></label><input name="cphone" required placeholder="010-0000-0000" style="width:100%;padding:10px 14px;font-size:14px;border:1.5px solid #E2E8F0;border-radius:10px;outline:none;box-sizing:border-box;font-family:inherit;"></div>
+        <div><label style="font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;display:block;">이메일</label><input name="cemail" placeholder="example@school.ac.kr" style="width:100%;padding:10px 14px;font-size:14px;border:1.5px solid #E2E8F0;border-radius:10px;outline:none;box-sizing:border-box;font-family:inherit;"></div>
+        <div><label style="font-size:13px;font-weight:600;color:#475569;margin-bottom:4px;display:block;">문의 내용</label><textarea name="cmessage" placeholder="문의하실 내용을 자유롭게 작성해주세요." style="width:100%;padding:10px 14px;font-size:14px;border:1.5px solid #E2E8F0;border-radius:10px;outline:none;box-sizing:border-box;font-family:inherit;min-height:72px;resize:vertical;"></textarea></div>
+      </div>
+      <p id="contactError" style="display:none;color:#EF4444;font-size:13px;margin:8px 0 0;text-align:center;"></p>
+      <button type="submit" style="width:100%;margin-top:20px;background:#16A34A;color:#fff;font-size:15px;font-weight:700;padding:12px 0;border-radius:12px;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(22,163,74,0.2);transition:all .2s;">문의하기</button>
+    </form>
+  </div>
+</div>
+<style>#contactModal.active{display:flex!important;align-items:center;justify-content:center;}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}</style>
+
 </body>
 </html>
