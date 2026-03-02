@@ -1603,11 +1603,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="nav-tabs">
         <a href="https://tools.teachermate.co.kr" class="nav-tab" id="nav-tools">수업도구</a>
         <a href="https://teachermate.co.kr" class="nav-tab" id="nav-docs">문서행정</a>
+        <a href="https://teachermate.co.kr/news" class="nav-tab" id="nav-news">교육소식</a>
+        <a href="https://teachermate.co.kr/worksheet-converter" class="nav-tab" id="nav-multilang">다국어변환</a>
         <a href="#" class="nav-tab accent-dot">AI교육</a>
         <script>
           if(location.hostname==='localhost'){
             document.getElementById('nav-tools').href='http://localhost:5001';
             document.getElementById('nav-docs').href='http://localhost:5000';
+            document.getElementById('nav-news').href='http://localhost:5000/news';
+            document.getElementById('nav-multilang').href='http://localhost:5000/worksheet-converter';
           }
         </script>
       </div>
@@ -1625,12 +1629,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="mobile-service-bar-inner">
     <a href="https://tools.teachermate.co.kr" class="mobile-service-tab" id="msb-tools">수업도구</a>
     <a href="https://teachermate.co.kr" class="mobile-service-tab" id="msb-docs">문서행정</a>
+    <a href="https://teachermate.co.kr/news" class="mobile-service-tab" id="msb-news">교육소식</a>
+    <a href="https://teachermate.co.kr/worksheet-converter" class="mobile-service-tab" id="msb-multilang">다국어변환</a>
     <button class="mobile-service-tab active">AI교육</button>
   </div>
   <script>
     if(location.hostname==='localhost'){
       document.getElementById('msb-tools').href='http://localhost:5001';
       document.getElementById('msb-docs').href='http://localhost:5000';
+      document.getElementById('msb-news').href='http://localhost:5000/news';
+      document.getElementById('msb-multilang').href='http://localhost:5000/worksheet-converter';
     }
   </script>
 </div>
@@ -1643,10 +1651,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <a href="#process" onclick="closeMobileMenu()">교육 프로세스</a>
   <a href="#" onclick="closeMobileMenu();openContactModal();return false;">교육 문의</a>
   <a href="https://teachermate.co.kr" id="mobile-nav-docs">문서행정</a>
+  <a href="https://teachermate.co.kr/news" id="mobile-nav-news">교육소식</a>
+  <a href="https://teachermate.co.kr/worksheet-converter" id="mobile-nav-multilang">다국어변환</a>
   <a href="https://tools.teachermate.co.kr" class="filled-m" id="mobile-nav-tools">수업도구 바로가기</a>
   <script>
     if(location.hostname==='localhost'){
       document.getElementById('mobile-nav-docs').href='http://localhost:5000';
+      document.getElementById('mobile-nav-news').href='http://localhost:5000/news';
+      document.getElementById('mobile-nav-multilang').href='http://localhost:5000/worksheet-converter';
       document.getElementById('mobile-nav-tools').href='http://localhost:5001';
     }
   </script>
