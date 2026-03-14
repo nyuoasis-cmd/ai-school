@@ -1,6 +1,9 @@
 ---
 name: verify-app-frame
-description: 학과 앱(v2.html)이 표준 프레임 패턴(app-frame, app-header, max-width:430px)을 따르는지 검증. 앱 추가/수정 후 사용.
+description: >
+  학과 앱(v2.html)이 표준 프레임 패턴(app-frame, app-header, max-width:430px)을 따르는지 검증합니다.
+  트리거: "앱 프레임 검증", "app frame verify", "v2.html 검증", "앱 구조 확인".
+  비트리거: 데모 등록 검증(verify-demo-registry), 커리큘럼/비즈쿨 페이지.
 ---
 
 # 앱 프레임 패턴 검증
