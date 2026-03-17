@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script>
+(function() {
+  var path = window.location.pathname;
+  var match = path.match(/^\/start(?:\/(.*))?$/);
+  if (match) {
+    var code = match[1] || '';
+    var params = 'utm_source=doc24&utm_campaign=ai_school';
+    if (code) params += '&utm_content=' + encodeURIComponent(code);
+    window.location.replace('/' + '?' + params);
+    return;
+  }
+  // 그 외 404 → 메인으로
+  window.location.replace('/');
+})();
+</script>
+</head>
+<body></body>
+</html>
