@@ -5,28 +5,14 @@
 <script>
 (function() {
   var path = window.location.pathname;
-  var search = window.location.search;
-
-  // /ai-school/{학교코드} → /?school={학교코드} (UTM 파라미터 보존)
-  var aiMatch = path.match(/^\/ai-school\/([^/]+)\/?$/);
-  if (aiMatch) {
-    var code = aiMatch[1];
-    var params = new URLSearchParams(search);
-    params.set('school', code);
-    window.location.replace('/?' + params.toString());
+  var match = path.match(/^\/start(?:\/(.*))?$/);
+  if (match) {
+    var code = match[1] || '';
+    var params = 'utm_source=doc24&utm_campaign=ai_school';
+    if (code) params += '&utm_content=' + encodeURIComponent(code);
+    window.location.replace('/?' + params);
     return;
   }
-
-  // /start/{code} → legacy redirect
-  var startMatch = path.match(/^\/start(?:\/(.*))?$/);
-  if (startMatch) {
-    var c = startMatch[1] || '';
-    var p = 'utm_source=doc24&utm_campaign=ai_school';
-    if (c) p += '&utm_content=' + encodeURIComponent(c);
-    window.location.replace('/?' + p);
-    return;
-  }
-
   // 그 외 404 → 메인으로
   window.location.replace('/');
 })();
