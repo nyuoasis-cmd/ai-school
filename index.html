@@ -1,3 +1,8 @@
+<!-- 🏷️ AI 교육 쇼케이스 랜딩페이지 (위탁교육/비즈쿨 통합) -->
+<!-- URL: ai.teachermate.co.kr -->
+<!-- 타겟: 직업계고/특성화고 교사 -->
+<!-- 테마: 다크 (에메랄드 액센트) -->
+<!-- ⚠️ AI 중점학교 랜딩은 여기가 아님 → teachermate.co.kr/edu-ai (youthschool 프로젝트) -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -189,6 +194,26 @@ body {
   width: 1px; height: 20px;
   background: var(--border-active);
   margin: 0 4px;
+}
+
+/* 로그인 버튼 */
+.nav-login {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-login:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
 }
 
 /* 교육 문의 버튼 - 강조 CTA */
@@ -1216,6 +1241,7 @@ body {
   .process-step { border-radius: var(--radius) !important; }
   .nav-tabs { display: none; }
   .nav-divider { display: none; }
+  .nav-login { display: none; }
   .nav-mobile-toggle { display: block; }
   .section-header { flex-direction: column; align-items: flex-start; }
 }
@@ -1601,22 +1627,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- 우측: 서비스 탭 + 구분선 + CTA 버튼 -->
     <div class="nav-right">
       <div class="nav-tabs">
-        <a href="https://tools.teachermate.co.kr" class="nav-tab" id="nav-tools">수업도구</a>
         <a href="https://teachermate.co.kr" class="nav-tab" id="nav-docs">문서행정</a>
+        <a href="https://tools.teachermate.co.kr" class="nav-tab" id="nav-tools">수업도구</a>
+        <a href="https://sprint-teachermate.onrender.com" class="nav-tab" id="nav-sprint">스프린트</a>
         <a href="https://meta.teachermate.co.kr" class="nav-tab" id="nav-meta">AI 프로필</a>
         <a href="https://teachermate.co.kr/worksheet-converter" class="nav-tab" id="nav-multilang">다국어변환</a>
         <a href="https://ar.teachermate.co.kr" class="nav-tab" id="nav-ar">AR그림책</a>
         <a href="#" class="nav-tab accent-dot">AI교육</a>
         <script>
           if(location.hostname==='localhost'){
-            document.getElementById('nav-tools').href='http://localhost:5001';
             document.getElementById('nav-docs').href='http://localhost:5000';
+            document.getElementById('nav-tools').href='http://localhost:5001';
+            document.getElementById('nav-sprint').href='http://localhost:5173';
             document.getElementById('nav-meta').href='http://localhost:5003';
             document.getElementById('nav-multilang').href='http://localhost:5000/worksheet-converter';
             document.getElementById('nav-ar').href='http://localhost:5180';
           }
         </script>
       </div>
+      <span class="nav-divider"></span>
+      <a href="https://teachermate.co.kr/login" class="nav-login" id="nav-login">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        로그인
+      </a>
+      <script>
+        if(location.hostname==='localhost'){
+          document.getElementById('nav-login').href='http://localhost:5000/login';
+        }
+      </script>
       <div class="nav-divider"></div>
       <a href="#" onclick="openContactModal();return false;" class="nav-cta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1629,8 +1670,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Mobile Service Bar (900px 이하에서만 표시) -->
 <div class="mobile-service-bar" id="mobileServiceBar">
   <div class="mobile-service-bar-inner">
-    <a href="https://tools.teachermate.co.kr" class="mobile-service-tab" id="msb-tools">수업도구</a>
     <a href="https://teachermate.co.kr" class="mobile-service-tab" id="msb-docs">문서행정</a>
+    <a href="https://tools.teachermate.co.kr" class="mobile-service-tab" id="msb-tools">수업도구</a>
+    <a href="https://sprint-teachermate.onrender.com" class="mobile-service-tab" id="msb-sprint">스프린트</a>
     <a href="https://meta.teachermate.co.kr" class="mobile-service-tab" id="msb-meta">AI 프로필</a>
     <a href="https://teachermate.co.kr/worksheet-converter" class="mobile-service-tab" id="msb-multilang">다국어변환</a>
     <a href="https://ar.teachermate.co.kr" class="mobile-service-tab" id="msb-ar">AR그림책</a>
@@ -1638,8 +1680,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
   <script>
     if(location.hostname==='localhost'){
-      document.getElementById('msb-tools').href='http://localhost:5001';
       document.getElementById('msb-docs').href='http://localhost:5000';
+      document.getElementById('msb-tools').href='http://localhost:5001';
+      document.getElementById('msb-sprint').href='http://localhost:5173';
       document.getElementById('msb-meta').href='http://localhost:5003';
       document.getElementById('msb-multilang').href='http://localhost:5000/worksheet-converter';
       document.getElementById('msb-ar').href='http://localhost:5180';
@@ -1655,6 +1698,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <a href="#process" onclick="closeMobileMenu()">교육 프로세스</a>
   <a href="#" onclick="closeMobileMenu();openContactModal();return false;">교육 문의</a>
   <a href="https://teachermate.co.kr" id="mobile-nav-docs">문서행정</a>
+  <a href="https://sprint-teachermate.onrender.com" id="mobile-nav-sprint">스프린트</a>
   <a href="https://meta.teachermate.co.kr" id="mobile-nav-meta">AI 프로필</a>
   <a href="https://teachermate.co.kr/worksheet-converter" id="mobile-nav-multilang">다국어변환</a>
   <a href="https://ar.teachermate.co.kr" id="mobile-nav-ar">AR그림책</a>
@@ -1662,6 +1706,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script>
     if(location.hostname==='localhost'){
       document.getElementById('mobile-nav-docs').href='http://localhost:5000';
+      document.getElementById('mobile-nav-sprint').href='http://localhost:5173';
       document.getElementById('mobile-nav-meta').href='http://localhost:5003';
       document.getElementById('mobile-nav-multilang').href='http://localhost:5000/worksheet-converter';
       document.getElementById('mobile-nav-tools').href='http://localhost:5001';
