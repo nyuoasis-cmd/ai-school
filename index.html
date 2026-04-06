@@ -9,6 +9,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TeacherMate — AI 위탁교육 프로그램</title>
+<script>
+(function(){var s=document.createElement('script');
+s.src=location.hostname==='localhost'?'http://localhost:5000/service-nav.js':'https://teachermate.co.kr/service-nav.js';
+document.head.appendChild(s);})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -1607,111 +1612,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="grid-bg"></div>
 <div class="neural-canvas" id="neuralCanvas"></div>
 
-<!-- ========== NAV (YouthSchool Style) ========== -->
-<nav class="nav">
-  <div class="nav-inner">
-    <!-- 좌측: 모바일 햄버거 + 로고 -->
-    <div class="nav-left">
-      <button class="nav-mobile-toggle" onclick="toggleMobileMenu()" aria-label="메뉴">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <a href="https://teachermate.co.kr" class="nav-logo">
-        <div class="nav-logo-icon">
-          <div class="nav-logo-bar1"></div>
-          <div class="nav-logo-bar2"></div>
-        </div>
-        <span class="nav-logo-text">teachermate</span>
-      </a>
-    </div>
-
-    <!-- 우측: 서비스 탭 + 구분선 + CTA 버튼 -->
-    <div class="nav-right">
-      <div class="nav-tabs">
-        <a href="https://teachermate.co.kr" class="nav-tab" id="nav-docs">문서행정</a>
-        <a href="https://tools.teachermate.co.kr" class="nav-tab" id="nav-tools">수업도구</a>
-        <a href="https://sprint-teachermate.onrender.com" class="nav-tab" id="nav-sprint">스프린트</a>
-        <a href="https://meta.teachermate.co.kr" class="nav-tab" id="nav-meta">AI 프로필</a>
-        <a href="https://teachermate.co.kr/worksheet-converter" class="nav-tab" id="nav-multilang">다국어변환</a>
-        <a href="https://ar.teachermate.co.kr" class="nav-tab" id="nav-ar">AR그림책</a>
-        <a href="#" class="nav-tab accent-dot">AI교육</a>
-        <script>
-          if(location.hostname==='localhost'){
-            document.getElementById('nav-docs').href='http://localhost:5000';
-            document.getElementById('nav-tools').href='http://localhost:5001';
-            document.getElementById('nav-sprint').href='http://localhost:5173';
-            document.getElementById('nav-meta').href='http://localhost:5003';
-            document.getElementById('nav-multilang').href='http://localhost:5000/worksheet-converter';
-            document.getElementById('nav-ar').href='http://localhost:5180';
-          }
-        </script>
-      </div>
-      <span class="nav-divider"></span>
-      <a href="https://teachermate.co.kr/login" class="nav-login" id="nav-login">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-        로그인
-      </a>
-      <script>
-        if(location.hostname==='localhost'){
-          document.getElementById('nav-login').href='http://localhost:5000/login';
-        }
-      </script>
-      <div class="nav-divider"></div>
-      <a href="#" onclick="openContactModal();return false;" class="nav-cta">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        교육 문의
-      </a>
-    </div>
-  </div>
-</nav>
-
-<!-- Mobile Service Bar (900px 이하에서만 표시) -->
-<div class="mobile-service-bar" id="mobileServiceBar">
-  <div class="mobile-service-bar-inner">
-    <a href="https://teachermate.co.kr" class="mobile-service-tab" id="msb-docs">문서행정</a>
-    <a href="https://tools.teachermate.co.kr" class="mobile-service-tab" id="msb-tools">수업도구</a>
-    <a href="https://sprint-teachermate.onrender.com" class="mobile-service-tab" id="msb-sprint">스프린트</a>
-    <a href="https://meta.teachermate.co.kr" class="mobile-service-tab" id="msb-meta">AI 프로필</a>
-    <a href="https://teachermate.co.kr/worksheet-converter" class="mobile-service-tab" id="msb-multilang">다국어변환</a>
-    <a href="https://ar.teachermate.co.kr" class="mobile-service-tab" id="msb-ar">AR그림책</a>
-    <button class="mobile-service-tab active">AI교육</button>
-  </div>
-  <script>
-    if(location.hostname==='localhost'){
-      document.getElementById('msb-docs').href='http://localhost:5000';
-      document.getElementById('msb-tools').href='http://localhost:5001';
-      document.getElementById('msb-sprint').href='http://localhost:5173';
-      document.getElementById('msb-meta').href='http://localhost:5003';
-      document.getElementById('msb-multilang').href='http://localhost:5000/worksheet-converter';
-      document.getElementById('msb-ar').href='http://localhost:5180';
-    }
-  </script>
-</div>
-
-<!-- Mobile Menu -->
-<div class="nav-mobile-menu" id="mobileMenu">
-  <a href="#vocational" class="active" onclick="closeMobileMenu()">청소년 AI 교육</a>
-  <a href="#curriculum" onclick="closeMobileMenu()">AI 커리큘럼</a>
-  <a href="#bizcool" onclick="closeMobileMenu()">비즈쿨 프로그램</a>
-  <a href="#process" onclick="closeMobileMenu()">교육 프로세스</a>
-  <a href="#" onclick="closeMobileMenu();openContactModal();return false;">교육 문의</a>
-  <a href="https://teachermate.co.kr" id="mobile-nav-docs">문서행정</a>
-  <a href="https://sprint-teachermate.onrender.com" id="mobile-nav-sprint">스프린트</a>
-  <a href="https://meta.teachermate.co.kr" id="mobile-nav-meta">AI 프로필</a>
-  <a href="https://teachermate.co.kr/worksheet-converter" id="mobile-nav-multilang">다국어변환</a>
-  <a href="https://ar.teachermate.co.kr" id="mobile-nav-ar">AR그림책</a>
-  <a href="https://tools.teachermate.co.kr" class="filled-m" id="mobile-nav-tools">수업도구 바로가기</a>
-  <script>
-    if(location.hostname==='localhost'){
-      document.getElementById('mobile-nav-docs').href='http://localhost:5000';
-      document.getElementById('mobile-nav-sprint').href='http://localhost:5173';
-      document.getElementById('mobile-nav-meta').href='http://localhost:5003';
-      document.getElementById('mobile-nav-multilang').href='http://localhost:5000/worksheet-converter';
-      document.getElementById('mobile-nav-tools').href='http://localhost:5001';
-    }
-  </script>
+<!-- ========== NAV (Web Component) ========== -->
+<div style="position:sticky;top:0;z-index:50;">
+  <teachermate-nav active="AI교육"></teachermate-nav>
 </div>
 
 <!-- ========== HERO ========== -->
