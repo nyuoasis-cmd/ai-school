@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 앱 제작 수업 — 수업 흐름도</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* ========================================
+   RESET & BASE
+   ======================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #F8F9FA;
+  color: #1B2A4A;
+  word-break: keep-all;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ========================================
+   DESIGN TOKENS
+   ======================================== */
+:root {
+  --navy: #1B2A4A;
+  --mint: #7EC8B5;
+  --mint-hover: #5BB8A3;
+  --bg: #F8F9FA;
+  --card: #FFFFFF;
+  --text-primary: #1B2A4A;
+  --text-secondary: #6B7280;
+  --border: #E5E7EB;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --radius-pill: 20px;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+.header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 0 24px;
+  text-align: center;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.logo-bars {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+.logo-bar--navy {
+  position: absolute;
+  width: 8px;
+  height: 28px;
+  left: 3px;
+  bottom: 1px;
+  background: #1B2A4A;
+  border-radius: 3px;
+  transform: rotate(10deg);
+  transform-origin: bottom center;
+}
+.logo-bar--mint {
+  position: absolute;
+  width: 10px;
+  height: 17px;
+  left: 16px;
+  bottom: 1px;
+  background: #7EC8B5;
+  border-radius: 3px;
+}
+.logo-text {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1B2A4A;
+  letter-spacing: -0.5px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+.header .subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ========================================
+   TOP TAB BAR (3 tools)
+   ======================================== */
+.top-tabs {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
+}
+.top-tabs-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  justify-content: center;
+}
+.top-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+.top-tab:first-child { border-radius: var(--radius-btn) 0 0 var(--radius-btn); }
+.top-tab:last-child { border-radius: 0 var(--radius-btn) var(--radius-btn) 0; }
+.top-tab:not(:first-child) { border-left: none; }
+.top-tab.active {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.top-tab .badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(126,200,181,0.18);
+  color: var(--mint-hover);
+}
+.top-tab.active .badge {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+.top-tab-link {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--mint-hover);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--mint);
+  transition: all 0.2s;
+}
+.top-tab-link:hover {
+  background: var(--mint);
+  color: #fff;
+}
+.top-tab.active .top-tab-link {
+  color: rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.4);
+}
+.top-tab.active .top-tab-link:hover {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-color: rgba(255,255,255,0.7);
+}
+.tab-arrow {
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   SUB-STEP NAVIGATION
+   ======================================== */
+.substep-nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.substep-arrow {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.substep-arrow:hover { border-color: var(--mint); color: var(--mint); }
+.substep-arrow:active { transform: scale(0.93); }
+.substep-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.substep-dot {
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.substep-dot.active {
+  background: var(--mint);
+  color: #fff;
+  border-color: var(--mint);
+}
+.substep-dot:hover:not(.active) { border-color: var(--mint); color: var(--mint-hover); }
+
+/* ========================================
+   DUAL FRAME AREA
+   ======================================== */
+.frames-area {
+  max-width: 1100px;
+  margin: 24px auto 0;
+  padding: 0 24px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 520px;
+}
+/* transition wrapper */
+.frame-content-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.frame-content-wrapper.fading {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* --- Frame Labels --- */
+.frame-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+.frame-label-icon { font-size: 16px; }
+.frame-label-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+.frame-label--teacher {
+  color: var(--navy);
+}
+.frame-label--teacher .frame-label-tag {
+  background: rgba(27,42,74,0.08);
+  color: var(--navy);
+}
+.frame-label--student {
+  color: var(--mint-hover);
+  justify-content: center;
+}
+.frame-label--student .frame-label-tag {
+  background: rgba(126,200,181,0.15);
+  color: var(--mint-hover);
+}
+
+/* --- PC Browser Frame --- */
+.pc-frame {
+  flex: 0 0 58%;
+  max-width: 58%;
+}
+.browser-chrome {
+  background: #F3F4F6;
+  border: 1px solid var(--border);
+  border-radius: 10px 10px 0 0;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.traffic-lights {
+  display: flex;
+  gap: 6px;
+}
+.tl { width: 10px; height: 10px; border-radius: 50%; }
+.tl--r { background: #EF4444; }
+.tl--y { background: #F59E0B; }
+.tl--g { background: #10B981; }
+.url-bar {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.browser-body {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  min-height: 420px;
+  padding: 18px;
+  overflow: hidden;
+}
+
+/* --- Phone Frame --- */
+.phone-frame {
+  flex: 0 0 35%;
+  max-width: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.phone-bezel {
+  width: 260px;
+  background: #1a1a1a;
+  border-radius: 28px;
+  padding: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.13);
+}
+.phone-notch-bar {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 6px;
+}
+.phone-notch {
+  width: 80px;
+  height: 22px;
+  background: #000;
+  border-radius: 12px;
+}
+.phone-status {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px 4px;
+  font-size: 10px;
+  color: #fff;
+  font-weight: 600;
+}
+.phone-screen {
+  background: #fff;
+  border-radius: 18px;
+  min-height: 430px;
+  overflow: hidden;
+  font-size: 12px;
+}
+.phone-home-bar {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 2px;
+}
+.phone-home-bar span {
+  width: 100px;
+  height: 4px;
+  background: #666;
+  border-radius: 2px;
+}
+
+/* ========================================
+   DESCRIPTION AREA
+   ======================================== */
+.desc-area {
+  max-width: 1100px;
+  margin: 28px auto 0;
+  padding: 0 24px 40px;
+}
+.desc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 24px 28px;
+}
+.desc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.desc-step-badge {
+  background: var(--navy);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+.desc-step-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.desc-time {
+  margin-left: auto;
+  background: rgba(126,200,181,0.15);
+  color: var(--mint-hover);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+}
+.desc-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+.desc-roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.desc-role {
+  background: var(--bg);
+  border-radius: var(--radius-btn);
+  padding: 16px 18px;
+}
+.desc-role h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.desc-role ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.desc-role ul li {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  padding-left: 16px;
+  position: relative;
+}
+.desc-role ul li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--mint);
+  font-weight: 700;
+}
+.desc-role p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.desc-tip {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #FFF7ED;
+  border: 1px solid #FED7AA;
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  color: #9A3412;
+  line-height: 1.7;
+}
+.desc-tip strong {
+  color: #92400E;
+}
+.desc-links {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.desc-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 200px;
+}
+.desc-link:hover {
+  border-color: var(--mint);
+  background: rgba(126,200,181,0.04);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.desc-link-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.desc-link strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.desc-link-url {
+  display: block;
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+.desc-link-arrow {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--mint);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   DOWNLOAD SECTION
+   ======================================== */
+.download-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+}
+.download-inner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 32px;
+}
+.download-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.download-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.download-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.download-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.download-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  padding: 20px;
+  text-align: center;
+}
+.download-card-hours {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+.download-card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.download-card-files {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.download-file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+.download-file:hover {
+  border-color: var(--mint);
+  background: rgba(126,200,181,0.04);
+}
+.download-file-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.download-file-info {
+  text-align: left;
+  flex: 1;
+}
+.download-file-info strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.download-file-info span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.download-file-arrow {
+  font-size: 14px;
+  color: var(--mint);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .download-grid { grid-template-columns: 1fr; }
+  .download-inner { padding: 20px; }
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.footer {
+  text-align: center;
+  padding: 24px;
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  background: var(--card);
+}
+.footer a { color: var(--mint-hover); text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* ========================================
+   SHARED UI PRIMITIVES (inside frames)
+   ======================================== */
+.f-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+.f-subtitle { font-size: 11px; color: var(--text-secondary); margin-bottom: 8px; }
+.f-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.f-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  cursor: default;
+}
+.f-btn--primary { background: var(--navy); color: #fff; }
+.f-btn--mint { background: var(--mint); color: #fff; }
+.f-btn--outline { background: transparent; border: 1.5px solid var(--border); color: var(--text-secondary); }
+.f-btn--ghost { background: rgba(126,200,181,0.12); color: var(--mint-hover); }
+.f-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: #fff;
+}
+.f-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 600;
+}
+.f-row { display: flex; gap: 8px; align-items: center; }
+.f-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.f-grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.f-check { color: var(--success); font-size: 12px; }
+.f-uncheck { color: var(--text-secondary); font-size: 12px; }
+.f-bar { height: 6px; border-radius: 3px; background: var(--border); }
+.f-bar-fill { height: 100%; border-radius: 3px; }
+.f-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+
+/* phone-specific sizing */
+.phone-screen .f-title { font-size: 13px; }
+.phone-screen .f-card { padding: 8px; }
+.phone-screen .f-btn { font-size: 10.5px; padding: 5px 12px; }
+.phone-screen .f-input { font-size: 10.5px; padding: 5px 8px; }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .frames-area { flex-direction: column; align-items: center; }
+  .pc-frame, .phone-frame { flex: 0 0 100%; max-width: 100%; }
+  .phone-bezel { width: 240px; }
+  .top-tabs-row { flex-wrap: wrap; }
+  .top-tab { font-size: 13px; padding: 10px 14px; }
+  .substep-dots { flex-wrap: wrap; justify-content: center; }
+  .desc-roles { grid-template-columns: 1fr; }
+  .header h1 { font-size: 22px; }
+}
+
+/* ========================================
+   CHART HELPERS
+   ======================================== */
+.mini-bar-h {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 5px; font-size: 10px;
+}
+.mini-bar-h .label { width: 60px; text-align: right; color: var(--text-secondary); flex-shrink: 0; }
+.mini-bar-h .bar { height: 14px; border-radius: 3px; min-width: 4px; }
+.mini-bar-h .val { color: var(--text-secondary); font-weight: 600; flex-shrink: 0; }
+
+.mini-bar-v {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 9px;
+}
+.mini-bar-v .bar { width: 22px; border-radius: 3px 3px 0 0; }
+.mini-bar-v .label { color: var(--text-secondary); }
+
+/* star rating */
+.stars { color: var(--warning); font-size: 14px; letter-spacing: 2px; }
+
+/* progress */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-bar .fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--mint);
+  transition: width 0.3s;
+}
+
+/* checklist */
+.checklist { font-size: 11px; line-height: 1.8; }
+.checklist .done { color: var(--success); }
+.checklist .todo { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-bars">
+        <div class="logo-bar logo-bar--navy"></div>
+        <div class="logo-bar logo-bar--mint"></div>
+      </div>
+      <span class="logo-text">teachermate</span>
+    </div>
+    <h1>AI 앱 제작 수업</h1>
+    <p class="subtitle">기획부터 완성까지, 3단계 프로젝트 수업</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOP TAB BAR
+     ============================================================ -->
+<div class="top-tabs">
+  <div class="top-tabs-row">
+    <div class="top-tab active" data-tool="sprint" onclick="switchTool('sprint')">
+      <span class="top-tab-text">① 기획 (Sprint)</span>
+      <span class="badge">7단계</span>
+      <a href="https://sprint.teachermate.co.kr" target="_blank" class="top-tab-link" onclick="event.stopPropagation()">바로가기 ↗</a>
+    </div>
+    <div class="tab-arrow">→</div>
+    <div class="top-tab" data-tool="block" onclick="switchTool('block')">
+      <span class="top-tab-text">② 디자인 (Block Design)</span>
+      <span class="badge">4단계</span>
+      <a href="https://design.teachermate.co.kr" target="_blank" class="top-tab-link" onclick="event.stopPropagation()">바로가기 ↗</a>
+    </div>
+    <div class="tab-arrow">→</div>
+    <div class="top-tab" data-tool="maker" onclick="switchTool('maker')">
+      <span class="top-tab-text">③ 앱 생성 (App Maker)</span>
+      <span class="badge">3단계</span>
+      <a href="https://maker.teachermate.co.kr" target="_blank" class="top-tab-link" onclick="event.stopPropagation()">바로가기 ↗</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SUB-STEP NAVIGATION
+     ============================================================ -->
+<div class="substep-nav" id="substepNav">
+  <div class="substep-arrow" onclick="prevStep()">←</div>
+  <div class="substep-dots" id="substepDots"></div>
+  <div class="substep-arrow" onclick="nextStep()">→</div>
+</div>
+
+<!-- ============================================================
+     DUAL FRAME AREA
+     ============================================================ -->
+<div class="frames-area">
+  <!-- PC Browser Frame -->
+  <div class="pc-frame">
+    <div class="frame-label frame-label--teacher">
+      <span class="frame-label-icon">🖥️</span> 선생님 화면 <span class="frame-label-tag">PC</span>
+    </div>
+    <div class="browser-chrome">
+      <div class="traffic-lights">
+        <div class="tl tl--r"></div>
+        <div class="tl tl--y"></div>
+        <div class="tl tl--g"></div>
+      </div>
+      <div class="url-bar" id="pcUrl">sprint.teachermate.co.kr</div>
+    </div>
+    <div class="browser-body frame-content-wrapper" id="pcContent"></div>
+  </div>
+
+  <!-- Phone Frame -->
+  <div class="phone-frame">
+    <div class="frame-label frame-label--student">
+      <span class="frame-label-icon">📱</span> 학생 화면 <span class="frame-label-tag">모바일</span>
+    </div>
+    <div class="phone-bezel">
+      <div class="phone-notch-bar"><div class="phone-notch"></div></div>
+      <div class="phone-status"><span>9:41</span><span>●●● WiFi 🔋</span></div>
+      <div class="phone-screen frame-content-wrapper" id="phoneContent"></div>
+      <div class="phone-home-bar"><span></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DESCRIPTION AREA
+     ============================================================ -->
+<div class="desc-area">
+  <div class="desc-card" id="descCard"></div>
+</div>
+
+<!-- ============================================================
+     DOWNLOAD SECTION
+     ============================================================ -->
+<div class="download-section">
+  <div class="download-inner">
+    <div class="download-header">
+      <div class="download-title">교육 자료 다운로드</div>
+      <div class="download-subtitle">차시별 강의계획서와 견적서를 다운로드할 수 있습니다</div>
+    </div>
+    <div class="download-grid">
+      <div class="download-card">
+        <div class="download-card-hours">4차시</div>
+        <div class="download-card-desc">핵심 체험 과정<br>기획 + 앱 생성</div>
+        <div class="download-card-files">
+          <a href="AI교육_강의계획서_4차시.pdf" download class="download-file">
+            <span class="download-file-icon">📄</span>
+            <span class="download-file-info">
+              <strong>강의계획서</strong>
+              <span>PDF</span>
+            </span>
+            <span class="download-file-arrow">↓</span>
+          </a>
+          <a href="AI교육_운영견적서_4차시.pdf" download class="download-file">
+            <span class="download-file-icon">📋</span>
+            <span class="download-file-info">
+              <strong>견적서</strong>
+              <span>PDF</span>
+            </span>
+            <span class="download-file-arrow">↓</span>
+          </a>
+        </div>
+      </div>
+      <div class="download-card">
+        <div class="download-card-hours">6차시</div>
+        <div class="download-card-desc">표준 과정<br>기획 + 디자인 + 앱 생성</div>
+        <div class="download-card-files">
+          <a href="AI교육_강의계획서_6차시.pdf" download class="download-file">
+            <span class="download-file-icon">📄</span>
+            <span class="download-file-info">
+              <strong>강의계획서</strong>
+              <span>PDF</span>
+            </span>
+            <span class="download-file-arrow">↓</span>
+          </a>
+          <a href="AI교육_운영견적서_6차시.pdf" download class="download-file">
+            <span class="download-file-icon">📋</span>
+            <span class="download-file-info">
+              <strong>견적서</strong>
+              <span>PDF</span>
+            </span>
+            <span class="download-file-arrow">↓</span>
+          </a>
+        </div>
+      </div>
+      <div class="download-card">
+        <div class="download-card-hours">8차시</div>
+        <div class="download-card-desc">심화 과정<br>전 단계 + 발표/피드백</div>
+        <div class="download-card-files">
+          <a href="AI교육_강의계획서_8차시.pdf" download class="download-file">
+            <span class="download-file-icon">📄</span>
+            <span class="download-file-info">
+              <strong>강의계획서</strong>
+              <span>PDF</span>
+            </span>
+            <span class="download-file-arrow">↓</span>
+          </a>
+          <a href="AI교육_운영견적서_8차시.pdf" download class="download-file">
+            <span class="download-file-icon">📋</span>
+            <span class="download-file-info">
+              <strong>견적서</strong>
+              <span>PDF</span>
+            </span>
+            <span class="download-file-arrow">↓</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<div class="footer">
+  TeacherMate · AI 교육 플랫폼 &nbsp;|&nbsp; <a href="https://teachermate.co.kr">teachermate.co.kr</a>
+</div>
+
+<!-- ============================================================
+     DATA + LOGIC
+     ============================================================ -->
+<script>
+/* ============================
+   STEP DATA
+   ============================ */
+const TOOLS = {
+  sprint: {
+    label: '기획 (Sprint)',
+    steps: [
+      { name: 'AI 체험', time: '20분' },
+      { name: '문제 발견', time: '20분' },
+      { name: '앱 주문', time: '16분' },
+      { name: '화면 디자인', time: '20분' },
+      { name: '기능 검수', time: '20분' },
+      { name: '사용성 테스트', time: '15분' },
+      { name: '발표', time: '35분' },
+    ]
+  },
+  block: {
+    label: '디자인 (Block Design)',
+    steps: [
+      { name: '배우기', time: '15분' },
+      { name: '실습', time: '20분' },
+      { name: '챌린지', time: '20분' },
+      { name: '만들기', time: '25분' },
+    ]
+  },
+  maker: {
+    label: '앱 생성 (App Maker)',
+    steps: [
+      { name: '아이디어', time: '5분' },
+      { name: '스타일', time: '2분' },
+      { name: '상세 → 생성', time: '10분' },
+    ]
+  }
+};
+
+/* ============================
+   STATE
+   ============================ */
+let currentTool = 'sprint';
+let currentStep = 0;
+let isTransitioning = false;
+
+/* ============================
+   NAVIGATION
+   ============================ */
+function switchTool(tool) {
+  if (tool === currentTool) return;
+  currentTool = tool;
+  currentStep = 0;
+  updateTabs();
+  updateSubsteps();
+  transitionFrames();
+}
+
+function setStep(idx) {
+  const max = TOOLS[currentTool].steps.length;
+  if (idx < 0 || idx >= max || idx === currentStep) return;
+  currentStep = idx;
+  updateSubsteps();
+  transitionFrames();
+}
+
+function prevStep() { setStep(currentStep - 1); }
+function nextStep() { setStep(currentStep + 1); }
+
+/* keyboard */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') prevStep();
+  if (e.key === 'ArrowRight') nextStep();
+});
+
+/* ============================
+   UI UPDATES
+   ============================ */
+function updateTabs() {
+  document.querySelectorAll('.top-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tool === currentTool);
+  });
+}
+
+function updateSubsteps() {
+  const dots = document.getElementById('substepDots');
+  const steps = TOOLS[currentTool].steps;
+  dots.innerHTML = steps.map((s, i) =>
+    `<div class="substep-dot${i === currentStep ? ' active' : ''}" onclick="setStep(${i})">${i+1}. ${s.name}</div>`
+  ).join('');
+}
+
+function transitionFrames() {
+  if (isTransitioning) return;
+  isTransitioning = true;
+  const pc = document.getElementById('pcContent');
+  const ph = document.getElementById('phoneContent');
+  pc.classList.add('fading');
+  ph.classList.add('fading');
+  setTimeout(() => {
+    renderContent();
+    pc.classList.remove('fading');
+    ph.classList.remove('fading');
+    isTransitioning = false;
+  }, 280);
+}
+
+function renderContent() {
+  const key = `${currentTool}_${currentStep}`;
+  const data = CONTENT[key];
+  if (!data) return;
+  document.getElementById('pcUrl').textContent = data.url || '';
+  document.getElementById('pcContent').innerHTML = data.pc;
+  document.getElementById('phoneContent').innerHTML = data.phone;
+  /* description */
+  const step = TOOLS[currentTool].steps[currentStep];
+  const toolLabel = TOOLS[currentTool].label;
+  document.getElementById('descCard').innerHTML = `
+    <div class="desc-header">
+      <span class="desc-step-badge">${toolLabel} ${currentStep+1}/${TOOLS[currentTool].steps.length}</span>
+      <span class="desc-step-name">${step.name}</span>
+    </div>
+    <p class="desc-text">${data.desc}</p>
+    <div class="desc-roles">
+      <div class="desc-role">
+        <h4>🖥️ 교사 역할</h4>
+        <ul>${data.teacherList.map(t => `<li>${t}</li>`).join('')}</ul>
+      </div>
+      <div class="desc-role">
+        <h4>📱 학생 활동</h4>
+        <ul>${data.studentList.map(s => `<li>${s}</li>`).join('')}</ul>
+      </div>
+    </div>
+    ${data.tip ? `<div class="desc-tip"><strong>💡 강사 팁:</strong> ${data.tip}</div>` : ''}
+    ${data.links ? `<div class="desc-links">${data.links.map(l => `<a href="${l.url}" target="_blank" class="desc-link"><span class="desc-link-icon">${l.icon}</span><span><strong>${l.label}</strong><span class="desc-link-url">${l.url.replace('https://','')}</span></span><span class="desc-link-arrow">→</span></a>`).join('')}</div>` : ''}
+  `;
+}
+
+/* ============================
+   CONTENT TEMPLATES
+   ============================ */
+const CONTENT = {};
+
+/* ---- SPRINT STEP 1: AI 체험 ---- */
+CONTENT['sprint_0'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 프로젝터 모드',
+  desc: '수업의 첫 단계입니다. AI가 만든 샘플 앱 3개를 학생들에게 직접 체험하게 하여 "코딩 없이도 앱을 만들 수 있다"는 가능성을 보여줍니다. 학생들은 자유롭게 앱을 사용해보면서 AI가 잘하는 것(이미지 생성, 텍스트 분석 등)과 못하는 것(정확도, 맥락 이해 등)을 스스로 발견하고, 발견 카드에 기록합니다.',
+  teacherList: [
+    '프로젝터 화면에서 샘플 앱 3개(AI 동화책, AI 작곡가, AI 분류기)를 순서대로 시연합니다',
+    '"이 앱들은 모두 AI가 만들었습니다. 코딩을 몰라도 아이디어만 있으면 만들 수 있어요"라고 안내합니다',
+    '학생들에게 자유 체험 시간(8분)을 줍니다 — 세 앱 모두 써보도록 안내',
+    '체험 후 "AI가 뭘 잘하고 뭘 못하는지 한 가지씩 적어보세요"라고 발견 카드 작성을 안내합니다',
+    '제출된 발견 카드를 프로젝터에 종합하여 학급 전체와 공유합니다'
+  ],
+  studentList: [
+    '교사가 공유한 QR 코드 또는 세션 코드로 수업에 참여합니다',
+    '샘플 앱 3개를 자유롭게 체험합니다 — 직접 입력하고 결과를 확인해봅니다',
+    'AI가 잘하는 점과 한계를 발견하고 발견 카드에 기록합니다',
+    '발견 카드를 제출합니다'
+  ],
+  tip: '학생들이 앱을 "구경"만 하지 않도록 구체적인 질문을 던져주세요. 예: "AI 동화책에 \'공포 이야기\'를 넣으면 어떻게 될까?" 의외의 입력을 시도하게 하면 AI의 한계를 자연스럽게 발견합니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 수업 만들기', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 수업 참여하기', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div class="f-title">샘플 앱 시연</div>
+    <div class="f-subtitle" style="color:var(--text-secondary);">학생들에게 AI로 만든 앱 3개를 시연합니다</div>
+    <div class="f-grid3" style="margin-top:12px;">
+      <div class="f-card" style="text-align:center;">
+        <div style="height:80px;background:linear-gradient(135deg,#FDE68A,#F59E0B);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px;">📖</div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);">AI 동화책</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">그림+이야기 자동 생성</div>
+      </div>
+      <div class="f-card" style="text-align:center;">
+        <div style="height:80px;background:linear-gradient(135deg,#C4B5FD,#7C3AED);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px;">🎵</div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);">AI 작곡가</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">멜로디 자동 생성</div>
+      </div>
+      <div class="f-card" style="text-align:center;">
+        <div style="height:80px;background:linear-gradient(135deg,#A7F3D0,#10B981);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px;">🔍</div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);">AI 분류기</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">이미지 자동 분류</div>
+      </div>
+    </div>
+    <div style="text-align:right;margin-top:14px;">
+      <span class="f-btn f-btn--primary">다음 앱 →</span>
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="background:linear-gradient(135deg,#FDE68A,#F59E0B);border-radius:12px;height:140px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;">
+        <div style="text-align:center;color:#92400E;">
+          <div style="font-size:40px;margin-bottom:4px;">📖</div>
+          <div style="font-size:14px;font-weight:700;">AI 동화책</div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;">옛날옛날 깊은 숲속에...</div>
+      <div style="background:#FFFBEB;border-radius:8px;padding:10px;font-size:11px;color:#92400E;line-height:1.6;margin-bottom:12px;">
+        작은 여우가 살고 있었어요. 여우는 매일 아침 새들의 노래를 들으며 산책을 했답니다...
+      </div>
+      <div style="text-align:center;">
+        <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;">이야기 만들기</span>
+      </div>
+      <div style="text-align:center;margin-top:14px;">
+        <div class="stars">★★★★☆</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">이 앱을 평가해주세요</div>
+      </div>
+    </div>
+  `
+};
+
+/* ---- SPRINT STEP 2: 문제 발견 ---- */
+CONTENT['sprint_1'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 프로젝터 모드',
+  desc: '좋은 앱은 누군가의 불편함을 해결합니다. 이 단계에서 학생들은 아침에 일어나서 학교에 오기까지, 점심시간, 방과 후 등 일상 속 불편한 순간을 떠올리고, 그중 하나를 골라 "누가, 어떤 상황에서, 왜 불편한지"를 구체적으로 정의합니다. 막연한 아이디어가 아닌 실제 문제에서 출발하는 것이 핵심입니다.',
+  teacherList: [
+    '"여러분이 일상에서 겪는 불편함을 떠올려보세요"라고 시작합니다',
+    '시간대별로 힌트를 줍니다: 아침 등교길 → 수업 시간 → 점심 → 방과 후 → 귀가 후',
+    '학생들이 너무 큰 문제(예: "세계 평화")를 잡지 않도록 범위를 좁혀줍니다',
+    '문제 카드 양식(상황/대상/원인)을 설명하고 작성하게 합니다',
+    '팀별 발표 후 비슷한 문제끼리 묶어 정리합니다',
+    '프로젝터에 발견 결과(AI 강점/한계 차트)를 종합하여 보여줍니다'
+  ],
+  studentList: [
+    '일상에서 불편한 순간들을 자유롭게 브레인스토밍합니다',
+    '가장 공감되는 불편함 하나를 선택합니다',
+    '문제 카드를 작성합니다: 상황, 대상(누가 불편한지), 원인',
+    '팀원들과 공유하고 비슷한 문제를 그룹핑합니다',
+    '완성된 문제 카드를 제출합니다'
+  ],
+  tip: '"급식 메뉴를 모르겠다", "버스가 언제 오는지 모르겠다" 같은 소소한 불편함이 오히려 좋은 앱 아이디어가 됩니다. 거창한 문제보다 구체적인 문제를 유도해주세요.',
+  links: [
+    { icon: '🖥️', label: '교사: 수업 관리 대시보드', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 워크시트 작성', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div class="f-title">발견 결과 종합</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--success);margin-bottom:8px;">AI 강점</div>
+        <div class="mini-bar-h"><span class="label">이미지 생성</span><div class="bar" style="width:120px;background:var(--success);"></div><span class="val">12명</span></div>
+        <div class="mini-bar-h"><span class="label">텍스트 분석</span><div class="bar" style="width:95px;background:var(--success);"></div><span class="val">9명</span></div>
+        <div class="mini-bar-h"><span class="label">번역</span><div class="bar" style="width:75px;background:var(--success);"></div><span class="val">7명</span></div>
+        <div class="mini-bar-h"><span class="label">계산/분류</span><div class="bar" style="width:60px;background:var(--success);"></div><span class="val">5명</span></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--warning);margin-bottom:8px;">AI 한계</div>
+        <div class="mini-bar-h"><span class="label">정확도 부족</span><div class="bar" style="width:100px;background:var(--warning);"></div><span class="val">10명</span></div>
+        <div class="mini-bar-h"><span class="label">맥락 이해</span><div class="bar" style="width:85px;background:var(--warning);"></div><span class="val">8명</span></div>
+        <div class="mini-bar-h"><span class="label">실시간 정보</span><div class="bar" style="width:65px;background:var(--warning);"></div><span class="val">6명</span></div>
+        <div class="mini-bar-h"><span class="label">감정 이해</span><div class="bar" style="width:45px;background:var(--warning);"></div><span class="val">4명</span></div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:10px;background:#F0FDF4;border-radius:8px;font-size:11px;color:var(--success);">
+      ✓ 전체 24명 중 22명 참여 완료
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">일상의 불편함</div>
+      <div style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;">아침에 일어나서 학교 올 때까지 불편한 점은?</div>
+      <textarea class="f-input" style="height:60px;resize:none;font-size:10.5px;margin-bottom:12px;" readonly>급식 메뉴를 모르겠어서 뭘 먹을지 고민...</textarea>
+      <div class="f-card" style="background:#FFF7ED;border-color:#FED7AA;">
+        <div style="font-size:11px;font-weight:700;color:#9A3412;margin-bottom:6px;">문제 카드</div>
+        <div style="font-size:10px;color:#78350F;line-height:1.7;">
+          <strong>상황:</strong> 아침마다 급식 메뉴 확인<br>
+          <strong>누가:</strong> 학교 가기 전 학생<br>
+          <strong>왜 불편:</strong> 매번 학교 홈페이지 찾기 번거로움
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:12px;">
+        <span class="f-btn f-btn--primary">문제 카드 제출</span>
+      </div>
+    </div>
+  `
+};
+
+/* ---- SPRINT STEP 3: 앱 주문 ---- */
+CONTENT['sprint_2'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 교사 대시보드',
+  desc: 'Step 2에서 찾은 문제를 해결할 앱을 구체적으로 설계하는 단계입니다. 학생들은 워크시트에 앱 이름, 핵심 기능 3가지, AI가 할 일을 적습니다. 이 주문서가 이후 AI 앱 생성의 기초 자료가 되므로, 구체적으로 작성하는 것이 중요합니다. "멋진 앱"이 아니라 "뭘 하는 앱인지 한 문장으로 설명 가능한 앱"이 목표입니다.',
+  teacherList: [
+    '워크시트를 학생 폰으로 배포합니다 (Sprint 앱에서 자동 표시)',
+    '좋은 예시와 나쁜 예시를 비교하여 보여줍니다 — "맛집 찾기 앱" ✓ vs "쩌는 앱" ✗',
+    '핵심 기능은 3가지로 제한하도록 안내합니다 — 너무 많으면 AI가 집중을 못합니다',
+    '"AI가 할 일" 칸에는 구체적으로 쓰게 합니다 — "잘 만들어줘" ✗ vs "리뷰를 분석해서 별점 3.5 이상 맛집을 추천" ✓',
+    '대시보드에서 팀별 제출 현황을 실시간으로 확인하고, 미제출 팀을 독려합니다',
+    '제출된 주문서를 미리보기하여 내용이 충분히 구체적인지 점검합니다'
+  ],
+  studentList: [
+    '앱 이름을 정합니다 — 기능이 드러나는 직관적인 이름이 좋습니다',
+    '핵심 기능 3가지를 적습니다 — 앱에 반드시 들어가야 할 기능',
+    'AI가 할 일을 설명합니다 — AI에게 어떤 역할을 맡길지 구체적으로 기술',
+    '작성을 완료하고 주문서를 제출합니다'
+  ],
+  tip: '학생들이 "게임 만들어줘"처럼 막연하게 쓰면 AI도 막연한 앱을 만듭니다. "구구단 퀴즈를 내고, 정답률에 따라 난이도가 올라가는 수학 게임"처럼 구체적으로 쓰게 유도하세요.',
+  links: [
+    { icon: '🖥️', label: '교사: 수업 관리 대시보드', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 워크시트 작성', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div class="f-row" style="justify-content:space-between;margin-bottom:14px;">
+      <div class="f-title" style="margin:0;">Step 03 앱 주문서</div>
+      <span class="f-badge" style="background:#DBEAFE;color:#1D4ED8;">제출 2/3팀</span>
+    </div>
+    <div style="display:grid;grid-template-columns:160px 1fr;gap:14px;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">모둠 목록</div>
+        <div class="f-card" style="padding:8px;">
+          <div style="font-size:10.5px;line-height:2;">
+            <div>1모둠 <span style="color:var(--success);">●</span> 3명 <span class="f-badge" style="background:#D1FAE5;color:#059669;font-size:9px;">제출</span></div>
+            <div>2모둠 <span style="color:var(--success);">●</span> 3명 <span class="f-badge" style="background:#D1FAE5;color:#059669;font-size:9px;">제출</span></div>
+            <div>3모둠 <span style="color:var(--warning);">●</span> 2명 <span class="f-badge" style="background:#FEF3C7;color:#D97706;font-size:9px;">작성중</span></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">1모둠 주문서 미리보기</div>
+        <div class="f-card" style="font-size:10.5px;line-height:1.8;">
+          <strong>앱 이름:</strong> 우리 동네 맛집 찾기<br>
+          <strong>핵심 기능:</strong> 주변 맛집 검색, 별점 필터, 지도 표시<br>
+          <strong>AI가 할 일:</strong> 리뷰 분석하여 맛집 추천
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <div class="progress-bar"><div class="fill" style="width:66%;"></div></div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-top:4px;">전체 진행률 66%</div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;">앱 주문서</div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">앱 이름</div>
+        <input class="f-input" value="우리 동네 맛집 찾기" readonly>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">핵심 기능 3가지</div>
+        <div style="font-size:10.5px;line-height:2;">
+          <div class="f-row"><span style="color:var(--mint);font-weight:700;width:16px;">1.</span><input class="f-input" value="주변 맛집 검색" readonly style="flex:1;"></div>
+          <div class="f-row" style="margin-top:4px;"><span style="color:var(--mint);font-weight:700;width:16px;">2.</span><input class="f-input" value="별점 필터" readonly style="flex:1;"></div>
+          <div class="f-row" style="margin-top:4px;"><span style="color:var(--mint);font-weight:700;width:16px;">3.</span><input class="f-input" value="지도 표시" readonly style="flex:1;"></div>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">AI가 할 일</div>
+        <textarea class="f-input" style="height:44px;resize:none;" readonly>리뷰를 분석하여 맛집 추천</textarea>
+      </div>
+      <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;">주문서 제출</span>
+    </div>
+  `
+};
+
+/* ---- SPRINT STEP 4: 화면 디자인 ---- */
+CONTENT['sprint_3'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 프로젝터 모드',
+  desc: '앱의 화면을 종이에 직접 그려보는 단계입니다. 시작 화면, 메인 기능 화면, 결과 화면 — 3개의 핵심 화면을 와이어프레임(뼈대 스케치)으로 그립니다. 예쁘게 그릴 필요는 전혀 없습니다. "어디에 뭐가 있는지"만 알 수 있으면 됩니다. 이 스케치는 교사가 촬영하여 AI 앱 생성 시 참고 자료로 활용합니다.',
+  teacherList: [
+    '와이어프레임 개념을 프로젝터에서 보여줍니다 — "설계도처럼 대략적인 배치를 그리는 것"',
+    '3개 화면(시작/메인기능/결과)을 그리도록 안내합니다',
+    '"예쁘게 그리지 마세요! 30초면 충분합니다"라고 강조합니다 — 완벽주의 방지',
+    '시간을 넉넉히 주되(10분), 너무 디테일에 빠지지 않도록 관리합니다',
+    '완성된 스케치를 촬영하여 수집합니다 — 이후 AI 앱 생성 시 입력 자료로 사용',
+    '스케치와 Step 3의 주문서를 결합하여 v0.1 앱을 생성합니다(교사가 직접 처리)'
+  ],
+  studentList: [
+    'A4 종이나 노트에 3개 화면을 그립니다: 시작 화면, 메인 기능, 결과 화면',
+    '각 화면에 버튼, 입력창, 텍스트 등의 위치를 대략적으로 배치합니다',
+    '화면마다 간단한 설명을 덧붙입니다 — "이 버튼을 누르면 검색 결과가 나옴"',
+    '팀원들과 스케치를 공유하고 보완합니다',
+    '완성된 스케치를 카메라로 촬영하여 제출합니다'
+  ],
+  tip: '스케치에 너무 많은 시간을 쓰는 학생이 있습니다. "30초 안에 한 화면 그리기" 타이머를 걸면 부담 없이 빠르게 진행됩니다. 핵심은 "어디에 뭐가 있는지"이지, 디자인 퀄리티가 아닙니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 프로젝터 모드', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 스케치 제출', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div class="f-title">화면 스케치 가이드</div>
+    <div class="f-subtitle">3개의 핵심 화면을 설계합니다</div>
+    <div class="f-grid3" style="margin-top:12px;">
+      <div style="text-align:center;">
+        <div style="border:2px dashed var(--border);border-radius:12px;padding:10px;height:160px;">
+          <div style="background:var(--navy);height:20px;border-radius:4px;margin-bottom:6px;"></div>
+          <div style="background:var(--border);height:24px;border-radius:4px;margin-bottom:6px;"></div>
+          <div style="background:var(--border);height:50px;border-radius:4px;margin-bottom:6px;"></div>
+          <div class="f-row" style="justify-content:center;gap:12px;">
+            <div style="background:var(--mint);width:30px;height:8px;border-radius:4px;"></div>
+            <div style="background:var(--border);width:30px;height:8px;border-radius:4px;"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-top:6px;">시작 화면</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="border:2px dashed var(--border);border-radius:12px;padding:10px;height:160px;">
+          <div style="background:var(--navy);height:20px;border-radius:4px;margin-bottom:6px;"></div>
+          <div class="f-row" style="gap:4px;margin-bottom:6px;">
+            <div style="background:var(--border);height:40px;flex:1;border-radius:4px;"></div>
+            <div style="background:var(--border);height:40px;flex:1;border-radius:4px;"></div>
+          </div>
+          <div class="f-row" style="gap:4px;">
+            <div style="background:var(--border);height:40px;flex:1;border-radius:4px;"></div>
+            <div style="background:var(--border);height:40px;flex:1;border-radius:4px;"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-top:6px;">메인 기능</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="border:2px dashed var(--border);border-radius:12px;padding:10px;height:160px;">
+          <div style="background:var(--navy);height:20px;border-radius:4px;margin-bottom:6px;"></div>
+          <div style="background:#D1FAE5;height:32px;border-radius:4px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--success);">✓ 결과</div>
+          <div style="background:var(--border);height:30px;border-radius:4px;margin-bottom:6px;"></div>
+          <div style="background:var(--mint);height:22px;border-radius:4px;"></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-top:6px;">결과 화면</div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">메인 화면 스케치</div>
+      <div style="border:2px dashed var(--border);border-radius:12px;padding:12px;margin-bottom:12px;">
+        <div style="background:var(--navy);height:24px;border-radius:6px;margin-bottom:8px;display:flex;align-items:center;padding:0 8px;">
+          <span style="color:#fff;font-size:9px;">맛집 찾기</span>
+        </div>
+        <div style="background:#F3F4F6;height:28px;border-radius:6px;margin-bottom:8px;display:flex;align-items:center;padding:0 8px;">
+          <span style="font-size:9px;color:var(--text-secondary);">🔍 검색어 입력...</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="background:#FFF7ED;height:36px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#9A3412;">🍜 한식 맛집</div>
+          <div style="background:#EFF6FF;height:36px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#1D4ED8;">🍕 양식 맛집</div>
+          <div style="background:#F0FDF4;height:36px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:9px;color:#059669;">🍣 일식 맛집</div>
+        </div>
+        <div style="display:flex;justify-content:space-around;margin-top:10px;padding-top:8px;border-top:1px dashed var(--border);">
+          <span style="font-size:9px;color:var(--text-secondary);">🏠</span>
+          <span style="font-size:9px;color:var(--mint);">🔍</span>
+          <span style="font-size:9px;color:var(--text-secondary);">❤️</span>
+          <span style="font-size:9px;color:var(--text-secondary);">👤</span>
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <span class="f-btn f-btn--mint">📷 스케치 촬영</span>
+      </div>
+    </div>
+  `
+};
+
+/* ---- SPRINT STEP 5: 기능 검수 ---- */
+CONTENT['sprint_4'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 교사 대시보드',
+  desc: '교사가 생성한 v0.1 앱을 학생들이 직접 테스트하는 단계입니다. 앱 개발에서 가장 중요한 과정인 "검수(QA)"를 체험합니다. 학생들은 Step 3에서 작성한 주문서와 비교하며 기능이 제대로 구현되었는지 체크리스트로 확인하고, 안 되는 부분을 수정 요청서로 작성합니다. 교사는 피드백을 모아 v0.2를 생성합니다.',
+  teacherList: [
+    'Step 3~4의 주문서와 스케치를 기반으로 AI가 생성한 v0.1 앱의 URL을 학생들에게 공유합니다',
+    '"주문한 대로 만들어졌는지, 사용하기 편한지 꼼꼼히 확인해보세요"라고 안내합니다',
+    '체크리스트 항목별 기능 테스트 → 디자인 비교 → 사용성 확인 순서를 안내합니다',
+    '학생 피드백을 대시보드에서 실시간으로 확인합니다',
+    '"버그(안 됨)"와 "미구현(주문과 다름)"을 구분하도록 안내합니다',
+    '수정 요청을 모아 v0.2 앱을 생성합니다 — 수정 프롬프트에 학생 피드백을 반영'
+  ],
+  studentList: [
+    '교사가 공유한 URL로 v0.1 앱에 접속합니다',
+    '핵심 기능 3가지가 작동하는지 체크리스트로 하나씩 확인합니다',
+    '스케치와 비교하여 화면 배치가 맞는지 확인합니다',
+    '안 되는 기능, 이상한 부분을 구체적으로 기록합니다',
+    '수정 요청서를 작성하여 제출합니다 — "검색 버튼을 누르면 반응이 없음" 식으로 구체적으로'
+  ],
+  tip: '학생들이 "별로예요", "이상해요"라고만 쓰면 수정이 어렵습니다. "어떤 버튼을 눌렀을 때, 어떤 결과를 기대했는데, 실제로는 어떻게 되었는지"를 쓰게 하면 좋은 피드백이 됩니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 수업 관리 대시보드', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 테스트 & 피드백', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div class="f-row" style="justify-content:space-between;margin-bottom:12px;">
+      <div class="f-title" style="margin:0;">v0.1 배포 현황</div>
+      <span class="f-badge" style="background:#DBEAFE;color:#1D4ED8;">1모둠</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div>
+        <div class="f-card" style="text-align:center;padding:14px;">
+          <div style="border:2px solid var(--border);border-radius:12px;height:100px;background:#F9FAFB;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">
+            <span style="font-size:10px;color:var(--text-secondary);">앱 미리보기</span>
+          </div>
+          <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">maker.teachermate.co.kr/app/abc123</div>
+          <span class="f-btn f-btn--primary">학생에게 공유</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">학생 피드백</div>
+        <div style="font-size:10.5px;line-height:2;">
+          <div><span style="color:var(--success);">✅</span> 맛집 목록 표시</div>
+          <div><span style="color:var(--error);">❌</span> 검색 안 됨</div>
+          <div><span style="color:var(--success);">✅</span> 지도 표시</div>
+          <div><span style="color:var(--error);">❌</span> 별점 필터</div>
+        </div>
+        <div style="margin-top:8px;padding:6px 8px;background:#FEF2F2;border-radius:6px;font-size:10px;color:var(--error);">
+          미해결 2건 — 다음 버전에서 수정
+        </div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div class="f-row" style="justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);">기능 체크리스트</div>
+        <span class="f-badge" style="background:#DBEAFE;color:#1D4ED8;">v0.1 테스트</span>
+      </div>
+      <div class="checklist" style="margin-bottom:12px;">
+        <div class="done">☑ 맛집 목록 표시</div>
+        <div class="todo">☐ 검색 기능</div>
+        <div class="todo">☐ 별점 필터</div>
+        <div class="done">☑ 지도 연동</div>
+      </div>
+      <hr class="f-divider">
+      <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:6px;">수정 요청</div>
+      <textarea class="f-input" style="height:52px;resize:none;font-size:10px;" readonly>검색 버튼을 누르면 아무 반응이 없어요. 별점으로 필터링도 안 됩니다.</textarea>
+      <div style="margin-top:10px;">
+        <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;">수정 요청 제출</span>
+      </div>
+    </div>
+  `
+};
+
+/* ---- SPRINT STEP 6: 사용성 테스트 ---- */
+CONTENT['sprint_5'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 교차 테스트',
+  desc: '수정된 v0.2 앱이 원래 문제를 실제로 해결하는지 시뮬레이션합니다. 그리고 다른 팀의 앱을 교차 테스트하며 피드백을 주고받습니다. "내 앱은 잘 보이지만 남의 앱은 객관적으로 보인다"는 점을 활용하여, 학생들이 서로의 앱에서 좋은 점과 개선점을 발견하게 합니다.',
+  teacherList: [
+    'v0.2 앱 URL을 학생들에게 공유하고 수정 사항이 반영되었는지 확인하게 합니다',
+    'Step 2에서 발견한 문제를 이 앱으로 정말 해결할 수 있는지 시뮬레이션하게 합니다',
+    '교차 테스트 배정을 합니다: 1모둠→2모둠 앱, 2모둠→3모둠 앱, 3모둠→1모둠 앱',
+    '교차 테스트 진행 상황을 대시보드에서 모니터링합니다',
+    '시간 관리에 유의합니다 — 완벽주의에 빠지지 않도록 타이머를 설정합니다',
+    '최종 피드백을 확인하고 발표용 최종 버전을 확정합니다'
+  ],
+  studentList: [
+    'v0.2 앱을 열어 Step 5에서 요청한 수정 사항이 반영되었는지 확인합니다',
+    'Step 2의 원래 문제 상황을 떠올리며 앱으로 해결해봅니다 — "정말 불편함이 줄어드는가?"',
+    '교사가 배정한 다른 팀의 앱을 테스트합니다',
+    '다른 팀 앱의 좋은 점과 개선점을 피드백 양식에 작성합니다',
+    '별점(5점 만점)과 함께 피드백을 제출합니다'
+  ],
+  tip: '교차 테스트 시 "비판"이 아닌 "건설적 피드백"을 유도해주세요. "이 부분이 안 좋다" 대신 "이 부분이 이렇게 바뀌면 더 좋겠다"로 쓰게 하면 분위기가 훨씬 좋아집니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 교차 테스트 관리', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 피드백 작성', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div class="f-row" style="justify-content:space-between;margin-bottom:14px;">
+      <div class="f-title" style="margin:0;">교차 테스트 배정</div>
+      <div style="background:#FEF3C7;padding:4px 12px;border-radius:var(--radius-pill);font-size:11px;font-weight:600;color:#D97706;">남은 시간 8:30</div>
+    </div>
+    <div class="f-grid3" style="gap:12px;">
+      <div class="f-card" style="text-align:center;padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;">1모둠</div>
+        <div style="font-size:24px;margin-bottom:4px;">→</div>
+        <div style="font-size:11px;color:var(--mint-hover);font-weight:600;">2모둠 앱 테스트</div>
+        <div style="margin-top:8px;"><span class="f-badge" style="background:#D1FAE5;color:#059669;">완료</span></div>
+      </div>
+      <div class="f-card" style="text-align:center;padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;">2모둠</div>
+        <div style="font-size:24px;margin-bottom:4px;">→</div>
+        <div style="font-size:11px;color:var(--mint-hover);font-weight:600;">3모둠 앱 테스트</div>
+        <div style="margin-top:8px;"><span class="f-badge" style="background:#FEF3C7;color:#D97706;">진행중</span></div>
+      </div>
+      <div class="f-card" style="text-align:center;padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:6px;">3모둠</div>
+        <div style="font-size:24px;margin-bottom:4px;">→</div>
+        <div style="font-size:11px;color:var(--mint-hover);font-weight:600;">1모둠 앱 테스트</div>
+        <div style="margin-top:8px;"><span class="f-badge" style="background:#FEF3C7;color:#D97706;">진행중</span></div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div class="f-row" style="justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);">다른 팀 앱 테스트</div>
+        <span class="f-badge" style="background:#EDE9FE;color:#7C3AED;">2모둠 앱</span>
+      </div>
+      <div style="background:#F9FAFB;border:1px solid var(--border);border-radius:10px;height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;position:relative;">
+        <span style="font-size:10px;color:var(--text-secondary);">일정 관리 앱 화면</span>
+        <div style="position:absolute;bottom:6px;right:6px;background:var(--mint);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;">💬</div>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">좋은 점</div>
+        <input class="f-input" value="디자인이 깔끔해요" readonly>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">개선점</div>
+        <input class="f-input" value="글씨가 좀 작아요" readonly>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">평점</div>
+        <div class="stars">★★★★☆</div>
+      </div>
+      <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;">피드백 제출</span>
+    </div>
+  `
+};
+
+/* ---- SPRINT STEP 7: 발표 ---- */
+CONTENT['sprint_6'] = {
+  url: 'sprint.teachermate.co.kr/session/XK7M · 프로젝터 모드',
+  desc: '프로젝트의 마지막 단계입니다. 각 팀이 3분 동안 자신의 앱을 발표(피칭)합니다. 발표 구성은 30초 문제 소개, 30초 해결책, 60초 앱 시연, 30초 배운 점입니다. 모든 팀 발표가 끝나면 "가장 쓰고 싶은 앱"에 투표하고, 결과를 발표합니다. 마지막으로 전체 수업을 돌아보며 배운 점을 나눕니다.',
+  teacherList: [
+    '발표 순서와 시간(팀당 3분)을 안내합니다',
+    '발표 구성을 알려줍니다: 30초 문제 → 30초 해결책 → 60초 시연 → 30초 배운 점',
+    '팀 내 리허설 시간(3분)을 줍니다',
+    '프로젝터에 타이머를 띄우고 시간을 엄격하게 관리합니다',
+    '모든 발표 후 투표를 진행합니다 — "가장 쓰고 싶은 앱"에 1표 (자기 팀 제외)',
+    '투표 결과를 프로젝터에 공개하고 시상합니다',
+    '전체 회고를 이끕니다: "이 수업에서 가장 인상 깊었던 것은?"'
+  ],
+  studentList: [
+    '팀원과 역할을 나눕니다 — 발표자, 시연자, 타임키퍼',
+    '피칭 스크립트를 작성합니다 (30초+30초+60초+30초)',
+    '팀 내에서 리허설을 합니다',
+    '앞에 나가 3분 피칭을 합니다 — 앱을 직접 시연하며 설명',
+    '다른 팀 발표를 경청합니다',
+    '가장 쓰고 싶은 앱에 투표합니다 (자기 팀 제외, 1표)',
+    '전체 회고에 참여합니다'
+  ],
+  tip: '발표 시간을 반드시 지켜주세요. 3분을 넘기면 나머지 팀 시간이 줄어듭니다. 타이머가 울리면 박수로 마무리하는 규칙을 정하면 자연스럽습니다. 투표 시 "가장 잘 만든 앱"이 아니라 "가장 쓰고 싶은 앱"이라고 프레이밍하면 디자인보다 아이디어에 집중할 수 있습니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 프로젝터 (발표/투표)', url: 'https://sprint.teachermate.co.kr/create' },
+    { icon: '📱', label: '학생: 투표 참여', url: 'https://sprint.teachermate.co.kr' }
+  ],
+  pc: `
+    <div style="text-align:center;margin-bottom:12px;">
+      <span class="f-badge" style="background:var(--navy);color:#fff;font-size:12px;padding:4px 14px;">1모둠 발표 중</span>
+    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:14px;">
+      <div style="border:2px solid var(--border);border-radius:16px;width:120px;height:180px;display:flex;align-items:center;justify-content:center;background:#F9FAFB;">
+        <span style="font-size:10px;color:var(--text-secondary);">앱 시연</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-bottom:14px;">
+      <span style="font-size:22px;font-weight:700;color:var(--navy);">2:15</span>
+      <span style="font-size:12px;color:var(--text-secondary);">/ 3:00</span>
+    </div>
+    <hr class="f-divider">
+    <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">투표 결과</div>
+    <div class="mini-bar-h"><span class="label">1모둠</span><div class="bar" style="width:80px;background:var(--mint);"></div><span class="val">8표</span></div>
+    <div class="mini-bar-h"><span class="label" style="font-weight:700;color:var(--navy);">2모둠</span><div class="bar" style="width:120px;background:var(--navy);"></div><span class="val" style="color:var(--navy);font-weight:700;">12표 🏆</span></div>
+    <div class="mini-bar-h"><span class="label">3모둠</span><div class="bar" style="width:50px;background:var(--mint);"></div><span class="val">5표</span></div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">투표하기</div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-bottom:12px;">가장 쓰고 싶은 앱에 투표하세요 (내 팀 제외, 1표만)</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        <div class="f-card" style="padding:12px;cursor:default;opacity:0.5;">
+          <div style="font-size:11px;font-weight:600;color:var(--navy);">1모둠 — 맛집 찾기</div>
+          <div style="font-size:9px;color:var(--text-secondary);margin-top:2px;">내 팀</div>
+        </div>
+        <div class="f-card" style="padding:12px;border:2px solid var(--mint);background:rgba(126,200,181,0.06);">
+          <div class="f-row" style="justify-content:space-between;">
+            <div style="font-size:11px;font-weight:600;color:var(--navy);">2모둠 — 일정 관리</div>
+            <span style="color:var(--mint);font-size:14px;">✓</span>
+          </div>
+        </div>
+        <div class="f-card" style="padding:12px;">
+          <div style="font-size:11px;font-weight:600;color:var(--navy);">3모둠 — 운동 기록</div>
+        </div>
+      </div>
+      <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;">투표하기</span>
+    </div>
+  `
+};
+
+/* ---- BLOCK DESIGN STEP 1: 배우기 ---- */
+CONTENT['block_0'] = {
+  url: 'design.teachermate.co.kr/learn',
+  desc: '디자인 실습에 앞서 기본 용어와 원리를 익히는 단계입니다. "여백(Padding)", "정렬(Alignment)", "계층(Hierarchy)" 등 UI 디자인에서 자주 쓰는 용어 50개를 카드 형태로 학습합니다. 또한 "대비", "반복", "근접성" 같은 디자인 원리 20개를 실제 앱 예시와 함께 배웁니다. 용어를 아는 것만으로도 "이 버튼이 왜 안 예쁜지"를 설명할 수 있게 됩니다.',
+  teacherList: [
+    '프로젝터에 용어 사전 페이지를 띄우고 카테고리별로 핵심 용어를 설명합니다',
+    '실제 앱 화면을 보여주며 "여기서 여백이 어디인지 찾아보세요" 식으로 질문합니다',
+    '디자인 원리 탭으로 전환하여 "대비", "정렬", "근접성" 등 핵심 원리를 소개합니다',
+    '학생들이 각자 폰에서 용어를 탐색하는 시간을 줍니다',
+    '"이 용어들은 다음 실습에서 직접 써보게 됩니다"라고 동기를 부여합니다'
+  ],
+  studentList: [
+    '카테고리별 용어 카드를 넘겨보며 의미와 시각적 예시를 확인합니다',
+    '특히 레이아웃, 컴포넌트, 타이포그래피 카테고리에 집중합니다',
+    '디자인 원리 탭에서 "좋은 디자인"과 "나쁜 디자인"의 차이를 비교합니다',
+    '모르는 용어는 메모해둡니다 — 실습에서 직접 적용하며 익히게 됩니다'
+  ],
+  tip: '모든 용어를 다 외울 필요는 없습니다. 핵심 10개(여백, 정렬, 계층, 대비, 일관성 등)만 확실히 잡아주세요. 나머지는 실습하면서 자연스럽게 체득됩니다. "이 단어를 외우세요"가 아니라 "이 화면에서 여백이 어디인지 찾아보세요"로 접근하면 훨씬 잘 기억합니다.',
+  links: [
+    { icon: '📖', label: 'UI 용어 사전', url: 'https://design.teachermate.co.kr/learn' },
+    { icon: '🎨', label: '디자인 원리', url: 'https://design.teachermate.co.kr/learn' }
+  ],
+  pc: `
+    <div style="display:grid;grid-template-columns:140px 1fr;gap:14px;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">카테고리</div>
+        <div style="font-size:10.5px;line-height:2.2;">
+          <div style="color:var(--mint-hover);font-weight:600;">▸ 레이아웃</div>
+          <div style="color:var(--text-secondary);">&nbsp;&nbsp;컴포넌트</div>
+          <div style="color:var(--text-secondary);">&nbsp;&nbsp;입력</div>
+          <div style="color:var(--text-secondary);">&nbsp;&nbsp;타이포그래피</div>
+          <div style="color:var(--text-secondary);">&nbsp;&nbsp;색상</div>
+          <div style="color:var(--text-secondary);">&nbsp;&nbsp;아이콘</div>
+        </div>
+      </div>
+      <div>
+        <div class="f-row" style="margin-bottom:12px;gap:0;">
+          <div style="padding:6px 14px;font-size:11px;font-weight:600;background:var(--navy);color:#fff;border-radius:6px 0 0 6px;">UI 용어 사전</div>
+          <div style="padding:6px 14px;font-size:11px;font-weight:500;background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);border-left:none;border-radius:0 6px 6px 0;">디자인 원리</div>
+        </div>
+        <div class="f-grid3" style="gap:10px;">
+          <div class="f-card" style="text-align:center;padding:12px;">
+            <div style="height:40px;background:linear-gradient(135deg,#DBEAFE,#93C5FD);border-radius:6px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;">↔️</div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);">여백</div>
+            <div style="font-size:9px;color:var(--text-secondary);">Padding</div>
+          </div>
+          <div class="f-card" style="text-align:center;padding:12px;">
+            <div style="height:40px;background:linear-gradient(135deg,#D1FAE5,#6EE7B7);border-radius:6px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;">≡</div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);">정렬</div>
+            <div style="font-size:9px;color:var(--text-secondary);">Alignment</div>
+          </div>
+          <div class="f-card" style="text-align:center;padding:12px;">
+            <div style="height:40px;background:linear-gradient(135deg,#FDE68A,#FCD34D);border-radius:6px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;">▦</div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);">그리드</div>
+            <div style="font-size:9px;color:var(--text-secondary);">Grid</div>
+          </div>
+          <div class="f-card" style="text-align:center;padding:12px;">
+            <div style="height:40px;background:linear-gradient(135deg,#EDE9FE,#C4B5FD);border-radius:6px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;">◻️</div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);">계층</div>
+            <div style="font-size:9px;color:var(--text-secondary);">Hierarchy</div>
+          </div>
+          <div class="f-card" style="text-align:center;padding:12px;">
+            <div style="height:40px;background:linear-gradient(135deg,#FCE7F3,#F9A8D4);border-radius:6px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;">↕️</div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);">간격</div>
+            <div style="font-size:9px;color:var(--text-secondary);">Spacing</div>
+          </div>
+          <div class="f-card" style="text-align:center;padding:12px;">
+            <div style="height:40px;background:linear-gradient(135deg,#FFEDD5,#FDBA74);border-radius:6px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;">⊞</div>
+            <div style="font-size:11px;font-weight:700;color:var(--navy);">마진</div>
+            <div style="font-size:9px;color:var(--text-secondary);">Margin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:12px;">
+      <div style="display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px;">
+        <span class="f-badge" style="background:var(--navy);color:#fff;white-space:nowrap;">레이아웃</span>
+        <span class="f-badge" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);white-space:nowrap;">컴포넌트</span>
+        <span class="f-badge" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);white-space:nowrap;">입력</span>
+        <span class="f-badge" style="background:var(--bg);color:var(--text-secondary);border:1px solid var(--border);white-space:nowrap;">타이포</span>
+      </div>
+      <div class="f-card" style="margin-bottom:10px;padding:14px;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px;">여백 <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">Padding</span></div>
+        <div style="margin:10px 0;height:50px;background:var(--bg);border-radius:8px;position:relative;display:flex;align-items:center;justify-content:center;">
+          <div style="width:60%;height:60%;background:var(--mint);border-radius:4px;opacity:0.3;"></div>
+          <div style="position:absolute;font-size:8px;color:var(--mint-hover);top:4px;left:50%;transform:translateX(-50%);">↕ padding</div>
+        </div>
+        <div style="font-size:10px;color:var(--text-secondary);line-height:1.6;">
+          충분한 여백은 콘텐츠를 돋보이게 합니다. 최소 16px 이상의 안쪽 여백을 권장합니다.
+        </div>
+      </div>
+      <div class="f-card" style="padding:14px;text-align:center;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px;">정렬 <span style="font-size:10px;color:var(--text-secondary);font-weight:400;">Alignment</span></div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:6px;">요소를 같은 축에 맞추면 시선 흐름이 자연스러워집니다.</div>
+      </div>
+    </div>
+  `
+};
+
+/* ---- BLOCK DESIGN STEP 2: 실습 ---- */
+CONTENT['block_1'] = {
+  url: 'design.teachermate.co.kr/practice/1',
+  desc: '강사의 설명을 들으며 단계별로 블록을 배치하여 앱 화면을 만드는 실습입니다. "배달 앱 홈 화면 만들기" 같은 구체적인 과제가 주어지고, 각 단계마다 체크리스트(예: "헤더 블록 배치 → 검색창 추가 → 카드 3개 배치 → 간격 조정")가 표시됩니다. 학생은 가이드에 따라 블록을 하나씩 배치하고, 교사는 진행 상황을 확인합니다.',
+  teacherList: [
+    '프로젝터에 실습 과제를 띄우고 완성될 화면의 모습을 먼저 보여줍니다',
+    '각 단계를 하나씩 설명합니다: "먼저 헤더 블록을 맨 위에 배치하세요"',
+    '학생들이 따라 하는 시간을 충분히 줍니다 — 단계마다 1~2분',
+    '체크리스트로 각 단계 완료 여부를 확인합니다',
+    '막히는 학생이 있으면 개별 지도합니다 — 팔레트에서 블록 찾는 법, 드래그 방법 등',
+    '모든 단계가 끝나면 완성 화면을 학생들과 비교하며 리뷰합니다'
+  ],
+  studentList: [
+    '실습 과제를 선택하고 에디터를 엽니다',
+    '가이드 패널의 지시에 따라 블록을 팔레트에서 드래그하여 캔버스에 배치합니다',
+    '각 단계의 체크리스트를 확인하며 빠진 항목이 없는지 점검합니다',
+    '블록의 크기, 위치, 색상 등 속성을 조정합니다',
+    '관련 용어가 자동 표시되면 Step 1에서 배운 내용과 연결지어봅니다',
+    '완성된 화면을 저장합니다'
+  ],
+  tip: '처음 블록 에디터를 사용하는 학생은 "드래그"가 낯설 수 있습니다. 첫 번째 블록을 배치하는 과정을 프로젝터에서 천천히 시연해주세요. 한 번만 성공하면 나머지는 금방 따라합니다.',
+  links: [
+    { icon: '🖥️', label: '실습 과제 목록', url: 'https://design.teachermate.co.kr/practice' },
+    { icon: '📱', label: '학생: 블록 에디터', url: 'https://design.teachermate.co.kr/design' }
+  ],
+  pc: `
+    <div style="display:grid;grid-template-columns:120px 1fr 160px;gap:12px;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">단계</div>
+        <div style="font-size:10px;line-height:2.4;">
+          <div style="color:var(--success);">✓ Step 1</div>
+          <div style="color:var(--success);">✓ Step 2</div>
+          <div style="color:var(--mint-hover);font-weight:700;">▸ Step 3</div>
+          <div style="color:var(--text-secondary);">Step 4</div>
+          <div style="color:var(--text-secondary);">Step 5</div>
+          <div style="color:var(--text-secondary);">Step 6</div>
+        </div>
+      </div>
+      <div>
+        <div style="border:1.5px solid var(--border);border-radius:16px;padding:12px;height:280px;background:#FAFAFA;">
+          <div style="background:var(--navy);height:28px;border-radius:8px;margin-bottom:8px;display:flex;align-items:center;padding:0 10px;">
+            <span style="color:#fff;font-size:9px;">배달의 민족</span>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);height:24px;border-radius:6px;margin-bottom:8px;display:flex;align-items:center;padding:0 8px;">
+            <span style="font-size:9px;color:var(--text-secondary);">🔍 뭐 먹을까?</span>
+          </div>
+          <div class="f-grid3" style="gap:6px;">
+            <div style="background:#FFF7ED;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:16px;">🍚</div>
+              <div style="font-size:8px;font-weight:600;color:#9A3412;margin-top:2px;">한식</div>
+            </div>
+            <div style="background:#EFF6FF;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:16px;">🍜</div>
+              <div style="font-size:8px;font-weight:600;color:#1D4ED8;margin-top:2px;">중식</div>
+            </div>
+            <div style="background:#F0FDF4;border-radius:8px;padding:10px;text-align:center;">
+              <div style="font-size:16px;">🍕</div>
+              <div style="font-size:8px;font-weight:600;color:#059669;margin-top:2px;">양식</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">Step 3 안내</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:8px;">메뉴 카드 3개 배치</div>
+        <div class="checklist">
+          <div class="done">☑ 카드 블록 추가</div>
+          <div class="todo">☐ 간격 조정</div>
+          <div class="todo">☐ 텍스트 입력</div>
+        </div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:10px;">
+      <div style="border:1.5px solid var(--border);border-radius:16px;padding:10px;background:#FAFAFA;margin-bottom:10px;">
+        <div style="background:#1D4ED8;height:26px;border-radius:8px;margin-bottom:6px;display:flex;align-items:center;padding:0 8px;">
+          <span style="color:#fff;font-size:9px;">배달의 민족</span>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);height:22px;border-radius:6px;margin-bottom:6px;display:flex;align-items:center;padding:0 6px;">
+          <span style="font-size:8px;color:var(--text-secondary);">🔍 뭐 먹을까?</span>
+        </div>
+        <div class="f-grid3" style="gap:4px;">
+          <div style="background:#FFF7ED;border-radius:6px;padding:8px;text-align:center;">
+            <div style="font-size:14px;">🍚</div>
+            <div style="font-size:7px;color:#9A3412;">한식</div>
+          </div>
+          <div style="background:#EFF6FF;border-radius:6px;padding:8px;text-align:center;">
+            <div style="font-size:14px;">🍜</div>
+            <div style="font-size:7px;color:#1D4ED8;">중식</div>
+          </div>
+          <div style="background:#F0FDF4;border-radius:6px;padding:8px;text-align:center;">
+            <div style="font-size:14px;">🍕</div>
+            <div style="font-size:7px;color:#059669;">양식</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px;position:relative;">
+        <div style="font-size:9px;color:var(--mint-hover);font-weight:600;margin-bottom:6px;">카드 사이 간격을 16px로 맞춰보세요</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:8px;color:var(--text-secondary);white-space:nowrap;">헤더</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:8px;color:var(--text-secondary);white-space:nowrap;">입력</div>
+          <div style="background:rgba(126,200,181,0.15);border:1px solid var(--mint);border-radius:6px;padding:6px 10px;font-size:8px;color:var(--mint-hover);white-space:nowrap;font-weight:600;">카드</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:8px;color:var(--text-secondary);white-space:nowrap;">버튼</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:8px;color:var(--text-secondary);white-space:nowrap;">이미지</div>
+        </div>
+      </div>
+    </div>
+  `
+};
+
+/* ---- BLOCK DESIGN STEP 3: 챌린지 ---- */
+CONTENT['block_2'] = {
+  url: 'design.teachermate.co.kr/challenge/1',
+  desc: '의도적으로 "깨진" 디자인이 주어지고, 학생이 직접 문제를 찾아 고치는 단계입니다. 예를 들어 "버튼이 너무 작아서 터치할 수 없는 화면"이 주어지면, 학생은 버튼 크기를 48px 이상으로 키우고, 색상 대비를 높이는 등의 수정을 합니다. 수정 후 모범 예시와 나란히 비교하여 "왜 이렇게 고쳐야 하는지"를 스스로 깨닫게 됩니다.',
+  teacherList: [
+    '챌린지 과제를 선택하여 학생들에게 배정합니다 (난이도별: 초급/중급/고급)',
+    '"이 화면에는 UX 문제가 숨어 있습니다. 직접 찾아서 고쳐보세요"라고 안내합니다',
+    '문제 체크리스트를 활용하여 학생들이 어떤 문제를 찾아야 하는지 힌트를 줍니다',
+    '학생들이 수정한 후 모범 예시와 비교하게 합니다',
+    '프로젝터에서 Before/After를 보여주며 "왜 이 수정이 중요한지" 디자인 원리로 설명합니다',
+    '"터치 타겟 48px 규칙", "색상 대비 4.5:1 규칙" 등 실무 기준을 소개합니다'
+  ],
+  studentList: [
+    '챌린지 과제를 열면 "깨진 디자인"이 자동으로 로드됩니다',
+    '문제 체크리스트를 보며 어떤 부분이 잘못되었는지 파악합니다',
+    '블록의 속성(크기, 색상, 위치 등)을 수정하여 문제를 해결합니다',
+    '수정이 끝나면 모범 예시와 나란히 비교합니다',
+    '일치하는 항목에 초록 체크가 표시되면 성공입니다'
+  ],
+  tip: '정답을 바로 알려주지 마세요. "이 버튼, 실제로 손가락으로 누를 수 있을까?" 같은 질문을 던져서 학생이 스스로 문제를 발견하게 유도하세요. 체크리스트에 항목이 있으니 완전히 막히는 일은 없습니다.',
+  links: [
+    { icon: '🧩', label: '챌린지 목록', url: 'https://design.teachermate.co.kr/challenge' },
+    { icon: '📱', label: '학생: 챌린지 풀기', url: 'https://design.teachermate.co.kr/challenge' }
+  ],
+  pc: `
+    <div style="display:grid;grid-template-columns:160px 1fr 160px;gap:12px;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:4px;">안 보이는 버튼</div>
+        <span class="f-badge" style="background:#DBEAFE;color:#1D4ED8;margin-bottom:10px;display:inline-block;">초급</span>
+        <div class="checklist" style="margin-top:6px;">
+          <div class="todo">☐ 버튼 높이 48px 이상</div>
+          <div class="todo">☐ Primary 스타일 변경</div>
+          <div class="todo">☐ 텍스트 대비 개선</div>
+        </div>
+      </div>
+      <div>
+        <div style="border:1.5px solid var(--border);border-radius:16px;padding:12px;height:260px;background:#FAFAFA;">
+          <div style="background:#fff;padding:10px;border-radius:8px;height:100%;">
+            <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:12px;">회원가입</div>
+            <div style="background:#F3F4F6;height:24px;border-radius:4px;margin-bottom:8px;display:flex;align-items:center;padding:0 8px;font-size:9px;color:var(--text-secondary);">이메일</div>
+            <div style="background:#F3F4F6;height:24px;border-radius:4px;margin-bottom:8px;display:flex;align-items:center;padding:0 8px;font-size:9px;color:var(--text-secondary);">비밀번호</div>
+            <div style="margin-top:16px;">
+              <!-- broken button: tiny, no contrast -->
+              <div style="background:#F3F4F6;color:#E5E7EB;font-size:8px;padding:3px 8px;border-radius:2px;display:inline-block;">가입</div>
+              <div style="font-size:8px;color:var(--error);margin-top:4px;">← 문제: 보이지 않는 버튼</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">속성 편집</div>
+        <div style="font-size:10px;color:var(--text-secondary);line-height:2;">
+          높이: <span style="color:var(--error);font-weight:600;">24px</span><br>
+          배경: <span style="color:var(--error);font-weight:600;">#F3F4F6</span><br>
+          글자색: <span style="color:var(--error);font-weight:600;">#E5E7EB</span><br>
+          대비: <span style="color:var(--error);font-weight:600;">1.1:1</span>
+        </div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:12px;">
+      <div style="font-size:11px;font-weight:600;color:var(--navy);margin-bottom:8px;">비교 결과</div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">내 수정</div>
+        <div class="f-card" style="padding:10px;">
+          <div style="background:var(--navy);color:#fff;font-size:10px;padding:10px;border-radius:6px;text-align:center;font-weight:600;">가입하기</div>
+        </div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:9px;font-weight:600;color:var(--text-secondary);margin-bottom:4px;">모범 예시</div>
+        <div class="f-card" style="padding:10px;position:relative;">
+          <div style="background:var(--navy);color:#fff;font-size:10px;padding:10px;border-radius:6px;text-align:center;font-weight:600;">가입하기</div>
+          <div style="position:absolute;top:4px;right:8px;font-size:8px;color:var(--text-secondary);">높이 48px</div>
+          <div style="position:absolute;bottom:4px;right:8px;font-size:8px;color:var(--text-secondary);">Contrast 17:1</div>
+        </div>
+      </div>
+      <div style="text-align:center;padding:8px;background:#D1FAE5;border-radius:8px;">
+        <span style="font-size:12px;color:var(--success);font-weight:700;">✓ 일치!</span>
+      </div>
+    </div>
+  `
+};
+
+/* ---- BLOCK DESIGN STEP 4: 만들기 ---- */
+CONTENT['block_3'] = {
+  url: 'design.teachermate.co.kr/gallery/XK7M2P',
+  desc: '지금까지 배운 용어, 원리, 실습 경험을 모두 활용하여 자유롭게 앱 화면을 디자인하는 시간입니다. 빈 캔버스에서 시작하여 블록 15종을 자유롭게 배치하고, 색상과 텍스트를 꾸며 자신만의 앱 화면을 완성합니다. 완성된 작품은 세션 갤러리에 제출하여 학급 전체와 공유합니다.',
+  teacherList: [
+    '자유 창작 시간임을 안내하고 주제를 제시합니다 (자유 주제 또는 "우리 학교 앱" 같은 공통 주제)',
+    '세션을 생성하고 QR 코드를 공유하여 학생들의 작품을 갤러리로 모읍니다',
+    '창작 시간 동안 돌아다니며 개별 피드백을 줍니다 — Step 1의 용어를 활용',
+    '갤러리 페이지에서 학생 작품을 실시간으로 확인합니다',
+    '프로젝터에 갤러리를 띄워 모든 학생이 서로의 작품을 감상하게 합니다',
+    '우수 작품을 선정하여 "왜 좋은 디자인인지" 디자인 원리로 설명합니다'
+  ],
+  studentList: [
+    '만들기 탭에서 빈 캔버스를 엽니다',
+    '블록 팔레트에서 원하는 블록을 드래그하여 배치합니다',
+    'Step 1~3에서 배운 원리(정렬, 여백, 대비 등)를 의식하며 디자인합니다',
+    '완성되면 프로젝트를 저장하고 세션 갤러리에 제출합니다',
+    '다른 학생들의 작품을 갤러리에서 감상합니다'
+  ],
+  tip: '"뭘 만들어야 할지 모르겠다"는 학생에게는 "지금 쓰고 있는 앱의 첫 화면을 따라 만들어봐"라고 제안하세요. 실제 앱을 레퍼런스로 삼으면 훨씬 빠르게 시작할 수 있습니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 세션 & 갤러리', url: 'https://design.teachermate.co.kr/session/host' },
+    { icon: '📱', label: '학생: 자유 디자인', url: 'https://design.teachermate.co.kr/design' }
+  ],
+  pc: `
+    <div class="f-row" style="justify-content:space-between;margin-bottom:14px;">
+      <div class="f-title" style="margin:0;">3학년 2반 갤러리</div>
+      <span style="font-size:11px;color:var(--text-secondary);">참여자 24명 · 작품 18개</span>
+    </div>
+    <div class="f-grid3" style="gap:10px;">
+      <div class="f-card" style="padding:8px;text-align:center;">
+        <div style="height:72px;background:linear-gradient(135deg,#DBEAFE,#93C5FD);border-radius:6px;margin-bottom:6px;"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);">날씨 앱</div>
+        <div style="font-size:9px;color:var(--text-secondary);">김민준</div>
+      </div>
+      <div class="f-card" style="padding:8px;text-align:center;">
+        <div style="height:72px;background:linear-gradient(135deg,#D1FAE5,#6EE7B7);border-radius:6px;margin-bottom:6px;"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);">식물 일기</div>
+        <div style="font-size:9px;color:var(--text-secondary);">이서연</div>
+      </div>
+      <div class="f-card" style="padding:8px;text-align:center;border:2px solid var(--mint);">
+        <div style="height:72px;background:linear-gradient(135deg,#FDE68A,#F59E0B);border-radius:6px;margin-bottom:6px;"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);">음악 플레이어</div>
+        <div style="font-size:9px;color:var(--text-secondary);">박지호</div>
+      </div>
+      <div class="f-card" style="padding:8px;text-align:center;">
+        <div style="height:72px;background:linear-gradient(135deg,#EDE9FE,#C4B5FD);border-radius:6px;margin-bottom:6px;"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);">퀴즈 앱</div>
+        <div style="font-size:9px;color:var(--text-secondary);">최유나</div>
+      </div>
+      <div class="f-card" style="padding:8px;text-align:center;">
+        <div style="height:72px;background:linear-gradient(135deg,#FCE7F3,#F9A8D4);border-radius:6px;margin-bottom:6px;"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);">다이어리</div>
+        <div style="font-size:9px;color:var(--text-secondary);">정하은</div>
+      </div>
+      <div class="f-card" style="padding:8px;text-align:center;">
+        <div style="height:72px;background:linear-gradient(135deg,#FFEDD5,#FDBA74);border-radius:6px;margin-bottom:6px;"></div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);">운동 기록</div>
+        <div style="font-size:9px;color:var(--text-secondary);">장도윤</div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:10px;">
+      <div style="font-size:11px;font-weight:600;color:var(--mint-hover);margin-bottom:8px;">만들기</div>
+      <div style="border:1.5px solid var(--border);border-radius:16px;padding:10px;background:#FAFAFA;margin-bottom:10px;">
+        <div style="background:linear-gradient(135deg,#7C3AED,#A855F7);height:40px;border-radius:8px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;">
+          <span style="color:#fff;font-size:10px;font-weight:700;">My Music</span>
+        </div>
+        <div style="background:#F3E8FF;height:60px;border-radius:8px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:24px;">🎵</span>
+        </div>
+        <div class="f-grid2" style="gap:4px;">
+          <div style="background:#EDE9FE;border-radius:6px;padding:8px;text-align:center;font-size:8px;color:#6D28D9;font-weight:600;">플레이리스트</div>
+          <div style="background:#EDE9FE;border-radius:6px;padding:8px;text-align:center;font-size:8px;color:#6D28D9;font-weight:600;">좋아요</div>
+        </div>
+        <div style="display:flex;justify-content:space-around;margin-top:8px;padding-top:6px;border-top:1px solid var(--border);">
+          <span style="font-size:8px;color:var(--text-secondary);">🏠</span>
+          <span style="font-size:8px;color:#7C3AED;">🎵</span>
+          <span style="font-size:8px;color:var(--text-secondary);">🔍</span>
+          <span style="font-size:8px;color:var(--text-secondary);">👤</span>
+        </div>
+      </div>
+      <div class="f-row" style="gap:8px;">
+        <span class="f-btn f-btn--outline" style="flex:1;justify-content:center;">저장</span>
+        <span class="f-btn f-btn--primary" style="flex:1;justify-content:center;">제출</span>
+      </div>
+    </div>
+  `
+};
+
+/* ---- APP MAKER STEP 1: 아이디어 ---- */
+CONTENT['maker_0'] = {
+  url: 'maker.teachermate.co.kr/dashboard',
+  desc: '드디어 실제 앱을 만드는 단계입니다. 먼저 어떤 종류의 앱을 만들지 카테고리를 선택합니다: 게임, 퀴즈, 계산기, 타이머, 투표, 기타. Sprint에서 기획한 내용을 바탕으로 앱 이름과 한 줄 설명을 작성합니다. Block Design에서 만든 디자인을 가져올 수도 있습니다.',
+  teacherList: [
+    '대시보드에서 새 수업 세션을 생성합니다',
+    '4자리 참여 코드 또는 QR 코드를 학생들에게 공유합니다',
+    '"Sprint에서 기획한 앱을 이제 진짜로 만들어봅시다"라고 안내합니다',
+    '카테고리 6가지(게임/퀴즈/계산기/타이머/투표/기타)를 간단히 설명합니다',
+    '앱 이름은 기능이 드러나게 짓도록 안내합니다 — Sprint Step 3의 주문서를 참고하게 합니다',
+    'Block Design 가져오기 옵션이 있음을 알려줍니다 — 디자인 수업과 연결'
+  ],
+  studentList: [
+    '교사가 공유한 4자리 코드로 수업에 참여합니다',
+    '만들고 싶은 앱의 카테고리를 선택합니다',
+    '앱 이름을 입력합니다 — Sprint에서 정한 이름을 그대로 쓸 수 있습니다',
+    '한 줄 설명을 작성합니다 (선택사항이지만 쓰면 더 좋은 결과)',
+    '"다음"을 눌러 스타일 선택으로 넘어갑니다'
+  ],
+  tip: 'Sprint를 먼저 진행했다면 학생들은 이미 앱 이름과 기능을 정해둔 상태입니다. "Sprint 주문서를 다시 펴보세요"라고 안내하면 처음부터 고민할 필요 없이 바로 시작할 수 있습니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 수업 대시보드', url: 'https://maker.teachermate.co.kr/dashboard' },
+    { icon: '📱', label: '학생: 수업 참여하기', url: 'https://maker.teachermate.co.kr/join' }
+  ],
+  pc: `
+    <div class="f-title">AI 앱 수업</div>
+    <div class="f-row" style="gap:16px;margin-bottom:14px;">
+      <div class="f-card" style="flex:1;text-align:center;padding:16px;">
+        <div style="font-size:28px;font-weight:800;color:var(--navy);letter-spacing:6px;margin-bottom:4px;">3847</div>
+        <div style="font-size:10px;color:var(--text-secondary);">참여 코드</div>
+      </div>
+      <div class="f-card" style="flex:1;text-align:center;padding:16px;">
+        <div style="width:70px;height:70px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;">
+          <div style="display:grid;grid-template-columns:repeat(5,6px);gap:2px;">
+            ${Array(25).fill('').map(() => `<div style="width:6px;height:6px;background:${Math.random()>0.4?'var(--navy)':'#fff'};"></div>`).join('')}
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text-secondary);">QR 코드</div>
+      </div>
+      <div class="f-card" style="flex:1;padding:16px;">
+        <div style="font-size:10px;color:var(--text-secondary);margin-bottom:6px;">현황</div>
+        <div style="font-size:20px;font-weight:700;color:var(--navy);">참여 12명</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">앱 0개</div>
+      </div>
+    </div>
+    <div style="border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;color:var(--text-secondary);font-size:12px;">
+      학생들이 앱을 만들면 여기에 표시됩니다
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">어떤 앱을 만들까요?</div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-bottom:12px;">카테고리를 선택하세요</div>
+      <div class="f-grid2" style="gap:8px;margin-bottom:14px;">
+        <div style="background:rgba(126,200,181,0.1);border:2px solid var(--mint);border-radius:10px;padding:12px;text-align:center;">
+          <div style="font-size:22px;margin-bottom:2px;">🎮</div>
+          <div style="font-size:10px;font-weight:600;color:var(--navy);">게임</div>
+        </div>
+        <div class="f-card" style="text-align:center;padding:12px;border-radius:10px;">
+          <div style="font-size:22px;margin-bottom:2px;">❓</div>
+          <div style="font-size:10px;font-weight:600;color:var(--navy);">퀴즈</div>
+        </div>
+        <div class="f-card" style="text-align:center;padding:12px;border-radius:10px;">
+          <div style="font-size:22px;margin-bottom:2px;">🔢</div>
+          <div style="font-size:10px;font-weight:600;color:var(--navy);">계산기</div>
+        </div>
+        <div class="f-card" style="text-align:center;padding:12px;border-radius:10px;">
+          <div style="font-size:22px;margin-bottom:2px;">⏱️</div>
+          <div style="font-size:10px;font-weight:600;color:var(--navy);">타이머</div>
+        </div>
+        <div class="f-card" style="text-align:center;padding:12px;border-radius:10px;">
+          <div style="font-size:22px;margin-bottom:2px;">🗳️</div>
+          <div style="font-size:10px;font-weight:600;color:var(--navy);">투표</div>
+        </div>
+        <div class="f-card" style="text-align:center;padding:12px;border-radius:10px;">
+          <div style="font-size:22px;margin-bottom:2px;">✨</div>
+          <div style="font-size:10px;font-weight:600;color:var(--navy);">기타</div>
+        </div>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">앱 이름</div>
+        <input class="f-input" value="역사 퀴즈 배틀" readonly>
+      </div>
+      <div style="margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">한 줄 설명</div>
+        <input class="f-input" value="친구와 역사 퀴즈 대결" readonly>
+      </div>
+      <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;">다음 →</span>
+    </div>
+  `
+};
+
+/* ---- APP MAKER STEP 2: 스타일 ---- */
+CONTENT['maker_1'] = {
+  url: 'maker.teachermate.co.kr/sessions/abc123',
+  desc: '앱의 전체적인 분위기를 결정하는 단계입니다. 밝은 테마(깔끔하고 밝은 화면), 어두운 테마(눈이 편한 다크 모드), 컬러풀(생동감 있는 색상) 중에서 선택합니다. 간단한 단계이지만, 앱의 첫인상을 결정하는 중요한 선택입니다. 교사는 이 시간 동안 대시보드에서 학생들의 진행 상황을 모니터링합니다.',
+  teacherList: [
+    '대시보드에서 학생들의 진행 상황을 실시간으로 확인합니다',
+    '앱이 생성되기 시작하면 갤러리에 하나씩 나타나는 것을 지켜봅니다',
+    '특별히 느린 학생이 있으면 개별 도움을 줍니다',
+    '"스타일은 나중에 수정할 수 있으니 너무 고민하지 마세요"라고 안내합니다'
+  ],
+  studentList: [
+    '3가지 테마 중 하나를 선택합니다',
+    '밝은 테마: 학교, 교육 앱에 잘 어울립니다',
+    '어두운 테마: 게임, 미디어 앱에 잘 어울립니다',
+    '컬러풀: 어린이용, 재미 위주 앱에 잘 어울립니다',
+    '"다음"을 눌러 상세 설명 단계로 넘어갑니다'
+  ],
+  tip: '이 단계는 빠르게 지나가도 됩니다. 학생들이 테마 선택에 너무 오래 머무르면 "고민되면 밝은 테마로 시작하세요, 나중에 바꿀 수 있어요"라고 안내해주세요.',
+  links: [
+    { icon: '🖥️', label: '교사: 수업 대시보드', url: 'https://maker.teachermate.co.kr/dashboard' },
+    { icon: '📱', label: '학생: 앱 만들기', url: 'https://maker.teachermate.co.kr/create' }
+  ],
+  pc: `
+    <div class="f-row" style="justify-content:space-between;margin-bottom:14px;">
+      <div class="f-title" style="margin:0;">AI 앱 수업</div>
+      <div style="font-size:11px;color:var(--text-secondary);">실시간 · 앱 <strong style="color:var(--navy);">2개</strong></div>
+    </div>
+    <div class="f-grid3" style="gap:12px;margin-bottom:14px;">
+      <div class="f-card" style="text-align:center;padding:12px;">
+        <div style="height:80px;background:linear-gradient(135deg,#DBEAFE,#60A5FA);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:24px;">🎮</span>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">역사 퀴즈 배틀</div>
+        <div style="font-size:9px;color:var(--text-secondary);">김민준</div>
+      </div>
+      <div class="f-card" style="text-align:center;padding:12px;">
+        <div style="height:80px;background:linear-gradient(135deg,#D1FAE5,#34D399);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:24px;">⏱️</span>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">공부 타이머</div>
+        <div style="font-size:9px;color:var(--text-secondary);">이서연</div>
+      </div>
+      <div style="border:2px dashed var(--border);border-radius:var(--radius-card);padding:12px;display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:11px;color:var(--text-secondary);">생성 대기중...</span>
+      </div>
+    </div>
+    <div style="padding:10px;background:#F0FDF4;border-radius:8px;font-size:11px;color:var(--success);">
+      ✓ 참여 12명 중 2명 앱 생성 완료, 4명 작성 중
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">스타일을 골라주세요</div>
+      <div style="font-size:10px;color:var(--text-secondary);margin-bottom:14px;">앱의 전체적인 분위기를 선택합니다</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        <div style="border:2px solid var(--mint);background:rgba(126,200,181,0.06);border-radius:10px;padding:14px;">
+          <div class="f-row" style="justify-content:space-between;">
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--navy);">☀️ 밝은 테마</div>
+              <div style="font-size:9px;color:var(--text-secondary);margin-top:2px;">깔끔하고 밝은 화면</div>
+            </div>
+            <span style="color:var(--mint);font-size:16px;">✓</span>
+          </div>
+        </div>
+        <div class="f-card" style="padding:14px;border-radius:10px;">
+          <div style="font-size:12px;font-weight:600;color:var(--navy);">🌙 어두운 테마</div>
+          <div style="font-size:9px;color:var(--text-secondary);margin-top:2px;">눈이 편한 다크 모드</div>
+        </div>
+        <div class="f-card" style="padding:14px;border-radius:10px;">
+          <div style="font-size:12px;font-weight:600;color:var(--navy);">🎨 컬러풀</div>
+          <div style="font-size:9px;color:var(--text-secondary);margin-top:2px;">생동감 있는 색상</div>
+        </div>
+      </div>
+      <div class="f-row" style="gap:8px;">
+        <span class="f-btn f-btn--outline" style="flex:1;justify-content:center;">← 이전</span>
+        <span class="f-btn f-btn--primary" style="flex:1;justify-content:center;">다음 →</span>
+      </div>
+    </div>
+  `
+};
+
+/* ---- APP MAKER STEP 3: 상세 → 생성 ---- */
+CONTENT['maker_2'] = {
+  url: 'maker.teachermate.co.kr/sessions/abc123',
+  desc: '가장 핵심적인 단계입니다. 앱에 넣고 싶은 기능과 화면 구성을 자유롭게 텍스트로 설명하면, AI가 실제 동작하는 웹 앱을 자동으로 생성합니다. "상단에 제목, 검색창, 맛집 카드 목록, 하단에 탭바" 식으로 구체적으로 쓸수록 좋은 결과가 나옵니다. 생성 후에는 미리보기에서 직접 사용해보고, 수정 프롬프트로 변경사항을 요청할 수도 있습니다.',
+  teacherList: [
+    '"설명은 구체적으로, 한글로 자유롭게 쓰세요"라고 안내합니다',
+    '좋은 설명 예시를 보여줍니다: "상단에 제목, 카테고리 버튼 4개, 카드 목록, 하단 탭바"',
+    '나쁜 설명 예시도 보여줍니다: "좋은 앱 만들어줘" — AI가 뭘 만들지 모름',
+    '생성에 30초~1분 걸린다고 안내하고, 기다리는 동안 다른 학생 앱을 구경하라고 합니다',
+    '대시보드 갤러리에서 완성된 앱들을 확인하고 프로젝터에 띄워 학급과 공유합니다',
+    '우수 앱을 선정하여 "왜 잘 만들어졌는지" 설명과 결과의 관계를 분석합니다'
+  ],
+  studentList: [
+    '앱의 화면 구성을 자유롭게 텍스트로 설명합니다',
+    'Sprint의 주문서, Block Design의 화면을 참고하면 더 구체적으로 쓸 수 있습니다',
+    '"만들기" 버튼을 누르면 AI가 앱을 생성합니다 (30초~1분 소요)',
+    '생성된 앱을 미리보기에서 직접 사용해봅니다',
+    '마음에 들지 않는 부분은 수정 프롬프트로 변경을 요청합니다',
+    '완성된 앱의 링크를 친구들과 공유합니다'
+  ],
+  tip: '학생들이 가장 흥분하는 순간입니다. 자기가 쓴 글이 진짜 앱이 되는 경험은 강렬합니다. 결과가 완벽하지 않아도 "수정하기"로 고칠 수 있다고 안내해주세요. "처음부터 완벽할 필요 없어요, 프로 개발자도 수십 번 수정합니다"라고 말해주면 부담이 줄어듭니다.',
+  links: [
+    { icon: '🖥️', label: '교사: 학생 앱 갤러리', url: 'https://maker.teachermate.co.kr/dashboard' },
+    { icon: '📱', label: '학생: 앱 만들기', url: 'https://maker.teachermate.co.kr/create' },
+    { icon: '🌐', label: '앱 갤러리 (전체 공개)', url: 'https://maker.teachermate.co.kr/gallery' }
+  ],
+  pc: `
+    <div class="f-row" style="justify-content:space-between;margin-bottom:14px;">
+      <div class="f-title" style="margin:0;">AI 앱 수업</div>
+      <div style="font-size:11px;color:var(--text-secondary);">앱 <strong style="color:var(--navy);">8개</strong> 생성 완료</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 160px;gap:14px;">
+      <div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          ${['🎮 역사퀴즈|김민준','⏱️ 공부타이머|이서연','🔢 수학계산기|박지호','🗳️ 반투표|최유나','🎮 단어게임|정하은','❓ 과학퀴즈|장도윤','✨ 일기앱|한수빈','🎮 구구단|오예준'].map(item => {
+            const [emoji_name, student] = item.split('|');
+            return `<div class="f-card" style="padding:6px;text-align:center;">
+              <div style="height:44px;background:linear-gradient(135deg,${['#DBEAFE,#93C5FD','#D1FAE5,#6EE7B7','#FDE68A,#FCD34D','#EDE9FE,#C4B5FD','#FCE7F3,#F9A8D4','#FFEDD5,#FDBA74','#CFFAFE,#67E8F9','#FEF3C7,#FDE68A'][Math.floor(Math.random()*8)]});border-radius:4px;margin-bottom:4px;"></div>
+              <div style="font-size:9px;font-weight:600;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${emoji_name}</div>
+              <div style="font-size:8px;color:var(--text-secondary);">${student}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:600;color:var(--navy);margin-bottom:6px;">미리보기</div>
+        <div style="border:2px solid var(--border);border-radius:14px;height:200px;background:#F9FAFB;display:flex;align-items:center;justify-content:center;">
+          <div style="text-align:center;">
+            <div style="font-size:24px;margin-bottom:4px;">🎮</div>
+            <div style="font-size:9px;font-weight:600;color:var(--navy);">역사 퀴즈 배틀</div>
+            <div style="font-size:8px;color:var(--text-secondary);">김민준</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+  phone: `
+    <div style="padding:14px;">
+      <div class="f-card" style="padding:10px;margin-bottom:10px;background:rgba(126,200,181,0.06);border-color:var(--mint);">
+        <div style="font-size:10px;color:var(--text-secondary);">역사 퀴즈 배틀 · 게임 · 밝은 테마</div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;font-weight:600;color:var(--text-secondary);margin-bottom:3px;">앱 상세 설명</div>
+        <textarea class="f-input" style="height:68px;resize:none;font-size:10px;line-height:1.6;" readonly>- 한국사 시대별 퀴즈
+- 2인 대전 모드
+- 점수 랭킹</textarea>
+      </div>
+      <hr class="f-divider">
+      <div style="background:#F0F9FF;border-radius:10px;padding:14px;text-align:center;margin-bottom:10px;">
+        <div style="margin-bottom:8px;">
+          <div class="progress-bar"><div class="fill" style="width:60%;background:linear-gradient(90deg,var(--mint),#3B82F6);"></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--navy);">💻 코드 생성 중...</div>
+        <div style="font-size:9px;color:var(--text-secondary);margin-top:4px;">설명이 구체적일수록 결과가 정확해요</div>
+      </div>
+      <span class="f-btn f-btn--primary" style="width:100%;justify-content:center;opacity:0.6;">생성 중...</span>
+    </div>
+  `
+};
+
+/* ============================
+   INIT
+   ============================ */
+updateTabs();
+updateSubsteps();
+renderContent();
+</script>
+
+</body>
+</html>
