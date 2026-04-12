@@ -651,6 +651,126 @@ body {
 }
 
 /* ========================================
+   SCOPE SECTION (포함/별도 협의)
+   ======================================== */
+.scope-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+}
+.scope-inner {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 32px;
+}
+.scope-header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+.scope-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.scope-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.scope-notice {
+  background: rgba(126,200,181,0.08);
+  border: 1px solid rgba(126,200,181,0.25);
+  border-radius: var(--radius-btn);
+  padding: 14px 18px;
+  margin: 20px 0 28px;
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+.scope-notice strong {
+  color: var(--mint-hover);
+  font-weight: 700;
+}
+.scope-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.scope-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  padding: 24px;
+}
+.scope-card--included {
+  border-color: rgba(126,200,181,0.4);
+  background: rgba(126,200,181,0.03);
+}
+.scope-card--separate {
+  border-color: var(--border);
+  background: var(--card);
+}
+.scope-card-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+}
+.scope-card--included .scope-card-label {
+  background: rgba(126,200,181,0.15);
+  color: var(--mint-hover);
+}
+.scope-card--separate .scope-card-label {
+  background: rgba(107,114,128,0.1);
+  color: var(--text-secondary);
+}
+.scope-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.scope-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+.scope-list li:last-child { margin-bottom: 0; }
+.scope-list li::before {
+  flex-shrink: 0;
+  font-size: 13px;
+  margin-top: 2px;
+}
+.scope-card--included .scope-list li::before {
+  content: "✓";
+  color: var(--success);
+  font-weight: 700;
+}
+.scope-card--separate .scope-list li::before {
+  content: "→";
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.scope-list .desc {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+@media (max-width: 640px) {
+  .scope-grid { grid-template-columns: 1fr; }
+  .scope-inner { padding: 20px; }
+}
+
+/* ========================================
    FOOTER
    ======================================== */
 .footer {
@@ -946,6 +1066,41 @@ body {
             <span class="download-file-arrow">↓</span>
           </a>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCOPE SECTION (포함 / 별도 협의)
+     ============================================================ -->
+<div class="scope-section">
+  <div class="scope-inner">
+    <div class="scope-header">
+      <div class="scope-title">제공 범위 안내</div>
+      <div class="scope-subtitle">본 수업에서 만드는 앱은 <strong>프로토타입(시제품)</strong>입니다</div>
+    </div>
+    <div class="scope-notice">
+      <strong>프로토타입이란?</strong> — 학생이 기획한 아이디어를 AI가 즉석에서 동작하는 화면으로 만들어주는 것입니다. 앱스토어에 올라가는 실제 앱이 아니라, <strong>"내 아이디어가 이렇게 작동한다"를 눈으로 확인하는 체험</strong>에 초점이 맞춰져 있습니다.
+    </div>
+    <div class="scope-grid">
+      <div class="scope-card scope-card--included">
+        <div class="scope-card-label">수업에 포함된 항목</div>
+        <ul class="scope-list">
+          <li>강사 출강 (4~8차시, 학교 방문)</li>
+          <li>AI 수업도구 전체 이용 (Sprint + Block Design + App Maker)</li>
+          <li>학생별 프로토타입 결과물 생성 (링크 공유, 발표·시연 활용)</li>
+          <li>Gemini AI API 비용 포함 (학생별 AI 호출 비용 일체)</li>
+          <li>커리큘럼 자료 (강의계획서, 워크시트)</li>
+        </ul>
+      </div>
+      <div class="scope-card scope-card--separate">
+        <div class="scope-card-label">별도 협의 항목</div>
+        <ul class="scope-list">
+          <li>실제 앱 개발 및 배포 (코딩 개발, 배포 및 서버 운영)</li>
+          <li>추가 차시 연장 (9차시 이상)</li>
+          <li>학교 외 장소 출강 (교육청, 연수원 등)</li>
+        </ul>
       </div>
     </div>
   </div>
