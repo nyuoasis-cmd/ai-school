@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeacherMate AI 앱 제작 수업 — 수업 흐름</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #1B2A4A;
+    --mint: #7EC8B5;
+    --mint-hover: #5BB8A3;
+    --mint-light: #e6f5f0;
+    --bg: #F8F9FA;
+    --card-bg: #FFFFFF;
+    --text-primary: #1B2A4A;
+    --text-secondary: #6B7280;
+    --border: #E5E7EB;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --ease: cubic-bezier(.2, .8, .2, 1);
+  }
+
+  body {
+    font-family: 'Pretendard Variable', 'Pretendard', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    background: var(--card-bg);
+    padding: 32px 24px 28px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .header-logo {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .header-logo .bar {
+    width: 4px;
+    height: 18px;
+    border-radius: 2px;
+  }
+  .header-logo .bar-navy { background: var(--navy); }
+  .header-logo .bar-mint { background: var(--mint); }
+  .header-brand-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+
+  /* ===== Container ===== */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===== Step Bar ===== */
+  .step-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 32px 0 24px;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 40px;
+    border: 2px solid var(--border);
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+    user-select: none;
+    white-space: nowrap;
+  }
+  .step-item:hover {
+    border-color: var(--mint);
+    transform: translateY(-1px);
+  }
+  .step-item.active {
+    background: var(--mint);
+    border-color: var(--mint);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(126, 200, 181, 0.35);
+  }
+  .step-item.active .step-icon {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+  }
+  .step-item.active .step-label-sub {
+    color: rgba(255,255,255,0.8);
+  }
+  .step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--mint-light);
+    color: var(--mint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.3s var(--ease);
+  }
+  .step-label {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+  .step-label-main {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .step-label-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+    transition: color 0.3s var(--ease);
+  }
+  .step-connector {
+    width: 40px;
+    height: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .step-connector::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: -3px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid var(--border);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+
+  /* ===== Dual Frame Area ===== */
+  .frame-area {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    justify-content: center;
+    margin-bottom: 32px;
+    min-height: 440px;
+    position: relative;
+  }
+
+  /* ===== PC Browser Frame ===== */
+  .pc-frame {
+    flex: 0 0 62%;
+    max-width: 640px;
+    background: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow), 0 8px 32px rgba(0,0,0,0.12);
+  }
+  .pc-titlebar {
+    background: #2d2d2d;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .pc-dots {
+    display: flex;
+    gap: 6px;
+  }
+  .pc-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .pc-dot-red { background: #ff5f57; }
+  .pc-dot-yellow { background: #febc2e; }
+  .pc-dot-green { background: #28c840; }
+  .pc-urlbar {
+    flex: 1;
+    background: #3a3a3a;
+    border-radius: 5px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    margin-left: 8px;
+  }
+  .pc-urlbar-lock {
+    color: #28c840;
+    font-size: 10px;
+    margin-right: 6px;
+  }
+  .pc-urlbar-text {
+    color: #ccc;
+    font-size: 11px;
+    font-family: 'SF Mono', 'Consolas', monospace;
+  }
+  .pc-content {
+    background: #f5f5f5;
+    min-height: 380px;
+    position: relative;
+  }
+  .pc-label {
+    text-align: center;
+    padding: 10px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  /* ===== Phone Frame ===== */
+  .phone-frame {
+    flex: 0 0 200px;
+    width: 200px;
+  }
+  .phone-body {
+    background: #1a1a1a;
+    border-radius: 28px;
+    padding: 8px;
+    box-shadow: var(--shadow), 0 8px 32px rgba(0,0,0,0.15);
+  }
+  .phone-notch {
+    width: 80px;
+    height: 20px;
+    background: #1a1a1a;
+    border-radius: 0 0 14px 14px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    margin-top: -4px;
+  }
+  .phone-screen {
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    min-height: 400px;
+    position: relative;
+  }
+  .phone-label {
+    text-align: center;
+    padding: 10px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  /* ===== Step Content Transitions ===== */
+  .step-content {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    pointer-events: none;
+  }
+  .step-content.active {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+    pointer-events: auto;
+  }
+
+  /* ===== Realistic UI Common ===== */
+  .ui-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .ui-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    gap: 4px;
+  }
+  .ui-card {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    overflow: hidden;
+  }
+  .ui-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    border: none;
+    cursor: default;
+  }
+  .ui-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 11px;
+    background: #fafafa;
+    color: #333;
+  }
+  .ui-progress {
+    height: 4px;
+    background: #eee;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .ui-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  /* ===== Sprint Teacher (PC) ===== */
+  .sprint-teacher {
+    padding: 0;
+    background: #f8f9fa;
+    min-height: 380px;
+  }
+  .sprint-t-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+  }
+  .sprint-t-logo {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+  }
+  .sprint-t-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .sprint-t-live-dot {
+    width: 6px;
+    height: 6px;
+    background: #dc2626;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .sprint-t-code {
+    background: #f3f4f6;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    color: #4b5563;
+    margin-left: auto;
+  }
+  .sprint-t-timer {
+    font-size: 12px;
+    color: #6b7280;
+    font-family: monospace;
+  }
+  .sprint-t-body {
+    display: flex;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+  .sprint-t-left {
+    flex: 0 0 160px;
+  }
+  .sprint-t-left h4 {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .sprint-t-team {
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sprint-t-team-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .sprint-t-team-name {
+    font-size: 12px;
+    font-weight: 600;
+    flex: 1;
+  }
+  .sprint-t-team-count {
+    font-size: 10px;
+    color: #9ca3af;
+  }
+  .sprint-t-right {
+    flex: 1;
+  }
+  .sprint-t-step-indicator {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid #eee;
+    margin-bottom: 12px;
+  }
+  .sprint-t-step-label {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+  }
+  .sprint-t-step-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .sprint-t-progress-bar {
+    display: flex;
+    gap: 3px;
+  }
+  .sprint-t-progress-seg {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #e5e7eb;
+  }
+  .sprint-t-progress-seg.filled { background: var(--mint); }
+  .sprint-t-progress-seg.current { background: #fbbf24; }
+  .sprint-t-submission {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px 16px;
+    border: 1px solid #eee;
+  }
+  .sprint-t-sub-label {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .sprint-t-sub-count {
+    font-weight: 700;
+    color: var(--mint-hover);
+  }
+
+  /* ===== Sprint Student (Phone) ===== */
+  .sprint-student {
+    padding: 0;
+    background: #fff;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sprint-s-top {
+    padding: 14px 14px 0;
+  }
+  .sprint-s-step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #eff6ff;
+    color: #3b82f6;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .sprint-s-step-dot {
+    width: 6px;
+    height: 6px;
+    background: #3b82f6;
+    border-radius: 50%;
+  }
+  .sprint-s-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .sprint-s-form {
+    padding: 0 14px;
+    flex: 1;
+  }
+  .sprint-s-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 4px;
+  }
+  .sprint-s-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 12px;
+    background: #fafafa;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  .sprint-s-input:focus { border-color: var(--mint); }
+  .sprint-s-textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 11px;
+    background: #fafafa;
+    color: #333;
+    min-height: 50px;
+    resize: none;
+    margin-bottom: 10px;
+  }
+  .sprint-s-counter {
+    text-align: center;
+    font-size: 10px;
+    color: #9ca3af;
+    margin-bottom: 6px;
+  }
+  .sprint-s-bottom {
+    padding: 10px 14px 14px;
+    margin-top: auto;
+  }
+  .sprint-s-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  .sprint-s-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ddd;
+  }
+  .sprint-s-dot.filled { background: var(--mint); }
+  .sprint-s-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--mint);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: default;
+  }
+
+  /* ===== Block Design Teacher (PC) ===== */
+  .bd-teacher {
+    padding: 0;
+    background: #f8f9fa;
+    min-height: 380px;
+  }
+  .bd-t-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+  }
+  .bd-t-logo {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+  }
+  .bd-t-session {
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .bd-t-code {
+    background: #f3f4f6;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    color: #4b5563;
+    margin-left: auto;
+  }
+  .bd-t-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  .bd-t-tab {
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+    border-bottom: 2px solid transparent;
+  }
+  .bd-t-tab.active {
+    color: var(--mint-hover);
+    border-bottom-color: var(--mint);
+  }
+  .bd-t-stats {
+    padding: 10px 16px;
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .bd-t-stats strong {
+    color: var(--navy);
+  }
+  .bd-t-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0 16px 16px;
+  }
+  .bd-t-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #eee;
+  }
+  .bd-t-card-thumb {
+    height: 90px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bd-t-card-info {
+    padding: 8px 10px;
+  }
+  .bd-t-card-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .bd-t-card-student {
+    font-size: 10px;
+    color: #9ca3af;
+    margin-top: 2px;
+  }
+
+  /* Block design card thumbnails — mini UI mockups */
+  .bd-thumb-1 {
+    background: linear-gradient(135deg, #dbeafe, #e0e7ff);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 4px;
+  }
+  .bd-thumb-1 .t-header { height: 14px; background: #3b82f6; border-radius: 4px; }
+  .bd-thumb-1 .t-img { height: 30px; background: #93c5fd; border-radius: 4px; }
+  .bd-thumb-1 .t-btn { height: 10px; width: 60%; background: #2563eb; border-radius: 3px; margin: 0 auto; }
+
+  .bd-thumb-2 {
+    background: linear-gradient(135deg, #fce7f3, #fdf2f8);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 4px;
+  }
+  .bd-thumb-2 .t-header { height: 14px; background: #ec4899; border-radius: 4px; }
+  .bd-thumb-2 .t-cards { display: flex; gap: 3px; flex: 1; }
+  .bd-thumb-2 .t-card-mini { flex: 1; background: #f9a8d4; border-radius: 4px; }
+
+  .bd-thumb-3 {
+    background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 4px;
+  }
+  .bd-thumb-3 .t-header { height: 14px; background: #10b981; border-radius: 4px; }
+  .bd-thumb-3 .t-row { display: flex; gap: 3px; }
+  .bd-thumb-3 .t-box { flex: 1; height: 18px; background: #6ee7b7; border-radius: 3px; }
+  .bd-thumb-3 .t-btn { height: 10px; width: 50%; background: #059669; border-radius: 3px; margin: 0 auto; }
+
+  .bd-thumb-4 {
+    background: linear-gradient(135deg, #fef3c7, #fffbeb);
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    gap: 4px;
+  }
+  .bd-thumb-4 .t-header { height: 14px; background: #f59e0b; border-radius: 4px; }
+  .bd-thumb-4 .t-img { height: 24px; background: #fcd34d; border-radius: 4px; }
+  .bd-thumb-4 .t-row { display: flex; gap: 3px; }
+  .bd-thumb-4 .t-btn-mini { flex: 1; height: 12px; background: #d97706; border-radius: 3px; }
+
+  /* ===== Block Design Student (Phone) ===== */
+  .bd-student {
+    padding: 0;
+    background: #f5f5f5;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  .bd-s-tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+  }
+  .bd-s-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 10px;
+    font-weight: 600;
+    color: #9ca3af;
+    border-bottom: 2px solid transparent;
+  }
+  .bd-s-tab.active {
+    color: var(--mint-hover);
+    border-bottom-color: var(--mint);
+  }
+  .bd-s-canvas {
+    flex: 1;
+    margin: 8px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px dashed #ddd;
+    position: relative;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-height: 240px;
+  }
+  .bd-s-block {
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    position: relative;
+  }
+  .bd-s-block-header {
+    background: #3b82f6;
+    color: #fff;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+  .bd-s-block-img {
+    background: #e2e8f0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 18px;
+  }
+  .bd-s-block-btn-row {
+    display: flex;
+    gap: 4px;
+  }
+  .bd-s-block-btn {
+    flex: 1;
+    background: var(--mint);
+    color: #fff;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+  .bd-s-bottom-sheet {
+    background: #fff;
+    border-top: 1px solid #eee;
+    padding: 8px 12px;
+  }
+  .bd-s-palette {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+  }
+  .bd-s-palette-item {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    gap: 1px;
+  }
+  .bd-s-palette-label {
+    font-size: 7px;
+    color: #6b7280;
+    font-weight: 600;
+  }
+  .bd-s-submit {
+    position: absolute;
+    bottom: 54px;
+    right: 12px;
+    background: var(--mint);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(126,200,181,0.4);
+    cursor: default;
+  }
+
+  /* ===== App Maker Teacher (PC) ===== */
+  .am-teacher {
+    padding: 0;
+    background: #f8f9fa;
+    min-height: 380px;
+  }
+  .am-t-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    gap: 10px;
+  }
+  .am-t-logo {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+  }
+  .am-t-session {
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .am-t-code-area {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .am-t-code-label {
+    font-size: 10px;
+    color: #9ca3af;
+  }
+  .am-t-code {
+    background: #f3f4f6;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+    color: #4b5563;
+  }
+  .am-t-stats {
+    padding: 10px 16px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #6b7280;
+  }
+  .am-t-stats strong {
+    color: var(--navy);
+    font-size: 13px;
+  }
+  .am-t-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 8px 16px 16px;
+  }
+  .am-t-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    transition: transform 0.2s;
+  }
+  .am-t-card-thumb {
+    height: 80px;
+    overflow: hidden;
+    position: relative;
+  }
+  .am-t-card-info {
+    padding: 7px 9px;
+  }
+  .am-t-card-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .am-t-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 3px;
+  }
+  .am-t-card-student {
+    font-size: 9px;
+    color: #9ca3af;
+  }
+  .am-t-card-badge {
+    font-size: 8px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  .am-t-card-likes {
+    font-size: 9px;
+    color: #f87171;
+  }
+
+  /* App card thumbnails */
+  .am-thumb-food {
+    background: linear-gradient(135deg, #fef3c7, #fff7ed);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .am-thumb-food .t-search {
+    height: 10px;
+    background: #fff;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  .am-thumb-food .t-cats {
+    display: flex;
+    gap: 2px;
+  }
+  .am-thumb-food .t-cat {
+    flex: 1;
+    height: 14px;
+    border-radius: 4px;
+    font-size: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 600;
+  }
+  .am-thumb-food .t-card {
+    background: #fff;
+    border-radius: 4px;
+    height: 28px;
+    border: 1px solid #eee;
+  }
+
+  .am-thumb-quiz {
+    background: linear-gradient(135deg, #ede9fe, #f5f3ff);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+  }
+  .am-thumb-quiz .t-q { font-size: 8px; color: #7c3aed; font-weight: 700; text-align: center; }
+  .am-thumb-quiz .t-opts { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+  .am-thumb-quiz .t-opt { height: 10px; background: #ddd8fe; border-radius: 4px; }
+  .am-thumb-quiz .t-opt:first-child { background: #8b5cf6; }
+
+  .am-thumb-calc {
+    background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .am-thumb-calc .t-display { height: 16px; background: #065f46; border-radius: 4px; }
+  .am-thumb-calc .t-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+  .am-thumb-calc .t-b { height: 10px; background: #a7f3d0; border-radius: 2px; }
+  .am-thumb-calc .t-b.op { background: #10b981; }
+
+  .am-thumb-diary {
+    background: linear-gradient(135deg, #fce7f3, #fdf2f8);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .am-thumb-diary .t-date { font-size: 7px; color: #be185d; font-weight: 700; }
+  .am-thumb-diary .t-lines { display: flex; flex-direction: column; gap: 2px; }
+  .am-thumb-diary .t-line { height: 4px; background: #fbcfe8; border-radius: 1px; }
+  .am-thumb-diary .t-line:last-child { width: 60%; }
+
+  .am-thumb-weather {
+    background: linear-gradient(135deg, #dbeafe, #eff6ff);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+  }
+  .am-thumb-weather .t-icon { font-size: 20px; }
+  .am-thumb-weather .t-temp { font-size: 10px; font-weight: 700; color: #1d4ed8; }
+  .am-thumb-weather .t-row { display: flex; gap: 3px; }
+  .am-thumb-weather .t-day { width: 16px; height: 12px; background: #bfdbfe; border-radius: 3px; }
+
+  .am-thumb-game {
+    background: linear-gradient(135deg, #fee2e2, #fef2f2);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+  }
+  .am-thumb-game .t-score { font-size: 8px; font-weight: 700; color: #dc2626; }
+  .am-thumb-game .t-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .am-thumb-game .t-cell { width: 14px; height: 14px; background: #fca5a5; border-radius: 3px; }
+  .am-thumb-game .t-cell.active { background: #ef4444; }
+
+  /* ===== App Maker Student (Phone) ===== */
+  .am-student {
+    padding: 0;
+    background: #fff;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+  .am-s-app-header {
+    background: #f59e0b;
+    color: #fff;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .am-s-app-header-icon {
+    font-size: 16px;
+  }
+  .am-s-search {
+    margin: 10px 12px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    padding: 7px 12px;
+    font-size: 11px;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .am-s-cats {
+    display: flex;
+    gap: 6px;
+    padding: 0 12px;
+    margin-bottom: 10px;
+  }
+  .am-s-cat {
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 10px;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+    color: #6b7280;
+  }
+  .am-s-cat.active {
+    background: #f59e0b;
+    color: #fff;
+    border-color: #f59e0b;
+  }
+  .am-s-restaurant {
+    margin: 0 12px 10px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    overflow: hidden;
+  }
+  .am-s-rest-img {
+    height: 80px;
+    background: linear-gradient(135deg, #fef3c7, #fed7aa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  .am-s-rest-info {
+    padding: 8px 10px;
+  }
+  .am-s-rest-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .am-s-rest-meta {
+    font-size: 10px;
+    color: #f59e0b;
+    margin-top: 2px;
+  }
+  .am-s-rest-desc {
+    font-size: 10px;
+    color: #6b7280;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .am-s-actions {
+    padding: 8px 12px;
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .am-s-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    cursor: default;
+  }
+  .am-s-btn-edit {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  .am-s-btn-share {
+    background: var(--mint);
+    color: #fff;
+  }
+
+  /* ===== Description Area ===== */
+  .desc-area {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .desc-step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .desc-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .desc-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .desc-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .desc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    background: var(--mint-light);
+    color: var(--mint-hover);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    padding: 28px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--card-bg);
+    margin-top: 8px;
+  }
+  .footer-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .footer-link {
+    color: var(--mint-hover);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 12px;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .frame-area {
+      flex-direction: column;
+      align-items: center;
+    }
+    .pc-frame {
+      flex: none;
+      width: 100%;
+      max-width: 100%;
+    }
+    .phone-frame {
+      flex: none;
+    }
+    .step-bar {
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+    .step-connector {
+      display: none;
+    }
+    .step-item {
+      padding: 10px 16px;
+    }
+    .am-t-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .container {
+      padding: 0 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">
+      <div class="bar bar-navy"></div>
+      <div class="bar bar-mint"></div>
+    </div>
+    <span class="header-brand-text">teachermate</span>
+  </div>
+  <h1>AI 앱 제작 수업</h1>
+  <p>기획부터 완성까지, 3단계 프로젝트 수업</p>
+</div>
+
+<div class="container">
+
+  <!-- Step Bar -->
+  <div class="step-bar">
+    <div class="step-item active" data-step="1" onclick="setStep(1)">
+      <div class="step-icon">&#9998;</div>
+      <div class="step-label">
+        <span class="step-label-main">① 기획</span>
+        <span class="step-label-sub">Sprint</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="2" onclick="setStep(2)">
+      <div class="step-icon">&#9881;</div>
+      <div class="step-label">
+        <span class="step-label-main">② 디자인</span>
+        <span class="step-label-sub">Block Design</span>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="3" onclick="setStep(3)">
+      <div class="step-icon">&#9889;</div>
+      <div class="step-label">
+        <span class="step-label-main">③ 앱 생성</span>
+        <span class="step-label-sub">App Maker</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step Contents Wrapper -->
+  <div style="position: relative;">
+
+    <!-- ====== STEP 1: Sprint ====== -->
+    <div class="step-content active" id="step-1">
+      <div class="frame-area">
+        <!-- Teacher PC -->
+        <div>
+          <div class="pc-frame">
+            <div class="pc-titlebar">
+              <div class="pc-dots">
+                <div class="pc-dot pc-dot-red"></div>
+                <div class="pc-dot pc-dot-yellow"></div>
+                <div class="pc-dot pc-dot-green"></div>
+              </div>
+              <div class="pc-urlbar">
+                <span class="pc-urlbar-lock">&#128274;</span>
+                <span class="pc-urlbar-text">sprint.teachermate.co.kr/guide/A1B2</span>
+              </div>
+            </div>
+            <div class="pc-content sprint-teacher">
+              <div class="sprint-t-header">
+                <span class="sprint-t-logo">Sprint</span>
+                <span class="sprint-t-live"><span class="sprint-t-live-dot"></span> Live</span>
+                <span class="sprint-t-code">A1B2</span>
+                <span class="sprint-t-timer">12:30</span>
+              </div>
+              <div class="sprint-t-body">
+                <div class="sprint-t-left">
+                  <h4>참여 모둠</h4>
+                  <div class="sprint-t-team">
+                    <span class="sprint-t-team-dot" style="background:#10b981"></span>
+                    <span class="sprint-t-team-name">1모둠</span>
+                    <span class="sprint-t-team-count">4명</span>
+                  </div>
+                  <div class="sprint-t-team">
+                    <span class="sprint-t-team-dot" style="background:#10b981"></span>
+                    <span class="sprint-t-team-name">2모둠</span>
+                    <span class="sprint-t-team-count">4명</span>
+                  </div>
+                  <div class="sprint-t-team">
+                    <span class="sprint-t-team-dot" style="background:#d1d5db"></span>
+                    <span class="sprint-t-team-name">3모둠</span>
+                    <span class="sprint-t-team-count">3명</span>
+                  </div>
+                  <div style="margin-top:12px">
+                    <div style="font-size:10px;color:#9ca3af;margin-bottom:3px">QR 코드</div>
+                    <div style="width:56px;height:56px;background:#fff;border:1px solid #ddd;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+                      <div style="width:40px;height:40px;background:repeating-conic-gradient(#333 0% 25%, #fff 0% 50%) 50%/8px 8px;border-radius:2px"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="sprint-t-right">
+                  <div class="sprint-t-step-indicator">
+                    <div class="sprint-t-step-label">현재 단계</div>
+                    <div class="sprint-t-step-title">Step 03 앱 주문서</div>
+                    <div class="sprint-t-progress-bar">
+                      <div class="sprint-t-progress-seg filled"></div>
+                      <div class="sprint-t-progress-seg filled"></div>
+                      <div class="sprint-t-progress-seg current"></div>
+                      <div class="sprint-t-progress-seg"></div>
+                      <div class="sprint-t-progress-seg"></div>
+                      <div class="sprint-t-progress-seg"></div>
+                      <div class="sprint-t-progress-seg"></div>
+                    </div>
+                  </div>
+                  <div class="sprint-t-submission">
+                    <div class="sprint-t-sub-label">
+                      <span>제출 현황</span>
+                      <span class="sprint-t-sub-count">2 / 3팀</span>
+                    </div>
+                    <div class="ui-progress">
+                      <div class="ui-progress-fill" style="width:66%;background:var(--mint)"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-label">교사 화면 (PC)</div>
+        </div>
+
+        <!-- Student Phone -->
+        <div>
+          <div class="phone-frame">
+            <div class="phone-body">
+              <div class="phone-notch"></div>
+              <div class="phone-screen sprint-student">
+                <div class="sprint-s-top">
+                  <div class="sprint-s-step-badge">
+                    <span class="sprint-s-step-dot"></span>
+                    Step 03
+                  </div>
+                  <div class="sprint-s-title">우리 앱의 주문서를 작성해요</div>
+                </div>
+                <div class="sprint-s-form">
+                  <div class="sprint-s-label">앱 이름</div>
+                  <div class="sprint-s-input">우리 동네 맛집 찾기</div>
+                  <div class="sprint-s-label">앱 설명</div>
+                  <div class="sprint-s-textarea" style="display:block;font-family:inherit">우리 동네의 숨은 맛집을 찾아주는 앱이에요</div>
+                  <div class="sprint-s-label">대상 사용자</div>
+                  <div class="sprint-s-input" style="color:#aaa">선택해 주세요</div>
+                  <div class="sprint-s-counter">2 / 5</div>
+                </div>
+                <div class="sprint-s-bottom">
+                  <div class="sprint-s-dots">
+                    <div class="sprint-s-dot filled"></div>
+                    <div class="sprint-s-dot filled"></div>
+                    <div class="sprint-s-dot filled"></div>
+                    <div class="sprint-s-dot"></div>
+                    <div class="sprint-s-dot"></div>
+                    <div class="sprint-s-dot"></div>
+                    <div class="sprint-s-dot"></div>
+                  </div>
+                  <div class="sprint-s-btn">다음</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-label">학생 화면 (모바일)</div>
+        </div>
+      </div>
+
+      <div class="desc-area">
+        <div class="desc-step-badge" style="background:#eff6ff;color:#3b82f6">① 기획 — Sprint</div>
+        <div class="desc-title">7단계 워크시트로 앱을 기획합니다</div>
+        <div class="desc-text">
+          학생들은 모둠별로 앱 아이디어를 구체화합니다. 문제 발견부터 사용자 정의, 기능 설계, 화면 스케치까지
+          체계적인 워크시트를 따라 단계별로 진행하며, 교사는 실시간으로 모든 모둠의 진행 상황을 모니터링합니다.
+        </div>
+        <div class="desc-tags">
+          <span class="desc-tag">&#128994; 실시간 모니터링</span>
+          <span class="desc-tag">&#128196; 7단계 워크시트</span>
+          <span class="desc-tag">&#128101; 모둠별 협업</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== STEP 2: Block Design ====== -->
+    <div class="step-content" id="step-2">
+      <div class="frame-area">
+        <!-- Teacher PC -->
+        <div>
+          <div class="pc-frame">
+            <div class="pc-titlebar">
+              <div class="pc-dots">
+                <div class="pc-dot pc-dot-red"></div>
+                <div class="pc-dot pc-dot-yellow"></div>
+                <div class="pc-dot pc-dot-green"></div>
+              </div>
+              <div class="pc-urlbar">
+                <span class="pc-urlbar-lock">&#128274;</span>
+                <span class="pc-urlbar-text">design.teachermate.co.kr/gallery/XK7M2P</span>
+              </div>
+            </div>
+            <div class="pc-content bd-teacher">
+              <div class="bd-t-header">
+                <span class="bd-t-logo">Block Design</span>
+                <span class="bd-t-session">3학년 2반</span>
+                <span class="bd-t-code">XK7M2P</span>
+              </div>
+              <div class="bd-t-tabs">
+                <div class="bd-t-tab active">갤러리 보기</div>
+                <div class="bd-t-tab">참여 현황</div>
+                <div class="bd-t-tab">설정</div>
+              </div>
+              <div class="bd-t-stats">참여자 <strong>24명</strong> · 작품 <strong>18개</strong></div>
+              <div class="bd-t-grid">
+                <div class="bd-t-card">
+                  <div class="bd-t-card-thumb bd-thumb-1">
+                    <div class="t-header"></div>
+                    <div class="t-img"></div>
+                    <div class="t-btn"></div>
+                  </div>
+                  <div class="bd-t-card-info">
+                    <div class="bd-t-card-name">맛집 탐색기</div>
+                    <div class="bd-t-card-student">김도현</div>
+                  </div>
+                </div>
+                <div class="bd-t-card">
+                  <div class="bd-t-card-thumb bd-thumb-2">
+                    <div class="t-header"></div>
+                    <div class="t-cards">
+                      <div class="t-card-mini"></div>
+                      <div class="t-card-mini"></div>
+                    </div>
+                  </div>
+                  <div class="bd-t-card-info">
+                    <div class="bd-t-card-name">우리반 퀴즈</div>
+                    <div class="bd-t-card-student">이서연</div>
+                  </div>
+                </div>
+                <div class="bd-t-card">
+                  <div class="bd-t-card-thumb bd-thumb-3">
+                    <div class="t-header"></div>
+                    <div class="t-row">
+                      <div class="t-box"></div>
+                      <div class="t-box"></div>
+                    </div>
+                    <div class="t-btn"></div>
+                  </div>
+                  <div class="bd-t-card-info">
+                    <div class="bd-t-card-name">시간표 알리미</div>
+                    <div class="bd-t-card-student">박지훈</div>
+                  </div>
+                </div>
+                <div class="bd-t-card">
+                  <div class="bd-t-card-thumb bd-thumb-4">
+                    <div class="t-header"></div>
+                    <div class="t-img"></div>
+                    <div class="t-row">
+                      <div class="t-btn-mini"></div>
+                      <div class="t-btn-mini"></div>
+                    </div>
+                  </div>
+                  <div class="bd-t-card-info">
+                    <div class="bd-t-card-name">날씨 일기장</div>
+                    <div class="bd-t-card-student">최유나</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-label">교사 화면 (PC)</div>
+        </div>
+
+        <!-- Student Phone -->
+        <div>
+          <div class="phone-frame">
+            <div class="phone-body">
+              <div class="phone-notch"></div>
+              <div class="phone-screen bd-student">
+                <div class="bd-s-tabs">
+                  <div class="bd-s-tab">배우기</div>
+                  <div class="bd-s-tab active">만들기</div>
+                  <div class="bd-s-tab">갤러리</div>
+                </div>
+                <div class="bd-s-canvas">
+                  <div class="bd-s-block bd-s-block-header">우리 동네 맛집</div>
+                  <div class="bd-s-block bd-s-block-img">&#128247;</div>
+                  <div class="bd-s-block-btn-row">
+                    <div class="bd-s-block-btn">한식</div>
+                    <div class="bd-s-block-btn" style="background:#3b82f6">중식</div>
+                  </div>
+                  <div class="bd-s-block-btn-row">
+                    <div class="bd-s-block-btn" style="background:#f59e0b">일식</div>
+                    <div class="bd-s-block-btn" style="background:#ef4444">양식</div>
+                  </div>
+                </div>
+                <div class="bd-s-submit">제출</div>
+                <div class="bd-s-bottom-sheet">
+                  <div class="bd-s-palette">
+                    <div class="bd-s-palette-item">
+                      <span>T</span>
+                      <span class="bd-s-palette-label">텍스트</span>
+                    </div>
+                    <div class="bd-s-palette-item">
+                      <span>&#9632;</span>
+                      <span class="bd-s-palette-label">버튼</span>
+                    </div>
+                    <div class="bd-s-palette-item">
+                      <span>&#9724;</span>
+                      <span class="bd-s-palette-label">이미지</span>
+                    </div>
+                    <div class="bd-s-palette-item">
+                      <span>&#9744;</span>
+                      <span class="bd-s-palette-label">카드</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-label">학생 화면 (모바일)</div>
+        </div>
+      </div>
+
+      <div class="desc-area">
+        <div class="desc-step-badge" style="background:#fce7f3;color:#ec4899">② 디자인 — Block Design</div>
+        <div class="desc-title">블록을 조합하여 앱 화면을 디자인합니다</div>
+        <div class="desc-text">
+          기획 단계에서 구상한 아이디어를 시각적으로 구현합니다. 학생들은 블록 팔레트에서 텍스트, 버튼, 이미지 등의 UI 요소를
+          드래그하여 앱 화면을 직접 디자인하고, 교사는 갤러리에서 전체 학생의 작품을 한눈에 확인할 수 있습니다.
+        </div>
+        <div class="desc-tags">
+          <span class="desc-tag">&#127912; 드래그 앤 드롭</span>
+          <span class="desc-tag">&#128444; QR 참여</span>
+          <span class="desc-tag">&#128506; 블록 7종</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====== STEP 3: App Maker ====== -->
+    <div class="step-content" id="step-3">
+      <div class="frame-area">
+        <!-- Teacher PC -->
+        <div>
+          <div class="pc-frame">
+            <div class="pc-titlebar">
+              <div class="pc-dots">
+                <div class="pc-dot pc-dot-red"></div>
+                <div class="pc-dot pc-dot-yellow"></div>
+                <div class="pc-dot pc-dot-green"></div>
+              </div>
+              <div class="pc-urlbar">
+                <span class="pc-urlbar-lock">&#128274;</span>
+                <span class="pc-urlbar-text">maker.teachermate.co.kr/dashboard/3847</span>
+              </div>
+            </div>
+            <div class="pc-content am-teacher">
+              <div class="am-t-header">
+                <span class="am-t-logo">App Maker</span>
+                <span class="am-t-session">AI 앱 수업</span>
+                <div class="am-t-code-area">
+                  <span class="am-t-code-label">참여 코드</span>
+                  <span class="am-t-code">3847</span>
+                </div>
+              </div>
+              <div class="am-t-stats">
+                <span>전체 앱 <strong>12개</strong></span>
+                <span style="font-size:10px;color:#9ca3af">최근 업데이트: 방금 전</span>
+              </div>
+              <div class="am-t-grid">
+                <div class="am-t-card">
+                  <div class="am-t-card-thumb am-thumb-food">
+                    <div class="t-search"></div>
+                    <div class="t-cats">
+                      <div class="t-cat" style="background:#f59e0b">한식</div>
+                      <div class="t-cat" style="background:#ef4444">중식</div>
+                      <div class="t-cat" style="background:#3b82f6">일식</div>
+                    </div>
+                    <div class="t-card"></div>
+                  </div>
+                  <div class="am-t-card-info">
+                    <div class="am-t-card-title">우리 동네 맛집 찾기</div>
+                    <div class="am-t-card-meta">
+                      <span class="am-t-card-student">김도현</span>
+                      <span class="am-t-card-likes">&#9829; 5</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="am-t-card">
+                  <div class="am-t-card-thumb am-thumb-quiz">
+                    <div class="t-q">Q. 한국의 수도는?</div>
+                    <div class="t-opts">
+                      <div class="t-opt"></div>
+                      <div class="t-opt"></div>
+                      <div class="t-opt"></div>
+                    </div>
+                  </div>
+                  <div class="am-t-card-info">
+                    <div class="am-t-card-title">상식 퀴즈왕</div>
+                    <div class="am-t-card-meta">
+                      <span class="am-t-card-student">이서연</span>
+                      <span class="am-t-card-badge" style="background:#ede9fe;color:#7c3aed">퀴즈</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="am-t-card">
+                  <div class="am-t-card-thumb am-thumb-calc">
+                    <div class="t-display"></div>
+                    <div class="t-btns">
+                      <div class="t-b"></div><div class="t-b"></div><div class="t-b"></div><div class="t-b op"></div>
+                      <div class="t-b"></div><div class="t-b"></div><div class="t-b"></div><div class="t-b op"></div>
+                    </div>
+                  </div>
+                  <div class="am-t-card-info">
+                    <div class="am-t-card-title">스마트 계산기</div>
+                    <div class="am-t-card-meta">
+                      <span class="am-t-card-student">박지훈</span>
+                      <span class="am-t-card-badge" style="background:#d1fae5;color:#059669">도구</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="am-t-card">
+                  <div class="am-t-card-thumb am-thumb-diary">
+                    <div class="t-date">2026. 4. 12</div>
+                    <div class="t-lines">
+                      <div class="t-line"></div>
+                      <div class="t-line"></div>
+                      <div class="t-line"></div>
+                      <div class="t-line"></div>
+                    </div>
+                  </div>
+                  <div class="am-t-card-info">
+                    <div class="am-t-card-title">감정 일기장</div>
+                    <div class="am-t-card-meta">
+                      <span class="am-t-card-student">최유나</span>
+                      <span class="am-t-card-likes">&#9829; 8</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="am-t-card">
+                  <div class="am-t-card-thumb am-thumb-weather">
+                    <div class="t-icon">&#9925;</div>
+                    <div class="t-temp">18&#176;C</div>
+                    <div class="t-row">
+                      <div class="t-day"></div>
+                      <div class="t-day"></div>
+                      <div class="t-day"></div>
+                      <div class="t-day"></div>
+                    </div>
+                  </div>
+                  <div class="am-t-card-info">
+                    <div class="am-t-card-title">오늘의 날씨</div>
+                    <div class="am-t-card-meta">
+                      <span class="am-t-card-student">정하윤</span>
+                      <span class="am-t-card-likes">&#9829; 3</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="am-t-card">
+                  <div class="am-t-card-thumb am-thumb-game">
+                    <div class="t-score">Score: 150</div>
+                    <div class="t-grid">
+                      <div class="t-cell active"></div><div class="t-cell"></div><div class="t-cell active"></div>
+                      <div class="t-cell"></div><div class="t-cell active"></div><div class="t-cell"></div>
+                      <div class="t-cell active"></div><div class="t-cell"></div><div class="t-cell active"></div>
+                    </div>
+                  </div>
+                  <div class="am-t-card-info">
+                    <div class="am-t-card-title">두더지 잡기</div>
+                    <div class="am-t-card-meta">
+                      <span class="am-t-card-student">한준서</span>
+                      <span class="am-t-card-badge" style="background:#fee2e2;color:#dc2626">게임</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pc-label">교사 화면 (PC)</div>
+        </div>
+
+        <!-- Student Phone -->
+        <div>
+          <div class="phone-frame">
+            <div class="phone-body">
+              <div class="phone-notch"></div>
+              <div class="phone-screen am-student">
+                <div class="am-s-app-header">
+                  <span class="am-s-app-header-icon">&#127860;</span>
+                  우리 동네 맛집 찾기
+                </div>
+                <div class="am-s-search">
+                  <span>&#128269;</span> 맛집을 검색하세요
+                </div>
+                <div class="am-s-cats">
+                  <span class="am-s-cat active">한식</span>
+                  <span class="am-s-cat">중식</span>
+                  <span class="am-s-cat">일식</span>
+                  <span class="am-s-cat">양식</span>
+                </div>
+                <div class="am-s-restaurant">
+                  <div class="am-s-rest-img">&#127834;</div>
+                  <div class="am-s-rest-info">
+                    <div class="am-s-rest-name">할머니 손칼국수</div>
+                    <div class="am-s-rest-meta">&#11088; 4.8 · 한식 · 500m</div>
+                    <div class="am-s-rest-desc">따뜻한 손칼국수와 수제 만두가 유명한 30년 전통 맛집</div>
+                  </div>
+                </div>
+                <div class="am-s-actions">
+                  <div class="am-s-btn am-s-btn-edit">수정하기</div>
+                  <div class="am-s-btn am-s-btn-share">공유하기</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="phone-label">학생 화면 (모바일)</div>
+        </div>
+      </div>
+
+      <div class="desc-area">
+        <div class="desc-step-badge" style="background:#fef3c7;color:#d97706">③ 앱 생성 — App Maker</div>
+        <div class="desc-title">AI가 실제 작동하는 앱을 만들어줍니다</div>
+        <div class="desc-text">
+          기획서와 디자인을 바탕으로 AI가 실제로 작동하는 웹 앱을 생성합니다. 학생들은 생성된 앱을 직접 사용해보고
+          수정하며, 완성된 앱을 친구들과 공유할 수 있습니다. 교사는 대시보드에서 전체 학생의 앱을 관리하고 평가합니다.
+        </div>
+        <div class="desc-tags">
+          <span class="desc-tag">&#129302; AI 앱 생성</span>
+          <span class="desc-tag">&#128241; 즉시 실행</span>
+          <span class="desc-tag">&#128279; 공유 가능</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /step wrapper -->
+
+</div><!-- /container -->
+
+<!-- Footer -->
+<div class="footer">
+  <span class="footer-text">TeacherMate · AI 교육 플랫폼</span>
+  <a href="mailto:teacher@teachermate.co.kr" class="footer-link">교육 문의</a>
+</div>
+
+<script>
+  let currentStep = 1;
+
+  function setStep(n) {
+    if (n === currentStep) return;
+    currentStep = n;
+
+    // Update step bar
+    document.querySelectorAll('.step-item').forEach(item => {
+      item.classList.toggle('active', parseInt(item.dataset.step) === n);
+    });
+
+    // Update content with fade
+    document.querySelectorAll('.step-content').forEach(el => {
+      el.classList.remove('active');
+    });
+
+    // Small delay for transition out, then show new
+    setTimeout(() => {
+      document.getElementById('step-' + n).classList.add('active');
+    }, 80);
+  }
+</script>
+
+</body>
+</html>
