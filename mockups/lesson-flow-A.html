@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TeacherMate AI 앱 제작 수업</title>
+<style>
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #1B2A4A;
+    --mint: #7EC8B5;
+    --mint-light: #e6f5f0;
+    --mint-dark: #5aab96;
+    --text-primary: #1c1917;
+    --text-body: #57534e;
+    --text-muted: #78716c;
+    --border: #e7e5e4;
+    --surface: #ffffff;
+    --surface-alt: #fafaf9;
+    --radius: 12px;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+  }
+
+  body {
+    font-family: 'Pretendard Variable', 'Pretendard', system-ui, -apple-system, sans-serif;
+    background: var(--surface-alt);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    background: var(--navy);
+    color: #fff;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .header-logo {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .header-logo .bar {
+    width: 4px;
+    height: 18px;
+    border-radius: 2px;
+  }
+  .header-logo .bar-navy { background: #5a7aaa; }
+  .header-logo .bar-mint { background: var(--mint); }
+  .header-brand-text {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    word-break: keep-all;
+  }
+  .header p {
+    margin-top: 8px;
+    font-size: 15px;
+    opacity: 0.75;
+    font-weight: 400;
+  }
+
+  /* ===== Container ===== */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 20px 48px;
+  }
+
+  /* ===== Step Bar ===== */
+  .step-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 36px;
+  }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 16px;
+    border-radius: 100px;
+    transition: all 0.3s var(--ease);
+    border: 2px solid transparent;
+    user-select: none;
+    position: relative;
+  }
+  .step-item:hover {
+    background: var(--mint-light);
+  }
+  .step-item.active {
+    background: var(--mint-light);
+    border-color: var(--mint);
+  }
+  .step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    background: var(--border);
+    color: var(--text-muted);
+    transition: all 0.3s var(--ease);
+    flex-shrink: 0;
+  }
+  .step-item.active .step-number {
+    background: var(--mint);
+    color: var(--navy);
+  }
+  .step-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: color 0.3s var(--ease);
+    white-space: nowrap;
+  }
+  .step-sub {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-muted);
+    opacity: 0.7;
+  }
+  .step-item.active .step-label {
+    color: var(--navy);
+  }
+  .step-connector {
+    width: 40px;
+    height: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .step-connector.filled {
+    background: var(--mint);
+  }
+  .step-connector::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid var(--border);
+    border-top: 2px solid var(--border);
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .step-connector.filled::after {
+    border-color: var(--mint);
+  }
+
+  /* ===== Phone Section ===== */
+  .phones-section {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  .phone-wrapper {
+    text-align: center;
+  }
+  .phone-role {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .phone-role-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+  .phone-role-icon.teacher {
+    background: var(--navy);
+    color: #fff;
+  }
+  .phone-role-icon.student {
+    background: var(--mint);
+    color: var(--navy);
+  }
+
+  /* Phone Frame */
+  .phone-frame {
+    width: 220px;
+    height: 440px;
+    background: var(--surface);
+    border-radius: 28px;
+    border: 3px solid #2a2a2a;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(27, 42, 74, 0.12), 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  /* Status Bar */
+  .phone-status-bar {
+    height: 28px;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 500;
+  }
+  .phone-status-bar .time { font-weight: 600; color: #fff; }
+  .phone-status-icons {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .phone-status-icons span {
+    display: block;
+    width: 12px;
+    height: 8px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.4);
+  }
+
+  /* Phone Notch */
+  .phone-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 20px;
+    background: #2a2a2a;
+    border-radius: 0 0 14px 14px;
+    z-index: 2;
+  }
+
+  /* Phone Content */
+  .phone-content {
+    height: calc(100% - 28px);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
+    transition: opacity 0.25s var(--ease);
+  }
+  .phone-content.fade-out {
+    opacity: 0;
+  }
+
+  /* Phone App Header */
+  .phone-app-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: -0.2px;
+  }
+
+  /* Phone Content Blocks */
+  .phone-block {
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 11px;
+    color: var(--text-body);
+    line-height: 1.5;
+  }
+  .phone-block-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .phone-block.accent {
+    background: var(--mint-light);
+    border-color: var(--mint);
+  }
+  .phone-block.highlight {
+    background: var(--navy);
+    color: rgba(255,255,255,0.9);
+    border-color: var(--navy);
+    text-align: center;
+    font-weight: 600;
+  }
+  .phone-placeholder {
+    background: var(--border);
+    border-radius: 6px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .phone-btn {
+    display: block;
+    background: var(--mint);
+    color: var(--navy);
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .phone-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .phone-list-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 10px;
+    color: var(--text-body);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .phone-list-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mint);
+    flex-shrink: 0;
+  }
+
+  /* ===== Description ===== */
+  .description-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    transition: all 0.3s var(--ease);
+  }
+  .description-step-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--mint-light);
+    color: var(--navy);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+  }
+  .description-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+    word-break: keep-all;
+  }
+  .description-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-body);
+    word-break: keep-all;
+  }
+  .description-features {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .description-feature {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-body);
+    background: var(--surface-alt);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .description-feature-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+
+  /* ===== URLs Section ===== */
+  .urls-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .url-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s var(--ease);
+  }
+  .url-card:hover {
+    border-color: var(--mint);
+    box-shadow: 0 2px 12px rgba(126, 200, 181, 0.15);
+  }
+  .url-card-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .url-card-url {
+    font-size: 11px;
+    color: var(--mint-dark);
+    font-weight: 500;
+    word-break: break-all;
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    padding: 24px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .footer-text {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .footer-brand {
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 640px) {
+    .step-bar {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .step-connector { display: none; }
+    .phones-section {
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .urls-section {
+      grid-template-columns: 1fr;
+    }
+    .header h1 { font-size: 22px; }
+    .container { padding: 24px 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">
+      <div class="bar bar-navy"></div>
+      <div class="bar bar-mint"></div>
+    </div>
+    <span class="header-brand-text">TeacherMate</span>
+  </div>
+  <h1>AI 앱 제작 수업</h1>
+  <p>기획부터 완성까지, 3단계 프로젝트 기반 수업</p>
+</div>
+
+<div class="container">
+
+  <!-- Step Bar -->
+  <div class="step-bar">
+    <div class="step-item active" data-step="1" onclick="setStep(1)">
+      <div class="step-number">1</div>
+      <div>
+        <div class="step-label">기획</div>
+        <div class="step-sub">Sprint</div>
+      </div>
+    </div>
+    <div class="step-connector filled"></div>
+    <div class="step-item" data-step="2" onclick="setStep(2)">
+      <div class="step-number">2</div>
+      <div>
+        <div class="step-label">디자인</div>
+        <div class="step-sub">Block Design</div>
+      </div>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item" data-step="3" onclick="setStep(3)">
+      <div class="step-number">3</div>
+      <div>
+        <div class="step-label">앱 생성</div>
+        <div class="step-sub">App Maker</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone Frames -->
+  <div class="phones-section">
+    <!-- Teacher Phone -->
+    <div class="phone-wrapper">
+      <div class="phone-role">
+        <span class="phone-role-icon teacher">T</span>
+        교사 화면
+      </div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-status-bar">
+          <span class="time">9:41</span>
+          <div class="phone-status-icons">
+            <span></span><span></span><span style="width:16px;border-radius:3px;"></span>
+          </div>
+        </div>
+        <div class="phone-content" id="teacher-content">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Phone -->
+    <div class="phone-wrapper">
+      <div class="phone-role">
+        <span class="phone-role-icon student">S</span>
+        학생 화면
+      </div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-status-bar">
+          <span class="time">9:41</span>
+          <div class="phone-status-icons">
+            <span></span><span></span><span style="width:16px;border-radius:3px;"></span>
+          </div>
+        </div>
+        <div class="phone-content" id="student-content">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="description-card" id="description-card">
+    <!-- Filled by JS -->
+  </div>
+
+  <!-- Service URLs -->
+  <div class="urls-section">
+    <div class="url-card">
+      <div class="url-card-name">Sprint</div>
+      <div class="url-card-url">sprint.teachermate.co.kr</div>
+    </div>
+    <div class="url-card">
+      <div class="url-card-name">Block Design</div>
+      <div class="url-card-url">design.teachermate.co.kr</div>
+    </div>
+    <div class="url-card">
+      <div class="url-card-name">App Maker</div>
+      <div class="url-card-url">maker.teachermate.co.kr</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-text">
+    <span class="footer-brand">TeacherMate</span> &mdash; 교사를 위한 AI 교육 플랫폼
+  </div>
+</div>
+
+<script>
+const stepData = {
+  1: {
+    tag: 'STEP 1',
+    title: '기획 (Sprint)',
+    text: '7단계 앱 기획 워크시트로 아이디어를 구체화합니다. 교사가 세션을 만들면 학생들이 QR 코드로 참여합니다.',
+    features: ['7단계 워크시트', 'QR 코드 참여', '실시간 현황 확인', '프로젝터 모드'],
+    teacher: `
+      <div class="phone-app-header">Sprint &mdash; 교사</div>
+      <div class="phone-block">
+        <div class="phone-block-title">내 세션</div>
+        세션을 만들어 학생들의 기획 활동을 관리합니다.
+      </div>
+      <div class="phone-btn">+ 새 세션 만들기</div>
+      <div class="phone-block accent">
+        <div class="phone-block-title">진행 중 세션</div>
+        <div class="phone-list">
+          <div class="phone-list-item"><span class="phone-list-dot"></span>3학년 1반 &mdash; 12명 참여</div>
+          <div class="phone-list-item"><span class="phone-list-dot"></span>3학년 2반 &mdash; 8명 참여</div>
+        </div>
+      </div>
+      <div class="phone-block">
+        <div class="phone-block-title">QR 코드</div>
+        <div class="phone-placeholder">QR 코드 미리보기</div>
+      </div>
+    `,
+    student: `
+      <div class="phone-app-header">Sprint &mdash; 학생</div>
+      <div class="phone-block highlight">QR 코드로 참여하기</div>
+      <div class="phone-block">
+        <div class="phone-block-title">STEP 1 / 7</div>
+        우리가 해결할 문제는 무엇인가요?
+      </div>
+      <div class="phone-placeholder" style="height:56px;">텍스트 입력 영역</div>
+      <div class="phone-block accent">
+        <div class="phone-block-title">진행률</div>
+        <div style="background:#e7e5e4;border-radius:4px;height:6px;margin-top:4px;">
+          <div style="background:var(--mint);border-radius:4px;height:6px;width:14%;"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">1 / 7 단계</div>
+      </div>
+      <div class="phone-btn">다음 단계 &rarr;</div>
+    `
+  },
+  2: {
+    tag: 'STEP 2',
+    title: '디자인 (Block Design)',
+    text: '블록을 드래그&드롭하여 앱 화면을 직접 디자인합니다. 교사가 챌린지를 출제하면 학생들이 실시간으로 제출합니다.',
+    features: ['드래그 & 드롭', '챌린지 출제', '실시간 제출', '멀티스크린 설계'],
+    teacher: `
+      <div class="phone-app-header">Block Design &mdash; 교사</div>
+      <div class="phone-block">
+        <div class="phone-block-title">챌린지 관리</div>
+        디자인 과제를 출제하고 학생 제출을 확인합니다.
+      </div>
+      <div class="phone-btn">+ 새 챌린지 출제</div>
+      <div class="phone-block accent">
+        <div class="phone-block-title">진행 중 챌린지</div>
+        <div class="phone-list">
+          <div class="phone-list-item"><span class="phone-list-dot"></span>로그인 화면 만들기 &mdash; 제출 8/12</div>
+          <div class="phone-list-item"><span class="phone-list-dot"></span>메인 화면 만들기 &mdash; 제출 3/12</div>
+        </div>
+      </div>
+      <div class="phone-block">
+        <div class="phone-block-title">학생 제출 미리보기</div>
+        <div class="phone-placeholder">제출된 디자인 그리드</div>
+      </div>
+    `,
+    student: `
+      <div class="phone-app-header">Block Design &mdash; 학생</div>
+      <div class="phone-block highlight">챌린지: 로그인 화면 만들기</div>
+      <div class="phone-block">
+        <div class="phone-block-title">블록 팔레트</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;">
+          <span style="background:var(--border);border-radius:4px;padding:3px 8px;font-size:9px;">텍스트</span>
+          <span style="background:var(--border);border-radius:4px;padding:3px 8px;font-size:9px;">버튼</span>
+          <span style="background:var(--border);border-radius:4px;padding:3px 8px;font-size:9px;">이미지</span>
+          <span style="background:var(--border);border-radius:4px;padding:3px 8px;font-size:9px;">입력</span>
+          <span style="background:var(--border);border-radius:4px;padding:3px 8px;font-size:9px;">카드</span>
+        </div>
+      </div>
+      <div class="phone-block" style="flex:1;min-height:80px;">
+        <div class="phone-block-title">캔버스</div>
+        <div class="phone-placeholder" style="height:72px;">드래그 & 드롭 영역</div>
+      </div>
+      <div class="phone-btn">제출하기</div>
+    `
+  },
+  3: {
+    tag: 'STEP 3',
+    title: '앱 생성 (App Maker)',
+    text: '텍스트 설명만으로 실제 동작하는 웹 앱을 AI가 생성합니다. 교사가 튜토리얼을 선택하면 학생들이 단계별로 따라합니다.',
+    features: ['AI 코드 생성', '13종 튜토리얼', '실시간 미리보기', '완성 앱 공유'],
+    teacher: `
+      <div class="phone-app-header">App Maker &mdash; 교사</div>
+      <div class="phone-block">
+        <div class="phone-block-title">튜토리얼 선택</div>
+        학생들이 따라할 튜토리얼을 선택합니다.
+      </div>
+      <div class="phone-block accent">
+        <div class="phone-block-title">추천 튜토리얼</div>
+        <div class="phone-list">
+          <div class="phone-list-item"><span class="phone-list-dot"></span>나만의 프로필 카드</div>
+          <div class="phone-list-item"><span class="phone-list-dot"></span>우리 반 투표 앱</div>
+          <div class="phone-list-item"><span class="phone-list-dot"></span>단어 퀴즈 게임</div>
+        </div>
+      </div>
+      <div class="phone-block">
+        <div class="phone-block-title">학생 진행 현황</div>
+        <div class="phone-list">
+          <div class="phone-list-item"><span class="phone-list-dot"></span>완료 5명 / 진행 중 7명</div>
+        </div>
+      </div>
+    `,
+    student: `
+      <div class="phone-app-header">App Maker &mdash; 학생</div>
+      <div class="phone-block highlight">나만의 프로필 카드 만들기</div>
+      <div class="phone-block">
+        <div class="phone-block-title">STEP 2 / 4</div>
+        AI에게 원하는 앱을 설명해 보세요.
+      </div>
+      <div class="phone-placeholder" style="height:48px;">텍스트 입력 영역</div>
+      <div class="phone-btn">AI에게 만들어 달라고 하기</div>
+      <div class="phone-block accent">
+        <div class="phone-block-title">미리보기</div>
+        <div class="phone-placeholder" style="height:64px;">생성된 앱 미리보기</div>
+      </div>
+    `
+  }
+};
+
+let currentStep = 1;
+
+function setStep(n) {
+  if (n === currentStep) return;
+  currentStep = n;
+
+  // Update step bar
+  document.querySelectorAll('.step-item').forEach(el => {
+    const s = parseInt(el.dataset.step);
+    el.classList.toggle('active', s === n);
+  });
+
+  // Update connectors
+  const connectors = document.querySelectorAll('.step-connector');
+  connectors[0].classList.toggle('filled', n >= 2);
+  connectors[1].classList.toggle('filled', n >= 3);
+
+  // Animate phone contents
+  const teacherEl = document.getElementById('teacher-content');
+  const studentEl = document.getElementById('student-content');
+
+  teacherEl.classList.add('fade-out');
+  studentEl.classList.add('fade-out');
+
+  setTimeout(() => {
+    renderStep(n);
+    teacherEl.classList.remove('fade-out');
+    studentEl.classList.remove('fade-out');
+  }, 200);
+}
+
+function renderStep(n) {
+  const data = stepData[n];
+  document.getElementById('teacher-content').innerHTML = data.teacher;
+  document.getElementById('student-content').innerHTML = data.student;
+
+  const descEl = document.getElementById('description-card');
+  descEl.innerHTML = `
+    <div class="description-step-tag">${data.tag}</div>
+    <div class="description-title">${data.title}</div>
+    <div class="description-text">${data.text}</div>
+    <div class="description-features">
+      ${data.features.map(f => `<div class="description-feature"><div class="description-feature-dot"></div>${f}</div>`).join('')}
+    </div>
+  `;
+}
+
+// Initial render
+renderStep(1);
+</script>
+
+</body>
+</html>

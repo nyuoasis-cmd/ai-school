@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>나만의 여행 플래너</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: #f0f4f3;
+    color: #1a2e2a;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* App Header */
+  .app-header {
+    background: #fff;
+    padding: 16px 20px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #e8eeec;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .app-logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #00C896, #00A87A);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .app-name {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .app-sub {
+    font-size: 11px;
+    color: #8a9e98;
+    font-weight: 500;
+  }
+
+  /* Search Bar */
+  .search-bar {
+    margin: 16px 20px 0;
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1.5px solid #e0ebe7;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-bar:hover, .search-bar.active {
+    border-color: #00C896;
+    box-shadow: 0 2px 12px rgba(0,200,150,0.1);
+  }
+  .search-icon { font-size: 16px; }
+  .search-text {
+    font-size: 14px;
+    color: #8a9e98;
+    flex: 1;
+  }
+  .search-ai-badge {
+    font-size: 10px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00C896, #00A87A);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 100px;
+  }
+
+  /* Destination Chips */
+  .dest-chips {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dest-chips::-webkit-scrollbar { display: none; }
+  .dest-chip {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1.5px solid #e0ebe7;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .dest-chip.active {
+    background: #00C896;
+    color: #fff;
+    border-color: #00C896;
+  }
+  .dest-chip:not(.active):hover {
+    border-color: #00C896;
+    color: #00A87A;
+  }
+
+  /* Section Label */
+  .section-label {
+    padding: 20px 20px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #00A87A;
+    letter-spacing: 0.05em;
+  }
+
+  /* Course Cards */
+  .course-card {
+    margin: 0 20px 12px;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e8eeec;
+    transition: all 0.3s;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .course-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .course-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+  }
+  .course-card.show:hover {
+    transform: translateY(-2px);
+  }
+  .course-img {
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  .course-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.3), transparent 50%);
+  }
+  .course-duration {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    z-index: 1;
+  }
+  .course-body {
+    padding: 14px 16px;
+  }
+  .course-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: #00A87A;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+  .course-title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .course-desc {
+    font-size: 12px;
+    color: #6b7f79;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .course-meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .course-meta-item {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 100px;
+    background: #f0f7f5;
+    color: #00A87A;
+  }
+
+  /* AI Loading */
+  .ai-loading {
+    margin: 20px;
+    text-align: center;
+    display: none;
+  }
+  .ai-loading.show { display: block; }
+  .ai-loading-dots {
+    display: inline-flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .ai-loading-dots span {
+    width: 8px; height: 8px;
+    background: #00C896;
+    border-radius: 50%;
+    animation: dot-bounce 1.4s ease-in-out infinite;
+  }
+  .ai-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dot-bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+  .ai-loading-text {
+    font-size: 13px;
+    color: #8a9e98;
+    font-weight: 500;
+  }
+
+  /* Detail Overlay */
+  .detail-overlay {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+    overflow-y: auto;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+  .detail-overlay.show { transform: translateX(0); }
+  .detail-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e8eeec;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+  }
+  .detail-back {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: #f0f4f3;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .detail-title-area h2 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .detail-title-area span {
+    font-size: 11px;
+    color: #8a9e98;
+  }
+  .detail-img {
+    width: 100%;
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+  }
+  .detail-body { padding: 20px; }
+  .detail-body h3 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1a2e2a;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  .timeline-item.show {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.4s ease;
+  }
+  .timeline-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #f0f7f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .timeline-content h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .timeline-content p {
+    font-size: 12px;
+    color: #6b7f79;
+    line-height: 1.5;
+  }
+  .detail-budget {
+    margin-top: 20px;
+    background: #f0f7f5;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .detail-budget h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: #00A87A;
+    margin-bottom: 8px;
+  }
+  .budget-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    padding: 4px 0;
+  }
+  .budget-row .label { color: #6b7f79; }
+  .budget-row .val { font-weight: 700; }
+  .budget-total {
+    border-top: 1px solid #d0e0db;
+    margin-top: 8px;
+    padding-top: 8px;
+    font-weight: 800;
+    color: #00A87A;
+  }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #fff;
+    border-top: 1px solid #e8eeec;
+    display: flex;
+    padding: 8px 0 12px;
+    z-index: 50;
+  }
+  .nav-item {
+    flex: 1;
+    text-align: center;
+    font-size: 10px;
+    color: #8a9e98;
+    cursor: pointer;
+    transition: color 0.2s;
+    border: none;
+    background: none;
+    font-family: inherit;
+  }
+  .nav-item.active { color: #00A87A; }
+  .nav-icon { font-size: 18px; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+
+<!-- App Header -->
+<div class="app-header">
+  <div class="app-logo">✈️</div>
+  <div>
+    <div class="app-name">나만의 여행 플래너</div>
+    <div class="app-sub">관광과 학생 제작</div>
+  </div>
+</div>
+
+<!-- Search -->
+<div class="search-bar" id="searchBar" onclick="triggerSearch()">
+  <span class="search-icon">🔍</span>
+  <span class="search-text" id="searchText">어디로 떠나고 싶으세요?</span>
+  <span class="search-ai-badge">AI 추천</span>
+</div>
+
+<!-- Destination Chips -->
+<div class="dest-chips">
+  <div class="dest-chip active" onclick="selectDest(this, '제주도')">🏝 제주도</div>
+  <div class="dest-chip" onclick="selectDest(this, '부산')">🌊 부산</div>
+  <div class="dest-chip" onclick="selectDest(this, '강릉')">☕ 강릉</div>
+  <div class="dest-chip" onclick="selectDest(this, '경주')">🏛 경주</div>
+  <div class="dest-chip" onclick="selectDest(this, '여수')">🌅 여수</div>
+</div>
+
+<!-- AI Loading -->
+<div class="ai-loading" id="aiLoading">
+  <div class="ai-loading-dots">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="ai-loading-text" id="aiLoadingText">AI가 맞춤 코스를 만들고 있어요...</div>
+</div>
+
+<!-- Course Cards Container -->
+<div id="courseCards"></div>
+
+<!-- Detail Overlay -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-header">
+    <button class="detail-back" onclick="closeDetail()">←</button>
+    <div class="detail-title-area">
+      <h2 id="detailName"></h2>
+      <span id="detailSub"></span>
+    </div>
+  </div>
+  <div class="detail-img" id="detailImg"></div>
+  <div class="detail-body">
+    <h3>📍 AI 추천 일정</h3>
+    <div id="detailTimeline"></div>
+    <div class="detail-budget" id="detailBudget"></div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <button class="nav-item active"><div class="nav-icon">🏠</div>홈</button>
+  <button class="nav-item"><div class="nav-icon">🔍</div>탐색</button>
+  <button class="nav-item"><div class="nav-icon">❤️</div>저장</button>
+  <button class="nav-item"><div class="nav-icon">👤</div>내 정보</button>
+</div>
+
+<script>
+const courseData = {
+  '제주도': [
+    {
+      tag: 'AI 추천 코스',
+      title: '제주도 2박 3일',
+      desc: '취향에 맞는 맛집, 숙소, 관광지를 AI가 자동으로 구성합니다',
+      img: 'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=600&h=300&fit=crop',
+      duration: '2박 3일',
+      meta: ['맛집 12곳', '관광지 8곳', '예산 자동계산'],
+      timeline: [
+        { icon: '🛬', title: '1일차 오전', desc: '제주공항 도착 → 렌트카 픽업 → 함덕해수욕장' },
+        { icon: '🍊', title: '1일차 오후', desc: '감귤 체험 농장 → 애월 카페거리 → 흑돼지 맛집' },
+        { icon: '🌄', title: '2일차 오전', desc: '성산일출봉 일출 → 우도 자전거 투어' },
+        { icon: '🐬', title: '2일차 오후', desc: '아쿠아플라넷 → 서귀포 올레시장 야시장' },
+        { icon: '🏖', title: '3일차', desc: '한림공원 → 협재해수욕장 → 공항' },
+      ],
+      budget: { 숙소: '120,000원', 식비: '90,000원', 교통: '80,000원', 입장료: '35,000원', total: '325,000원' }
+    },
+    {
+      tag: '인기 코스',
+      title: '제주 맛집 투어',
+      desc: '현지인 추천 숨은 맛집만 모았습니다',
+      img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=300&fit=crop',
+      duration: '1박 2일',
+      meta: ['맛집 8곳', '카페 4곳'],
+      timeline: [
+        { icon: '🍜', title: '1일차 점심', desc: '공항 근처 고기국수 맛집' },
+        { icon: '☕', title: '1일차 오후', desc: '애월 바다뷰 카페 3곳 순례' },
+        { icon: '🥩', title: '1일차 저녁', desc: '제주 흑돼지 명가' },
+        { icon: '🐟', title: '2일차', desc: '성게 미역국 → 갈치조림 → 공항' },
+      ],
+      budget: { 숙소: '80,000원', 식비: '120,000원', 교통: '50,000원', total: '250,000원' }
+    },
+  ],
+  '부산': [
+    {
+      tag: 'AI 추천 코스',
+      title: '부산 먹방 투어',
+      desc: '해운대 → 광안리 → 자갈치 루트',
+      img: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=600&h=300&fit=crop',
+      duration: '2박 3일',
+      meta: ['맛집 10곳', '야경 3곳', '해변 2곳'],
+      timeline: [
+        { icon: '🚄', title: '1일차', desc: 'KTX 도착 → 해운대 해변 → 해운대 시장' },
+        { icon: '🌉', title: '2일차 오전', desc: '감천문화마을 → 국제시장 먹방' },
+        { icon: '🌃', title: '2일차 저녁', desc: '광안대교 야경 → 광안리 횟집' },
+        { icon: '🐙', title: '3일차', desc: '자갈치시장 → 씨앗 → 부산역' },
+      ],
+      budget: { 숙소: '100,000원', 식비: '80,000원', 교통: '60,000원', total: '240,000원' }
+    },
+  ],
+  '강릉': [
+    {
+      tag: 'AI 추천 코스',
+      title: '강릉 카페 투어',
+      desc: '안목해변 인근 카페 5선',
+      img: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&h=300&fit=crop',
+      duration: '1박 2일',
+      meta: ['카페 5곳', '해변 2곳', '맛집 4곳'],
+      timeline: [
+        { icon: '☕', title: '1일차 오전', desc: '안목 커피거리 → 테라로사 본점' },
+        { icon: '🌊', title: '1일차 오후', desc: '경포해변 산책 → 경포 보헤미안 카페' },
+        { icon: '🍲', title: '1일차 저녁', desc: '초당 순두부 마을' },
+        { icon: '🌅', title: '2일차', desc: '정동진 일출 → 중앙시장 닭강정 → 귀가' },
+      ],
+      budget: { 숙소: '70,000원', 식비: '60,000원', 교통: '40,000원', total: '170,000원' }
+    },
+  ],
+  '경주': [
+    {
+      tag: 'AI 추천 코스',
+      title: '경주 역사 탐방',
+      desc: '천년 고도의 유적지를 AI가 효율적으로 엮었습니다',
+      img: 'https://images.unsplash.com/photo-1580137189272-c9379f8864fd?w=600&h=300&fit=crop',
+      duration: '1박 2일',
+      meta: ['유적지 6곳', '맛집 3곳'],
+      timeline: [
+        { icon: '🏛', title: '1일차 오전', desc: '불국사 → 석굴암' },
+        { icon: '🌸', title: '1일차 오후', desc: '동궁과 월지 → 첨성대 야경' },
+        { icon: '🚲', title: '2일차', desc: '황리단길 자전거 → 교촌마을 → 귀가' },
+      ],
+      budget: { 숙소: '60,000원', 식비: '50,000원', 교통: '35,000원', total: '145,000원' }
+    },
+  ],
+  '여수': [
+    {
+      tag: 'AI 추천 코스',
+      title: '여수 낭만 여행',
+      desc: '여수 밤바다와 해상 케이블카',
+      img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=300&fit=crop',
+      duration: '1박 2일',
+      meta: ['야경 3곳', '해산물 5곳', '체험 2곳'],
+      timeline: [
+        { icon: '🚂', title: '1일차 오전', desc: 'KTX 도착 → 이순신광장 → 여수해양공원' },
+        { icon: '🚡', title: '1일차 오후', desc: '해상 케이블카 → 돌산대교 야경' },
+        { icon: '🦞', title: '1일차 저녁', desc: '서대회센터 갓김치삼합' },
+        { icon: '🌅', title: '2일차', desc: '향일암 일출 → 여수 낭만포차 → 귀가' },
+      ],
+      budget: { 숙소: '80,000원', 식비: '70,000원', 교통: '50,000원', total: '200,000원' }
+    },
+  ],
+};
+
+let currentDest = '제주도';
+
+function selectDest(el, dest) {
+  document.querySelectorAll('.dest-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentDest = dest;
+  loadCourses(dest);
+}
+
+function triggerSearch() {
+  const bar = document.getElementById('searchBar');
+  const text = document.getElementById('searchText');
+  bar.classList.add('active');
+  text.textContent = currentDest + ' 검색 중...';
+  setTimeout(() => {
+    text.textContent = currentDest + ' AI 코스 추천 완료!';
+    setTimeout(() => {
+      text.textContent = '어디로 떠나고 싶으세요?';
+      bar.classList.remove('active');
+    }, 2000);
+  }, 1200);
+}
+
+function loadCourses(dest) {
+  const container = document.getElementById('courseCards');
+  const loading = document.getElementById('aiLoading');
+  const loadingText = document.getElementById('aiLoadingText');
+
+  container.innerHTML = '';
+  loading.classList.add('show');
+  loadingText.textContent = 'AI가 ' + dest + ' 맞춤 코스를 만들고 있어요...';
+
+  setTimeout(() => {
+    loadingText.textContent = '맛집과 관광지를 분석하고 있어요...';
+  }, 600);
+
+  setTimeout(() => {
+    loading.classList.remove('show');
+    const courses = courseData[dest] || [];
+
+    let label = document.createElement('div');
+    label.className = 'section-label';
+    label.textContent = 'AI 추천 · ' + dest;
+    container.appendChild(label);
+
+    courses.forEach((c, i) => {
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      card.onclick = () => openDetail(c);
+      card.innerHTML = `
+        <div class="course-img" style="background-image:url('${c.img}')">
+          <span class="course-duration">${c.duration}</span>
+        </div>
+        <div class="course-body">
+          <div class="course-tag">${c.tag}</div>
+          <div class="course-title">${c.title}</div>
+          <div class="course-desc">${c.desc}</div>
+          <div class="course-meta">
+            ${c.meta.map(m => `<span class="course-meta-item">${m}</span>`).join('')}
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+      setTimeout(() => card.classList.add('show'), 100 + i * 150);
+    });
+  }, 1400);
+}
+
+function openDetail(course) {
+  document.getElementById('detailName').textContent = course.title;
+  document.getElementById('detailSub').textContent = course.duration + ' · AI 자동 설계';
+  document.getElementById('detailImg').style.backgroundImage = `url('${course.img}')`;
+
+  const tl = document.getElementById('detailTimeline');
+  tl.innerHTML = '';
+  course.timeline.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    item.innerHTML = `
+      <div class="timeline-dot">${t.icon}</div>
+      <div class="timeline-content">
+        <h4>${t.title}</h4>
+        <p>${t.desc}</p>
+      </div>
+    `;
+    tl.appendChild(item);
+    setTimeout(() => item.classList.add('show'), 200 + i * 120);
+  });
+
+  const bg = document.getElementById('detailBudget');
+  if (course.budget) {
+    let html = '<h4>💰 예상 비용</h4>';
+    Object.entries(course.budget).forEach(([k, v]) => {
+      if (k === 'total') {
+        html += `<div class="budget-row budget-total"><span class="label">합계</span><span class="val">${v}</span></div>`;
+      } else {
+        html += `<div class="budget-row"><span class="label">${k}</span><span class="val">${v}</span></div>`;
+      }
+    });
+    bg.innerHTML = html;
+  }
+
+  document.getElementById('detailOverlay').classList.add('show');
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('show');
+}
+
+// 초기 로드
+loadCourses('제주도');
+</script>
+</body>
+</html>
