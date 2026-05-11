@@ -1050,6 +1050,205 @@ body {
   transform: translateY(-2px);
 }
 
+/* ============ TEACHER SERVICE ENTRY ============ */
+.teacher-entry {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 40px 72px;
+  position: relative;
+  z-index: 1;
+}
+.teacher-entry-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 32px;
+  align-items: center;
+  padding: 36px;
+  border: 1px solid rgba(126,200,181,0.24);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(126,200,181,0.16), transparent 34%),
+    radial-gradient(circle at 88% 15%, rgba(0,229,160,0.12), transparent 30%),
+    linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+  box-shadow: 0 24px 80px rgba(0,0,0,0.26);
+  overflow: hidden;
+  position: relative;
+}
+.teacher-entry-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(90deg, #000, transparent 72%);
+  pointer-events: none;
+}
+.teacher-entry-copy,
+.teacher-entry-preview {
+  position: relative;
+  z-index: 1;
+}
+.teacher-entry-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 6px 12px;
+  border: 1px solid rgba(0,229,160,0.28);
+  border-radius: 999px;
+  background: rgba(0,229,160,0.08);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.teacher-entry-kicker::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow);
+}
+.teacher-entry-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.24;
+  letter-spacing: -1px;
+  margin-bottom: 14px;
+}
+.teacher-entry-desc {
+  max-width: 560px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.75;
+  word-break: keep-all;
+}
+.teacher-entry-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+.teacher-entry-primary,
+.teacher-entry-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+.teacher-entry-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+.teacher-entry-primary:hover {
+  background: #00FFB2;
+  box-shadow: 0 0 30px var(--accent-glow);
+  transform: translateY(-1px);
+}
+.teacher-entry-secondary {
+  border: 1px solid var(--border-active);
+  color: var(--text-secondary);
+  background: rgba(255,255,255,0.03);
+}
+.teacher-entry-secondary:hover {
+  color: var(--text-primary);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+.teacher-entry-preview {
+  display: grid;
+  gap: 12px;
+}
+.teacher-entry-window {
+  min-height: 190px;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  background: rgba(8,9,13,0.72);
+  padding: 16px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.teacher-entry-window-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.teacher-entry-dots {
+  display: flex;
+  gap: 6px;
+}
+.teacher-entry-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+}
+.teacher-entry-window-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.teacher-entry-modules {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.teacher-entry-module {
+  min-height: 64px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,0.035);
+}
+.teacher-entry-module strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  font-size: 13px;
+}
+.teacher-entry-module span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+.teacher-entry-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid rgba(0,229,160,0.18);
+  border-radius: 14px;
+  background: rgba(0,229,160,0.055);
+}
+.teacher-entry-bubble {
+  width: fit-content;
+  max-width: 88%;
+  padding: 8px 11px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.82);
+  background: rgba(255,255,255,0.07);
+}
+.teacher-entry-bubble.teacher {
+  align-self: flex-end;
+  background: rgba(0,229,160,0.16);
+  color: var(--accent);
+}
+
 /* ============ CTA ============ */
 .cta-section {
   max-width: 1280px; margin: 0 auto;
@@ -1282,6 +1481,16 @@ body {
 
   .process-track { grid-template-columns: 1fr; }
   .process-step { padding: 20px 16px; }
+  .teacher-entry { padding: 16px 20px 48px; }
+  .teacher-entry-card {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 20px;
+  }
+  .teacher-entry-actions { flex-direction: column; }
+  .teacher-entry-primary,
+  .teacher-entry-secondary { width: 100%; }
+  .teacher-entry-modules { grid-template-columns: 1fr; }
   .cta-actions { flex-direction: column; align-items: center; }
   .cta-card { padding: 32px 20px; }
   .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
@@ -2096,6 +2305,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
+<!-- DIVIDER -->
+<div class="divider"><div class="divider-line"></div></div>
+
+<!-- ========== TEACHER SERVICE ENTRY ========== -->
+<section class="teacher-entry reveal" id="teacher-services-entry">
+  <div class="teacher-entry-card">
+    <div class="teacher-entry-copy">
+      <div class="teacher-entry-kicker">TEACHER PLANNED SERVICE</div>
+      <h2 class="teacher-entry-title">선생님이 기획한 수업 아이디어를<br>실제 체험 서비스로 만듭니다</h2>
+      <p class="teacher-entry-desc">
+        앱 제작, 데이터 탐구, AR 키링처럼 수업 결과물이 눈에 보이는 형태로 남는 사례를 정리했습니다.
+        수업 전 기획부터 시연 모듈, 현장 피드백까지 한 페이지에서 확인할 수 있습니다.
+      </p>
+      <div class="teacher-entry-actions">
+        <a class="teacher-entry-primary" href="teacher-services.html">교사 기획 서비스 사례 보기 →</a>
+        <a class="teacher-entry-secondary" href="#" onclick="openContactModal();return false;">우리 학교도 문의하기</a>
+      </div>
+    </div>
+    <div class="teacher-entry-preview" aria-hidden="true">
+      <div class="teacher-entry-window">
+        <div class="teacher-entry-window-top">
+          <div class="teacher-entry-dots"><span></span><span></span><span></span></div>
+          <div class="teacher-entry-window-label">LIVE MODULES</div>
+        </div>
+        <div class="teacher-entry-modules">
+          <div class="teacher-entry-module">
+            <strong>App Maker</strong>
+            <span>학생 아이디어를 모바일 앱으로 시연</span>
+          </div>
+          <div class="teacher-entry-module">
+            <strong>Data Chat</strong>
+            <span>수업 데이터로 AI 대화형 탐구</span>
+          </div>
+          <div class="teacher-entry-module">
+            <strong>AR Keyring</strong>
+            <span>결과물 마커를 인식하는 AR 데모</span>
+          </div>
+          <div class="teacher-entry-module">
+            <strong>Feedback</strong>
+            <span>현장 선생님 대화 기반 운영 기록</span>
+          </div>
+        </div>
+      </div>
+      <div class="teacher-entry-chat">
+        <div class="teacher-entry-bubble">수업 결과물을 학생들이 직접 보여줄 수 있나요?</div>
+        <div class="teacher-entry-bubble teacher">네. 시연 가능한 모듈까지 함께 구성합니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ========== CTA ========== -->
 <section class="cta-section reveal" id="cta">
   <div class="cta-card">
@@ -2159,10 +2419,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 // Mobile menu
 function toggleMobileMenu() {
-  document.getElementById('mobileMenu').classList.toggle('active');
+  const menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.toggle('active');
 }
 function closeMobileMenu() {
-  document.getElementById('mobileMenu').classList.remove('active');
+  const menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.remove('active');
 }
 
 // Demo mapping (하위 폴더 경로)
@@ -2254,12 +2516,12 @@ const serviceBar = document.getElementById('mobileServiceBar');
 window.addEventListener('scroll', () => {
   const currentScroll = window.scrollY;
   if (currentScroll > lastScroll && currentScroll > 120) {
-    nav.style.transform = 'translateY(-100%)';
-    serviceBar.style.transform = 'translateY(-100%)';
+    if (nav) nav.style.transform = 'translateY(-100%)';
+    if (serviceBar) serviceBar.style.transform = 'translateY(-100%)';
     closeMobileMenu();
   } else {
-    nav.style.transform = 'translateY(0)';
-    serviceBar.style.transform = 'translateY(0)';
+    if (nav) nav.style.transform = 'translateY(0)';
+    if (serviceBar) serviceBar.style.transform = 'translateY(0)';
   }
   lastScroll = currentScroll;
 }, { passive: true });
@@ -2268,7 +2530,7 @@ window.addEventListener('scroll', () => {
 document.addEventListener('click', (e) => {
   const menu = document.getElementById('mobileMenu');
   const toggle = document.querySelector('.nav-mobile-toggle');
-  if (menu.classList.contains('active') && !menu.contains(e.target) && !toggle.contains(e.target)) {
+  if (menu && toggle && menu.classList.contains('active') && !menu.contains(e.target) && !toggle.contains(e.target)) {
     closeMobileMenu();
   }
 });
