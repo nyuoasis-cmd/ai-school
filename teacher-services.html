@@ -733,7 +733,7 @@ button { font-family: inherit; }
 
 .data-flow-demo {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 250px;
+  grid-template-columns: 220px minmax(0, 1fr) 250px;
   gap: 16px;
 }
 
@@ -802,6 +802,31 @@ button { font-family: inherit; }
   font-weight: 800;
 }
 
+.persona-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.persona-button {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid rgba(27,42,74,0.1);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.76);
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.persona-button.active {
+  border-color: rgba(126,200,181,0.95);
+  background: rgba(126,200,181,0.18);
+  color: var(--navy);
+}
+
 .npc-chat-head {
   display: flex;
   align-items: center;
@@ -825,8 +850,10 @@ button { font-family: inherit; }
   flex-direction: column;
   gap: 12px;
   min-height: 310px;
+  max-height: 360px;
   padding: 20px;
   background: #F8F6F0;
+  overflow: auto;
 }
 
 .bubble {
@@ -877,6 +904,58 @@ button { font-family: inherit; }
   border-radius: 999px;
   color: var(--muted);
   font-size: 12px;
+  font-weight: 800;
+}
+
+.question-row button {
+  padding: 8px 10px;
+  border: 1px solid rgba(27,42,74,0.1);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.data-chat-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  padding: 0 20px 20px;
+}
+
+.data-chat-form textarea {
+  min-height: 50px;
+  resize: vertical;
+  border: 1px solid rgba(27,42,74,0.12);
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: var(--navy);
+  font-family: var(--font-body);
+  font-weight: 700;
+  outline: none;
+}
+
+.data-chat-form button {
+  min-width: 92px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--navy);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.data-chat-form button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.chat-status {
+  padding: 0 20px 14px;
+  color: var(--muted);
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -1469,27 +1548,32 @@ button { font-family: inherit; }
               <div class="mini-bar" style="height:46%;">24</div>
             </div>
             <div class="data-next">다음 질문: 왜 이 항목이 가장 높을까?</div>
+            <div class="persona-list" id="dataPersonaList" aria-label="인터뷰 등장인물 선택">
+              <button class="persona-button active" type="button">데모 연결 중</button>
+            </div>
           </aside>
 
           <section class="npc-chat">
             <div class="npc-chat-head">
               <div>
                 <div class="modal-label">등장인물 인터뷰</div>
-                <h4>지역 주민에게 이유 묻기</h4>
+                <h4 id="dataPersonaTitle">AI 주민에게 이유 묻기</h4>
               </div>
-              <span class="npc-badge">의견 저장 가능</span>
+              <span class="npc-badge" id="dataChatBadge">실시간 데모</span>
             </div>
-            <div class="npc-messages">
-              <div class="bubble student">그래프에서 이 항목이 높게 나왔는데, 실제로는 어떤 이유가 있을까요?</div>
-              <div class="bubble npc">숫자만 보면 한 가지 원인처럼 보이지만, 현장에서는 시간대와 이동 방식, 이용 습관이 같이 영향을 줍니다.<br><span class="save-chip">결과물에 의견으로 저장</span></div>
-              <div class="bubble student">그럼 해결 방법을 정하기 전에 무엇을 더 확인해야 할까요?</div>
-              <div class="bubble npc">같은 데이터를 다른 기준으로 나눠 보고, 불편을 겪는 사람과 실제 운영하는 사람의 의견을 함께 비교해야 합니다.<br><span class="save-chip">근거 카드로 저장</span></div>
+            <div class="npc-messages" id="dataChatMessages">
+              <div class="bubble npc">데모 세션에 연결하고 있습니다. 잠시 후 등장인물을 선택해 질문할 수 있습니다.</div>
             </div>
-            <div class="question-row" aria-label="추천 질문">
-              <span>왜 이런 차이가 생겼나요?</span>
-              <span>누가 가장 불편한가요?</span>
-              <span>현실적으로 바꿀 수 있나요?</span>
+            <div class="question-row" id="dataQuestionRow" aria-label="추천 질문">
+              <button type="button" data-question="왜 이런 차이가 생겼나요?">왜 이런 차이가 생겼나요?</button>
+              <button type="button" data-question="누가 가장 불편한가요?">누가 가장 불편한가요?</button>
+              <button type="button" data-question="현실적으로 바꿀 수 있나요?">현실적으로 바꿀 수 있나요?</button>
             </div>
+            <form class="data-chat-form" id="dataChatForm">
+              <textarea id="dataChatInput" maxlength="200" placeholder="등장인물에게 질문을 입력하세요."></textarea>
+              <button type="submit" id="dataChatSubmit">질문</button>
+            </form>
+            <div class="chat-status" id="dataChatStatus">질문은 200자 이내로 전송됩니다.</div>
           </section>
 
           <aside class="evidence-panel">
@@ -1501,8 +1585,9 @@ button { font-family: inherit; }
             </div>
             <div class="evidence-card">
               <b>사람 의견</b>
-              <p>AI 주민 답변을 인용해 숫자 뒤의 이유를 설명합니다.</p>
+              <p id="dataEvidenceQuote">AI 주민 답변을 인용해 숫자 뒤의 이유를 설명합니다.</p>
             </div>
+            <a class="btn secondary" href="https://data.teachermate.co.kr/?code=TEST01&group=38435f62-a5e8-48a9-8484-09fd2a5e5113" target="_blank" rel="noopener" style="margin-top:16px;">전체 수업 흐름 열기</a>
           </aside>
         </div>
       </div>
@@ -1594,6 +1679,7 @@ function openModal(id) {
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
   activeModal = modal;
+  if (id === 'modal-data') initDataChat();
 }
 
 function closeModal() {
@@ -1617,6 +1703,231 @@ modals.forEach((modal) => {
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') closeModal();
+});
+
+const DATA_CHAT = {
+  apiBase: 'https://data.teachermate.co.kr',
+  code: 'TEST01',
+  groupId: '38435f62-a5e8-48a9-8484-09fd2a5e5113',
+  clientKey: 'teacher-services-data-demo-client-id',
+  activePersonaId: null,
+  payload: null,
+  loading: false,
+  ready: false,
+};
+
+const dataPersonaList = document.getElementById('dataPersonaList');
+const dataPersonaTitle = document.getElementById('dataPersonaTitle');
+const dataChatBadge = document.getElementById('dataChatBadge');
+const dataChatMessages = document.getElementById('dataChatMessages');
+const dataQuestionRow = document.getElementById('dataQuestionRow');
+const dataChatForm = document.getElementById('dataChatForm');
+const dataChatInput = document.getElementById('dataChatInput');
+const dataChatSubmit = document.getElementById('dataChatSubmit');
+const dataChatStatus = document.getElementById('dataChatStatus');
+const dataEvidenceQuote = document.getElementById('dataEvidenceQuote');
+
+function getDataDemoClientId() {
+  const saved = localStorage.getItem(DATA_CHAT.clientKey);
+  if (saved && saved.length >= 16) return saved;
+  const created = crypto.randomUUID().replace(/-/g, '');
+  localStorage.setItem(DATA_CHAT.clientKey, created);
+  return created;
+}
+
+function setDataChatStatus(message) {
+  if (dataChatStatus) dataChatStatus.textContent = message;
+}
+
+function setDataChatBusy(isBusy) {
+  if (dataChatSubmit) dataChatSubmit.disabled = isBusy;
+  DATA_CHAT.loading = isBusy;
+}
+
+function renderDataMessages() {
+  if (!dataChatMessages) return;
+  dataChatMessages.replaceChildren();
+
+  const messages = (DATA_CHAT.payload?.messages || []).filter(
+    (message) => message.npc_persona_id === DATA_CHAT.activePersonaId,
+  );
+
+  if (!messages.length) {
+    const empty = document.createElement('div');
+    empty.className = 'bubble npc';
+    empty.textContent = '추천 질문을 누르거나 직접 질문을 입력하면 AI 주민이 답변합니다.';
+    dataChatMessages.appendChild(empty);
+    dataChatMessages.scrollTop = dataChatMessages.scrollHeight;
+    return;
+  }
+
+  messages.forEach((message) => {
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${message.role === 'student' ? 'student' : 'npc'}`;
+    bubble.textContent = message.content;
+    if (message.role === 'npc') {
+      const chip = document.createElement('span');
+      chip.className = 'save-chip';
+      chip.textContent = message.source === 'pending' ? '교사 확인 중' : '근거 카드로 저장 가능';
+      bubble.appendChild(document.createElement('br'));
+      bubble.appendChild(chip);
+    }
+    dataChatMessages.appendChild(bubble);
+  });
+
+  const lastNpc = [...messages].reverse().find((message) => message.role === 'npc');
+  if (lastNpc && dataEvidenceQuote) {
+    dataEvidenceQuote.textContent = `“${lastNpc.content}”`;
+  }
+
+  dataChatMessages.scrollTop = dataChatMessages.scrollHeight;
+}
+
+function renderDataPersonas() {
+  if (!dataPersonaList || !DATA_CHAT.payload) return;
+  dataPersonaList.replaceChildren();
+
+  DATA_CHAT.payload.personas.forEach((persona) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `persona-button ${persona.id === DATA_CHAT.activePersonaId ? 'active' : ''}`;
+    button.textContent = `${persona.name} · ${persona.role}`;
+    button.addEventListener('click', () => {
+      DATA_CHAT.activePersonaId = persona.id;
+      renderDataPersonas();
+      renderDataQuestions();
+      renderDataMessages();
+    });
+    dataPersonaList.appendChild(button);
+  });
+
+  const activePersona = DATA_CHAT.payload.personas.find(
+    (persona) => persona.id === DATA_CHAT.activePersonaId,
+  );
+  if (activePersona && dataPersonaTitle) {
+    dataPersonaTitle.textContent = activePersona.name;
+  }
+}
+
+function renderDataQuestions() {
+  if (!dataQuestionRow) return;
+  const activePersona = DATA_CHAT.payload?.personas.find(
+    (persona) => persona.id === DATA_CHAT.activePersonaId,
+  );
+  const questions = activePersona?.recommended_questions?.length
+    ? activePersona.recommended_questions.slice(0, 3)
+    : ['왜 이런 차이가 생겼나요?', '누가 가장 불편한가요?', '현실적으로 바꿀 수 있나요?'];
+
+  dataQuestionRow.replaceChildren();
+  questions.forEach((question) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = question;
+    button.addEventListener('click', () => {
+      if (dataChatInput) dataChatInput.value = question;
+      dataChatInput?.focus();
+    });
+    dataQuestionRow.appendChild(button);
+  });
+}
+
+async function fetchDataChat() {
+  const clientId = getDataDemoClientId();
+  const response = await fetch(`${DATA_CHAT.apiBase}/api/groups/${DATA_CHAT.groupId}/chat`, {
+    headers: { 'X-Client-Id': clientId },
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(payload?.error || 'chat_lookup_failed');
+  }
+  DATA_CHAT.payload = payload;
+  DATA_CHAT.activePersonaId =
+    DATA_CHAT.activePersonaId ||
+    payload.personas?.find((persona) => persona.id === 'kim-minji-nutritionist')?.id ||
+    payload.personas?.[0]?.id ||
+    null;
+  DATA_CHAT.ready = true;
+}
+
+async function ensureDataDemoParticipant() {
+  const clientId = getDataDemoClientId();
+  const response = await fetch(`${DATA_CHAT.apiBase}/api/sessions/code/${DATA_CHAT.code}/join`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Client-Id': clientId,
+    },
+    body: JSON.stringify({
+      client_id: clientId,
+      group_id: DATA_CHAT.groupId,
+      name: '공문 데모',
+    }),
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || !payload?.group_id) {
+    throw new Error(payload?.error || 'participant_join_failed');
+  }
+}
+
+async function initDataChat() {
+  if (DATA_CHAT.loading || DATA_CHAT.ready) return;
+  setDataChatBusy(true);
+  setDataChatStatus('데모 세션에 연결하고 있습니다.');
+  try {
+    await ensureDataDemoParticipant();
+    await fetchDataChat();
+    renderDataPersonas();
+    renderDataQuestions();
+    renderDataMessages();
+    if (dataChatBadge) dataChatBadge.textContent = '실시간 대화 가능';
+    setDataChatStatus('추천 질문을 누르거나 직접 입력해 AI 주민에게 질문할 수 있습니다.');
+  } catch (error) {
+    setDataChatStatus('데모 연결에 실패했습니다. 전체 수업 흐름 열기로 확인해 주세요.');
+    if (dataChatMessages) {
+      dataChatMessages.replaceChildren();
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble npc';
+      bubble.textContent = error instanceof Error ? error.message : 'chat_demo_failed';
+      dataChatMessages.appendChild(bubble);
+    }
+  } finally {
+    setDataChatBusy(false);
+  }
+}
+
+dataChatForm?.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const content = dataChatInput?.value.trim() || '';
+  if (!content || !DATA_CHAT.activePersonaId || DATA_CHAT.loading) return;
+
+  setDataChatBusy(true);
+  setDataChatStatus('AI 주민이 답변을 작성하고 있습니다.');
+  try {
+    const clientId = getDataDemoClientId();
+    const response = await fetch(`${DATA_CHAT.apiBase}/api/groups/${DATA_CHAT.groupId}/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Client-Id': clientId,
+      },
+      body: JSON.stringify({
+        npc_persona_id: DATA_CHAT.activePersonaId,
+        content,
+      }),
+    });
+    const payload = await response.json().catch(() => null);
+    if (!response.ok || !payload?.messages) {
+      throw new Error(payload?.error || 'chat_send_failed');
+    }
+    DATA_CHAT.payload.messages = [...(DATA_CHAT.payload?.messages || []), ...payload.messages];
+    dataChatInput.value = '';
+    renderDataMessages();
+    setDataChatStatus('답변을 받았습니다. 다른 등장인물도 선택해 질문할 수 있습니다.');
+  } catch (error) {
+    setDataChatStatus(error instanceof Error ? error.message : '질문 전송에 실패했습니다.');
+  } finally {
+    setDataChatBusy(false);
+  }
 });
 </script>
 </body>
