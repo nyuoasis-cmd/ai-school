@@ -172,11 +172,12 @@ button { font-family: inherit; }
   margin: 0 auto;
   min-height: 680px;
   padding: 92px 0 76px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 54px;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  text-align: left;
 }
 
 .eyebrow {
@@ -202,10 +203,10 @@ button { font-family: inherit; }
 }
 
 .hero h1 {
-  max-width: 1020px;
+  max-width: 760px;
   margin-top: 30px;
-  font-size: clamp(48px, 7vw, 94px);
-  line-height: 0.96;
+  font-size: clamp(48px, 6.2vw, 82px);
+  line-height: 1;
   letter-spacing: -0.075em;
   font-weight: 900;
 }
@@ -225,12 +226,11 @@ button { font-family: inherit; }
 }
 
 .trust-stack {
-  margin-top: 42px;
+  margin-top: 0;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -238,8 +238,8 @@ button { font-family: inherit; }
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  min-height: 50px;
-  padding: 10px 18px;
+  min-height: 58px;
+  padding: 12px 20px;
   border: 2px solid rgba(126,200,181,0.9);
   border-radius: 999px;
   background: rgba(27,42,74,0.9);
@@ -269,8 +269,8 @@ button { font-family: inherit; }
 }
 
 @keyframes trustFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
 }
 
 .section {
@@ -792,7 +792,10 @@ button { font-family: inherit; }
     width: min(100% - 28px, 1180px);
     min-height: 620px;
     padding-top: 62px;
+    grid-template-columns: 1fr;
+    gap: 34px;
   }
+  .trust-stack { max-width: 420px; }
   .section { width: min(100% - 28px, 1180px); }
   .section-head {
     align-items: start;
@@ -871,11 +874,11 @@ button { font-family: inherit; }
         수업에서 나온 한 문장, 학교 행사에서 필요한 한 장면, 학생들이 더 몰입할 수 있는 방식.
         티처메이트는 현장 교사의 아이디어를 수업 가능한 웹서비스로 구현합니다.
       </p>
-      <div class="trust-stack" aria-label="티처메이트 신뢰 배지">
-        <div class="trust-pill"><span class="trust-icon">🏆</span><span class="trust-text">2026 중앙일보 혁신IT대상</span></div>
-        <div class="trust-pill"><span class="trust-icon">🏢</span><span class="trust-text">서울창업센터 동작 입주기업</span></div>
-        <div class="trust-pill"><span class="trust-icon">▣</span><span class="trust-text">비즈쿨 행정 서비스 무료</span></div>
-      </div>
+    </div>
+    <div class="trust-stack" aria-label="티처메이트 신뢰 배지">
+      <div class="trust-pill"><span class="trust-icon">🏆</span><span class="trust-text">2026 중앙일보 혁신IT대상</span></div>
+      <div class="trust-pill"><span class="trust-icon">🏢</span><span class="trust-text">서울창업센터 동작 입주기업</span></div>
+      <div class="trust-pill"><span class="trust-icon">▣</span><span class="trust-text">비즈쿨 행정 서비스 무료</span></div>
     </div>
   </header>
 
