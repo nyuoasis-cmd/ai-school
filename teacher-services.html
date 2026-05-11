@@ -433,6 +433,17 @@ button { font-family: inherit; }
   }
 }
 
+@keyframes questionPulse {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 16px 34px rgba(243,123,61,0.3), 0 0 0 0 rgba(243,123,61,0.3);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 42px rgba(243,123,61,0.38), 0 0 0 8px rgba(243,123,61,0);
+  }
+}
+
 .case-visual {
   position: absolute;
   z-index: 0;
@@ -641,6 +652,11 @@ button { font-family: inherit; }
   box-shadow: 0 30px 100px rgba(0,0,0,0.34);
 }
 
+#modal-data .modal-panel {
+  width: min(1100px, 100%);
+  max-height: min(900px, 94vh);
+}
+
 .modal-head {
   position: sticky;
   top: 0;
@@ -771,7 +787,7 @@ button { font-family: inherit; }
   grid-template-columns: repeat(4, 1fr);
   align-items: end;
   gap: 8px;
-  height: 168px;
+  height: 140px;
   margin: 18px 0;
   padding: 14px;
   border-radius: 18px;
@@ -810,7 +826,7 @@ button { font-family: inherit; }
 
 .persona-button {
   width: 100%;
-  padding: 11px 12px;
+  padding: 9px 11px;
   border: 1px solid rgba(27,42,74,0.1);
   border-radius: 16px;
   background: rgba(255,255,255,0.76);
@@ -849,16 +865,16 @@ button { font-family: inherit; }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 310px;
-  max-height: 360px;
-  padding: 20px;
+  min-height: 210px;
+  max-height: 230px;
+  padding: 18px 20px;
   background: #F8F6F0;
   overflow: auto;
 }
 
 .bubble {
   max-width: 82%;
-  padding: 13px 15px;
+  padding: 12px 14px;
   border-radius: 18px;
   color: var(--navy);
   font-size: 14px;
@@ -895,7 +911,14 @@ button { font-family: inherit; }
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  padding: 16px 20px 20px;
+  padding: 12px 20px 10px;
+}
+
+.question-guide {
+  width: 100%;
+  color: var(--orange);
+  font-size: 13px;
+  font-weight: 900;
 }
 
 .question-row span {
@@ -909,42 +932,72 @@ button { font-family: inherit; }
 
 .question-row button {
   padding: 8px 10px;
-  border: 1px solid rgba(27,42,74,0.1);
+  border: 1px solid rgba(243,123,61,0.24);
   border-radius: 999px;
-  background: #fff;
-  color: var(--muted);
+  background: rgba(243,123,61,0.08);
+  color: var(--navy);
   cursor: pointer;
   font-size: 12px;
   font-weight: 800;
 }
 
+.chat-instruction {
+  margin: 0 20px 10px;
+  padding: 11px 14px;
+  border: 2px solid rgba(243,123,61,0.28);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(243,123,61,0.14), rgba(246,191,60,0.16));
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 12px 28px rgba(243,123,61,0.1);
+}
+
+.chat-instruction span {
+  color: var(--orange);
+}
+
 .data-chat-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 116px;
+  gap: 10px;
   padding: 0 20px 20px;
 }
 
 .data-chat-form textarea {
-  min-height: 50px;
+  min-height: 60px;
   resize: vertical;
-  border: 1px solid rgba(27,42,74,0.12);
-  border-radius: 16px;
-  padding: 12px 14px;
+  border: 3px solid rgba(243,123,61,0.55);
+  border-radius: 20px;
+  padding: 16px 17px;
+  background: #fff;
   color: var(--navy);
   font-family: var(--font-body);
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 900;
   outline: none;
+  box-shadow: 0 0 0 6px rgba(243,123,61,0.1), 0 14px 34px rgba(27,42,74,0.08);
+}
+
+.data-chat-form textarea::placeholder {
+  color: rgba(27,42,74,0.72);
+}
+
+.data-chat-form textarea:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 7px rgba(243,123,61,0.18), 0 18px 42px rgba(27,42,74,0.12);
 }
 
 .data-chat-form button {
-  min-width: 92px;
   border: 0;
-  border-radius: 16px;
-  background: var(--navy);
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--orange), #FF9B4A);
   color: #fff;
   cursor: pointer;
+  font-size: 17px;
   font-weight: 900;
+  box-shadow: 0 16px 34px rgba(243,123,61,0.3);
+  animation: questionPulse 1.8s ease-in-out infinite;
 }
 
 .data-chat-form button:disabled {
@@ -1565,13 +1618,15 @@ button { font-family: inherit; }
               <div class="bubble npc">데모 세션에 연결하고 있습니다. 잠시 후 등장인물을 선택해 질문할 수 있습니다.</div>
             </div>
             <div class="question-row" id="dataQuestionRow" aria-label="추천 질문">
+              <div class="question-guide">추천 질문을 누르면 아래 입력창에 바로 들어갑니다.</div>
               <button type="button" data-question="왜 이런 차이가 생겼나요?">왜 이런 차이가 생겼나요?</button>
               <button type="button" data-question="누가 가장 불편한가요?">누가 가장 불편한가요?</button>
               <button type="button" data-question="현실적으로 바꿀 수 있나요?">현실적으로 바꿀 수 있나요?</button>
             </div>
+            <div class="chat-instruction"><span>1.</span> 질문을 입력하고 <span>2.</span> 오른쪽 주황색 질문 버튼을 누르세요</div>
             <form class="data-chat-form" id="dataChatForm">
-              <textarea id="dataChatInput" maxlength="200" placeholder="등장인물에게 질문을 입력하세요."></textarea>
-              <button type="submit" id="dataChatSubmit">질문</button>
+              <textarea id="dataChatInput" maxlength="200" placeholder="여기에 질문 입력: 예) 월요일 잔반이 높은 이유는 무엇인가요?"></textarea>
+              <button type="submit" id="dataChatSubmit">질문하기</button>
             </form>
             <div class="chat-status" id="dataChatStatus">질문은 200자 이내로 전송됩니다.</div>
           </section>
@@ -1819,6 +1874,10 @@ function renderDataQuestions() {
     : ['왜 이런 차이가 생겼나요?', '누가 가장 불편한가요?', '현실적으로 바꿀 수 있나요?'];
 
   dataQuestionRow.replaceChildren();
+  const guide = document.createElement('div');
+  guide.className = 'question-guide';
+  guide.textContent = '추천 질문을 누르면 아래 입력창에 바로 들어갑니다.';
+  dataQuestionRow.appendChild(guide);
   questions.forEach((question) => {
     const button = document.createElement('button');
     button.type = 'button';
