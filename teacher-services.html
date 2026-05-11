@@ -4,11 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>티처메이트 - 교사 기획 서비스 사례</title>
-<script>
-(function(){var s=document.createElement('script');
-s.src=location.hostname==='localhost'?'http://localhost:5000/service-nav.js':'https://teachermate.co.kr/service-nav.js';
-document.head.appendChild(s);})();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -82,7 +77,7 @@ button { font-family: inherit; }
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 18px;
 }
 
@@ -122,19 +117,6 @@ button { font-family: inherit; }
   width: 10px;
   height: 18px;
   background: var(--mint);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.nav-link {
-  color: var(--ink-soft);
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
 }
 
 .btn {
@@ -1408,6 +1390,142 @@ button { font-family: inherit; }
   border-right: 9px solid #fff;
 }
 
+.contact-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(12, 19, 32, 0.58);
+  backdrop-filter: blur(12px);
+}
+
+.contact-modal.active {
+  display: flex;
+}
+
+.contact-panel {
+  position: relative;
+  width: min(100%, 420px);
+  padding: 32px;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.18);
+  animation: fadeUp 0.28s ease;
+}
+
+.contact-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: 0;
+  background: none;
+  color: #94A3B8;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.contact-chip {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: #F0FDF4;
+  color: #16A34A;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.contact-panel h3 {
+  margin: 0 0 4px;
+  color: #1E293B;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.contact-panel p {
+  margin: 0 0 24px;
+  color: #64748B;
+  font-size: 13px;
+}
+
+.contact-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.contact-fields label {
+  display: block;
+  margin-bottom: 4px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.contact-fields input,
+.contact-fields textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  color: #172033;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.contact-fields textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.contact-error {
+  display: none;
+  margin: 8px 0 0;
+  color: #EF4444;
+  font-size: 13px;
+  text-align: center;
+}
+
+.contact-submit,
+.contact-confirm {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px 0;
+  border: 0;
+  border-radius: 12px;
+  background: #16A34A;
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(22,163,74,0.2);
+}
+
+.contact-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.contact-success-icon {
+  margin-bottom: 16px;
+  color: #16A34A;
+  font-size: 46px;
+  font-weight: 900;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .footer {
   padding: 32px 0 48px;
   color: var(--muted);
@@ -1417,7 +1535,6 @@ button { font-family: inherit; }
 
 @media (max-width: 900px) {
   .nav-inner { width: min(100% - 28px, 1180px); }
-  .nav-link { display: none; }
   .hero {
     width: min(100% - 28px, 1180px);
     min-height: 620px;
@@ -1503,18 +1620,12 @@ button { font-family: inherit; }
 <body>
 <div class="page-grid"></div>
 <div class="site-shell">
-  <teachermate-nav active="AI 교육"></teachermate-nav>
-  <nav class="nav" aria-label="페이지 내 이동">
+  <nav class="nav" aria-label="홈 이동">
     <div class="nav-inner">
-      <a class="brand" href="index.html" aria-label="티처메이트 AI 교육 홈">
+      <a class="brand" href="https://teachermate.co.kr" aria-label="티처메이트 홈페이지">
         <span class="brand-mark" aria-hidden="true"></span>
         <span>티처메이트</span>
       </a>
-      <div class="nav-actions">
-        <a class="nav-link" href="#cases">사례 보기</a>
-        <a class="nav-link" href="#process">진행 방식</a>
-        <a class="btn" href="mailto:edu@teachermate.co.kr?subject=%5B%ED%8B%B0%EC%B2%98%EB%A9%94%EC%9D%B4%ED%8A%B8%5D%20%EC%9A%B0%EB%A6%AC%20%ED%95%99%EA%B5%90%EB%8F%84%20%EC%8B%A0%EC%B2%AD">우리 학교도 신청</a>
-      </div>
     </div>
   </nav>
 
@@ -1679,12 +1790,53 @@ button { font-family: inherit; }
           <h2>우리 학교의 아이디어도 서비스가 될 수 있습니다</h2>
           <p>수업에서 필요한 장면을 알려주시면 티처메이트가 구현 가능한 형태로 함께 정리합니다.</p>
         </div>
-        <a class="btn" href="mailto:edu@teachermate.co.kr?subject=%5B%ED%8B%B0%EC%B2%98%EB%A9%94%EC%9D%B4%ED%8A%B8%5D%20%EC%9A%B0%EB%A6%AC%20%ED%95%99%EA%B5%90%EB%8F%84%20%EC%8B%A0%EC%B2%AD">우리 학교도 신청</a>
+        <button class="btn" type="button" data-contact>우리 학교도 신청</button>
       </div>
     </section>
   </main>
 
   <footer class="footer">티처메이트 · 교사 기획 서비스 사례</footer>
+</div>
+
+<div class="contact-modal" id="contactModal" onclick="closeContactModal(event)">
+  <div class="contact-panel" onclick="event.stopPropagation()">
+    <button class="contact-close" type="button" onclick="closeContactModal()" aria-label="닫기">&times;</button>
+    <div class="contact-success" id="contactSuccess">
+      <div class="contact-success-icon">✓</div>
+      <h3>문의가 전송되었습니다</h3>
+      <p>빠른 시일 내에 연락드리겠습니다.</p>
+      <button class="contact-confirm" type="button" onclick="closeContactModal()">확인</button>
+    </div>
+    <form id="contactForm" onsubmit="submitContact(event)">
+      <div class="contact-chip">교육 문의</div>
+      <h3>교육 프로그램 문의하기</h3>
+      <p>연락처를 남겨주시면 빠르게 안내드리겠습니다.</p>
+      <div class="contact-fields">
+        <div>
+          <label>이름 <span style="color:#16A34A;">*</span></label>
+          <input name="cname" required placeholder="홍길동">
+        </div>
+        <div>
+          <label>학교 / 기관명</label>
+          <input name="cschool" placeholder="OO고등학교">
+        </div>
+        <div>
+          <label>연락처 <span style="color:#16A34A;">*</span></label>
+          <input name="cphone" required placeholder="010-0000-0000">
+        </div>
+        <div>
+          <label>이메일</label>
+          <input name="cemail" placeholder="example@school.ac.kr">
+        </div>
+        <div>
+          <label>문의 내용</label>
+          <textarea name="cmessage" placeholder="문의하실 내용을 자유롭게 작성해주세요."></textarea>
+        </div>
+      </div>
+      <p class="contact-error" id="contactError"></p>
+      <button class="contact-submit" type="submit">문의하기</button>
+    </form>
+  </div>
 </div>
 
 <div class="modal" id="modal-ar" role="dialog" aria-modal="true" aria-labelledby="modal-ar-title">
@@ -1873,6 +2025,7 @@ button { font-family: inherit; }
 <script>
 const openButtons = document.querySelectorAll('[data-modal]');
 const modals = document.querySelectorAll('.modal');
+const contactButtons = document.querySelectorAll('[data-contact]');
 let activeModal = null;
 
 function openModal(id) {
@@ -1895,6 +2048,74 @@ openButtons.forEach((button) => {
   button.addEventListener('click', () => openModal(button.dataset.modal));
 });
 
+function openContactModal() {
+  document.getElementById('contactModal')?.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeContactModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  const contactModal = document.getElementById('contactModal');
+  contactModal?.classList.remove('active');
+  document.body.style.overflow = '';
+  window.setTimeout(() => {
+    const form = document.getElementById('contactForm');
+    const success = document.getElementById('contactSuccess');
+    const error = document.getElementById('contactError');
+    if (form instanceof HTMLFormElement) {
+      form.style.display = '';
+      form.reset();
+    }
+    if (success) success.style.display = 'none';
+    if (error) error.style.display = 'none';
+  }, 300);
+}
+
+async function submitContact(event) {
+  event.preventDefault();
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement)) return;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const error = document.getElementById('contactError');
+  if (!(submitButton instanceof HTMLButtonElement) || !error) return;
+
+  submitButton.disabled = true;
+  submitButton.textContent = '전송 중...';
+  error.style.display = 'none';
+
+  const formData = new FormData(form);
+  const payload = {
+    name: String(formData.get('cname') || ''),
+    school: String(formData.get('cschool') || ''),
+    phone: String(formData.get('cphone') || ''),
+    email: String(formData.get('cemail') || ''),
+    message: String(formData.get('cmessage') || ''),
+    source: 'ai-school-teacher-services',
+  };
+
+  try {
+    const response = await fetch('https://teachermate.co.kr/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error('contact_failed');
+    form.style.display = 'none';
+    const success = document.getElementById('contactSuccess');
+    if (success) success.style.display = 'flex';
+  } catch {
+    error.textContent = '전송에 실패했습니다. 잠시 후 다시 시도해주세요.';
+    error.style.display = 'block';
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = '문의하기';
+  }
+}
+
+contactButtons.forEach((button) => {
+  button.addEventListener('click', openContactModal);
+});
+
 modals.forEach((modal) => {
   modal.addEventListener('click', (event) => {
     if (event.target === modal || event.target.matches('[data-close]')) {
@@ -1904,7 +2125,9 @@ modals.forEach((modal) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') closeModal();
+  if (event.key !== 'Escape') return;
+  closeModal();
+  closeContactModal();
 });
 
 const DATA_CHAT = {
