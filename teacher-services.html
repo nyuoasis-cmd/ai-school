@@ -404,6 +404,66 @@ button { font-family: inherit; }
   animation: caseCtaPulse 2.6s ease-in-out infinite;
 }
 
+.idea-callout {
+  position: relative;
+  margin-top: 34px;
+  padding: 36px;
+  border: 1px solid rgba(27,42,74,0.12);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(246,191,60,0.34), transparent 24%),
+    radial-gradient(circle at 86% 20%, rgba(126,200,181,0.28), transparent 25%),
+    linear-gradient(135deg, #172033 0%, #1B2A4A 58%, #233B62 100%);
+  color: #fff;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(27,42,74,0.22);
+}
+
+.idea-callout::after {
+  content: 'IDEA';
+  position: absolute;
+  right: -12px;
+  bottom: -34px;
+  color: rgba(255,255,255,0.08);
+  font-family: var(--font-display);
+  font-size: clamp(82px, 12vw, 150px);
+  font-weight: 900;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.idea-callout > * {
+  position: relative;
+  z-index: 1;
+}
+
+.idea-callout h3 {
+  max-width: 760px;
+  font-size: clamp(26px, 3.6vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -0.055em;
+  font-weight: 900;
+}
+
+.idea-callout p {
+  max-width: 720px;
+  margin-top: 14px;
+  color: rgba(255,255,255,0.76);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.idea-callout .btn {
+  min-width: 190px;
+  background: var(--yellow);
+  color: var(--navy);
+  box-shadow: 0 18px 42px rgba(246,191,60,0.22);
+}
+
 @keyframes caseCtaPulse {
   0%, 100% {
     transform: translateY(0) scale(1);
@@ -1551,6 +1611,7 @@ button { font-family: inherit; }
   .case-grid,
   .process,
   .final-cta,
+  .idea-callout,
   .ar-modal-grid,
   .data-flow-demo,
   .kakao-grid,
@@ -1563,6 +1624,7 @@ button { font-family: inherit; }
     right: 18px;
     width: 180px;
   }
+  .idea-callout { padding: 32px; }
   .final-cta { padding: 32px; }
 }
 
@@ -1614,6 +1676,12 @@ button { font-family: inherit; }
     font-size: 14px;
   }
   .kakao-bubble::before { display: none; }
+  .idea-callout {
+    padding: 26px 22px;
+  }
+  .idea-callout .btn {
+    width: 100%;
+  }
 }
 </style>
 </head>
@@ -1725,6 +1793,15 @@ button { font-family: inherit; }
         </article>
       </div>
 
+      <section class="idea-callout" aria-labelledby="idea-callout-title">
+        <div>
+          <div class="section-kicker">TEACHER IDEAS</div>
+          <h3 id="idea-callout-title">취업, 창업, 포트폴리오에 관한 선생님들의 아이디어를 모집합니다</h3>
+          <p>학생 진로와 연결되는 수업 장면, 학교 행사, 수행평가 아이디어를 남겨주시면 티처메이트가 서비스화 가능성을 함께 검토합니다.</p>
+        </div>
+        <button class="btn" type="button" data-contact data-contact-mode="idea">아이디어 투척하기</button>
+      </section>
+
       <section class="feedback-showcase" aria-labelledby="field-feedback-title">
         <div class="feedback-showcase-head">
           <div>
@@ -1808,9 +1885,10 @@ button { font-family: inherit; }
       <button class="contact-confirm" type="button" onclick="closeContactModal()">확인</button>
     </div>
     <form id="contactForm" onsubmit="submitContact(event)">
-      <div class="contact-chip">교육 문의</div>
-      <h3>교육 프로그램 문의하기</h3>
-      <p>연락처를 남겨주시면 빠르게 안내드리겠습니다.</p>
+      <input type="hidden" name="csource" value="ai-school-teacher-services">
+      <div class="contact-chip" id="contactChip">교육 문의</div>
+      <h3 id="contactTitle">교육 프로그램 문의하기</h3>
+      <p id="contactDescription">연락처를 남겨주시면 빠르게 안내드리겠습니다.</p>
       <div class="contact-fields">
         <div>
           <label>이름 <span style="color:#16A34A;">*</span></label>
@@ -1829,8 +1907,8 @@ button { font-family: inherit; }
           <input name="cemail" placeholder="example@school.ac.kr">
         </div>
         <div>
-          <label>문의 내용</label>
-          <textarea name="cmessage" placeholder="문의하실 내용을 자유롭게 작성해주세요."></textarea>
+          <label id="contactMessageLabel">문의 내용</label>
+          <textarea name="cmessage" id="contactMessage" placeholder="문의하실 내용을 자유롭게 작성해주세요."></textarea>
         </div>
       </div>
       <p class="contact-error" id="contactError"></p>
@@ -2048,9 +2126,59 @@ openButtons.forEach((button) => {
   button.addEventListener('click', () => openModal(button.dataset.modal));
 });
 
-function openContactModal() {
+const contactDefaults = {
+  chip: '교육 문의',
+  title: '교육 프로그램 문의하기',
+  description: '연락처를 남겨주시면 빠르게 안내드리겠습니다.',
+  messageLabel: '문의 내용',
+  messagePlaceholder: '문의하실 내용을 자유롭게 작성해주세요.',
+  source: 'ai-school-teacher-services',
+  submitText: '문의하기',
+  requireMessage: false,
+};
+
+const contactModes = {
+  idea: {
+    chip: '아이디어 접수',
+    title: '선생님의 아이디어를 들려주세요',
+    description: '취업, 창업, 포트폴리오 수업에서 필요한 장면을 적어주시면 운영자 대시보드 문의로 전달됩니다.',
+    messageLabel: '아이디어 내용',
+    messagePlaceholder: '예) 학생들이 만든 포트폴리오를 QR로 전시하고, 기업 멘토가 피드백을 남기는 페이지가 있으면 좋겠습니다.',
+    source: 'ai-school-teacher-services-idea',
+    submitText: '아이디어 보내기',
+    requireMessage: true,
+  },
+};
+
+function setContactMode(mode) {
+  const config = { ...contactDefaults, ...(contactModes[mode] || {}) };
+  const chip = document.getElementById('contactChip');
+  const title = document.getElementById('contactTitle');
+  const description = document.getElementById('contactDescription');
+  const messageLabel = document.getElementById('contactMessageLabel');
+  const message = document.getElementById('contactMessage');
+  const source = document.querySelector('input[name="csource"]');
+  const submit = document.querySelector('#contactForm button[type="submit"]');
+  if (chip) chip.textContent = config.chip;
+  if (title) title.textContent = config.title;
+  if (description) description.textContent = config.description;
+  if (messageLabel) messageLabel.textContent = config.messageLabel;
+  if (message instanceof HTMLTextAreaElement) {
+    message.placeholder = config.messagePlaceholder;
+    message.required = config.requireMessage;
+  }
+  if (source instanceof HTMLInputElement) source.value = config.source;
+  if (submit instanceof HTMLButtonElement) submit.textContent = config.submitText;
+}
+
+function openContactModal(mode) {
+  setContactMode(mode);
   document.getElementById('contactModal')?.classList.add('active');
   document.body.style.overflow = 'hidden';
+  const message = document.getElementById('contactMessage');
+  if (mode === 'idea' && message instanceof HTMLTextAreaElement) {
+    window.setTimeout(() => message.focus(), 80);
+  }
 }
 
 function closeContactModal(event) {
@@ -2068,6 +2196,7 @@ function closeContactModal(event) {
     }
     if (success) success.style.display = 'none';
     if (error) error.style.display = 'none';
+    setContactMode();
   }, 300);
 }
 
@@ -2090,7 +2219,7 @@ async function submitContact(event) {
     phone: String(formData.get('cphone') || ''),
     email: String(formData.get('cemail') || ''),
     message: String(formData.get('cmessage') || ''),
-    source: 'ai-school-teacher-services',
+    source: String(formData.get('csource') || 'ai-school-teacher-services'),
   };
 
   try {
@@ -2108,12 +2237,13 @@ async function submitContact(event) {
     error.style.display = 'block';
   } finally {
     submitButton.disabled = false;
-    submitButton.textContent = '문의하기';
+    const source = String(formData.get('csource') || '');
+    submitButton.textContent = source.includes('idea') ? '아이디어 보내기' : '문의하기';
   }
 }
 
 contactButtons.forEach((button) => {
-  button.addEventListener('click', openContactModal);
+  button.addEventListener('click', () => openContactModal(button.dataset.contactMode));
 });
 
 modals.forEach((modal) => {
