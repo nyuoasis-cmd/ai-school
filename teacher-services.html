@@ -1891,16 +1891,16 @@ button { font-family: inherit; }
       <p id="contactDescription">연락처를 남겨주시면 빠르게 안내드리겠습니다.</p>
       <div class="contact-fields">
         <div>
-          <label>이름 <span style="color:#16A34A;">*</span></label>
-          <input name="cname" required placeholder="홍길동">
+          <label>이름</label>
+          <input name="cname" placeholder="홍길동">
         </div>
         <div>
           <label>학교 / 기관명</label>
           <input name="cschool" placeholder="OO고등학교">
         </div>
         <div>
-          <label>연락처 <span style="color:#16A34A;">*</span></label>
-          <input name="cphone" required placeholder="010-0000-0000">
+          <label>연락처</label>
+          <input name="cphone" placeholder="010-0000-0000">
         </div>
         <div>
           <label>이메일</label>
@@ -2140,9 +2140,9 @@ const contactDefaults = {
 const contactModes = {
   idea: {
     chip: '아이디어 접수',
-    title: '선생님의 아이디어를 들려주세요',
-    description: '취업, 창업, 포트폴리오 수업에서 필요한 장면을 적어주시면 운영자 대시보드 문의로 전달됩니다.',
-    messageLabel: '아이디어 내용',
+    title: '아이디어만 작성하셔도 돼요.',
+    description: '',
+    messageLabel: '아이디어 내용 *',
     messagePlaceholder: '예) 학생들이 만든 포트폴리오를 QR로 전시하고, 기업 멘토가 피드백을 남기는 페이지가 있으면 좋겠습니다.',
     source: 'ai-school-teacher-services-idea',
     submitText: '아이디어 보내기',
@@ -2161,7 +2161,10 @@ function setContactMode(mode) {
   const submit = document.querySelector('#contactForm button[type="submit"]');
   if (chip) chip.textContent = config.chip;
   if (title) title.textContent = config.title;
-  if (description) description.textContent = config.description;
+  if (description) {
+    description.textContent = config.description;
+    description.style.display = config.description ? '' : 'none';
+  }
   if (messageLabel) messageLabel.textContent = config.messageLabel;
   if (message instanceof HTMLTextAreaElement) {
     message.placeholder = config.messagePlaceholder;
