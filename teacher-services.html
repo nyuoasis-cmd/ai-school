@@ -1404,6 +1404,102 @@ button { font-family: inherit; }
     width: 100%;
   }
 }
+
+/* ── 주식 시뮬레이션 인터랙티브 데모판 (modal-stock 전용 스코프) ── */
+#modal-stock .stock-demo{position:relative;width:100%;max-width:1080px;margin:0 auto;padding:22px;border-radius:24px;
+  background:radial-gradient(circle at 18% 12%, rgba(126,200,181,.26), transparent 30%),
+    radial-gradient(circle at 82% 6%, rgba(246,191,60,.20), transparent 26%),
+    linear-gradient(135deg,#07111F 0%,#101827 48%,#172033 100%);
+  color:#fff;overflow:hidden}
+#modal-stock .stock-demo::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(0deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:34px 34px;mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent);pointer-events:none}
+#modal-stock .sd-head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px 18px;border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.06);
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.02em}
+#modal-stock .sd-head .era{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#modal-stock .sd-head .era b{font-size:21px;color:var(--yellow);font-weight:800}
+#modal-stock .sd-head .round{color:rgba(255,255,255,.6);font-size:12px}
+#modal-stock .sd-status{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:rgba(126,200,181,.16);
+  color:var(--mint);padding:8px 13px;font-weight:900;font-size:12px;flex:none}
+#modal-stock .sd-status::before{content:'';width:8px;height:8px;border-radius:999px;background:var(--mint);
+  box-shadow:0 0 16px rgba(126,200,181,.85);animation:skPulse 1.6s infinite}
+@keyframes skPulse{50%{opacity:.35}}
+#modal-stock .sd-grid{position:relative;z-index:1;display:grid;grid-template-columns:184px minmax(0,1fr) 224px;gap:12px;margin-top:14px}
+#modal-stock .sk-panel{border:1px solid rgba(255,255,255,.12);border-radius:18px;background:rgba(255,255,255,.07);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:15px}
+#modal-stock .sk-panel h4{font-size:13px;margin-bottom:11px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+#modal-stock .sk-panel h4 small{font-weight:600;color:#8190a8;font-size:11px}
+#modal-stock .wallet{display:flex;flex-direction:column;gap:9px}
+#modal-stock .wallet .row{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:rgba(255,255,255,.78)}
+#modal-stock .wallet .row b{font-family:var(--font-mono);color:#fff;font-size:14px}
+#modal-stock .wallet .total{margin-top:6px;padding:12px;border-radius:13px;background:rgba(126,200,181,.10)}
+#modal-stock .wallet .total .lab{font-size:11px;color:#8190a8}
+#modal-stock .wallet .total .val{font-family:var(--font-mono);font-size:21px;font-weight:900;color:#fff;margin-top:3px}
+#modal-stock .sk-ret{font-family:var(--font-mono);font-weight:900;font-size:15px;margin-top:4px}
+#modal-stock .sk-ret.up{color:#1FA885}#modal-stock .sk-ret.down{color:#F05F3B}#modal-stock .sk-ret.flat{color:#8190a8}
+#modal-stock .rank{margin-top:15px}
+#modal-stock .rank-row{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:12px;color:rgba(255,255,255,.78)}
+#modal-stock .rank-row:last-child{border-bottom:0}
+#modal-stock .rank-row.me{color:var(--yellow);font-weight:800}
+#modal-stock .rank-row strong{font-family:var(--font-mono)}
+#modal-stock .chart-wrap{position:relative;height:218px;border-radius:16px;overflow:hidden;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 1px,transparent 1px 44px)}
+#modal-stock .chart-wrap svg{position:absolute;inset:0;width:100%;height:100%}
+#modal-stock .chart-label{position:absolute;left:14px;top:11px;font-family:var(--font-mono);font-size:12px;color:rgba(255,255,255,.55);font-weight:700}
+#modal-stock .chart-now{position:absolute;right:13px;top:11px;font-family:var(--font-mono);font-weight:800;font-size:18px}
+#modal-stock .event-card{margin-top:13px;border-radius:16px;overflow:hidden;border:1px solid rgba(246,191,60,.28);
+  background:rgba(246,191,60,.10);transform:translateY(8px);opacity:0;transition:.45s;max-height:0}
+#modal-stock .event-card.show{transform:none;opacity:1;max-height:200px}
+#modal-stock .event-card.crash{border-color:rgba(240,95,59,.4);background:rgba(240,95,59,.12)}
+#modal-stock .event-card.boom{border-color:rgba(31,168,133,.4);background:rgba(31,168,133,.12)}
+#modal-stock .ec-head{display:flex;align-items:center;gap:10px;padding:12px 15px;font-weight:900;font-size:14px}
+#modal-stock .ec-head .tag{font-family:var(--font-mono);font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;background:rgba(0,0,0,.25)}
+#modal-stock .event-card.crash .ec-head{color:#ffb4a2}
+#modal-stock .event-card.boom .ec-head{color:#9fe6d4}
+#modal-stock .event-card:not(.crash):not(.boom) .ec-head{color:var(--yellow)}
+#modal-stock .ec-body{padding:0 15px 13px;color:rgba(255,255,255,.82);font-size:13px;line-height:1.55}
+#modal-stock .stocks{display:flex;flex-direction:column;gap:8px}
+#modal-stock .stock-item{padding:11px 12px;border-radius:13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+#modal-stock .si-top{display:flex;justify-content:space-between;align-items:flex-start}
+#modal-stock .si-name{font-weight:800;font-size:13px}
+#modal-stock .si-price{font-family:var(--font-mono);font-size:13px;text-align:right;line-height:1.35}
+#modal-stock .si-chg{font-family:var(--font-mono);font-size:11px;font-weight:800}
+#modal-stock .si-chg.up{color:#1FA885}#modal-stock .si-chg.down{color:#F05F3B}#modal-stock .si-chg.flat{color:#8190a8}
+#modal-stock .si-hold{font-size:11px;color:#8190a8;margin-top:3px}
+#modal-stock .si-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
+#modal-stock .tbtn{padding:9px;border:0;border-radius:10px;color:#fff;font-weight:900;font-size:12px;cursor:pointer;
+  font-family:var(--font-body,inherit);transition:.15s;min-height:0;box-shadow:none}
+#modal-stock .tbtn:active{transform:scale(.95)}
+#modal-stock .tbtn.buy{background:#1FA885}#modal-stock .tbtn.buy:hover{background:#25c79e}
+#modal-stock .tbtn.sell{background:#F05F3B}#modal-stock .tbtn.sell:hover{background:#ff6f4b}
+#modal-stock .tbtn:disabled{opacity:.3;cursor:not-allowed}
+#modal-stock .sd-foot{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px}
+#modal-stock .teacher-tip{font-size:12px;color:rgba(255,255,255,.6);max-width:54%;line-height:1.5}
+#modal-stock .teacher-tip b{color:var(--mint)}
+#modal-stock .foot-btns{display:flex;gap:10px}
+#modal-stock .next-btn{padding:13px 24px;border:0;border-radius:14px;background:var(--yellow);color:#1a1205;font-weight:900;
+  font-size:14.5px;cursor:pointer;font-family:inherit;box-shadow:0 10px 24px rgba(246,191,60,.3);transition:.15s;min-height:0}
+#modal-stock .next-btn:hover{transform:translateY(-2px)}
+#modal-stock .next-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+#modal-stock .reset-btn{padding:13px 16px;border:1px solid rgba(255,255,255,.2);border-radius:14px;background:transparent;
+  color:rgba(255,255,255,.8);font-weight:800;font-size:13.5px;cursor:pointer;font-family:inherit;min-height:0;box-shadow:none}
+#modal-stock .sk-toast{position:absolute;left:50%;bottom:80px;transform:translateX(-50%) translateY(10px);z-index:5;
+  background:rgba(15,23,42,.95);border:1px solid rgba(255,255,255,.14);color:#fff;padding:11px 18px;border-radius:14px;
+  font-weight:700;font-size:13px;opacity:0;transition:.3s;pointer-events:none}
+#modal-stock .sk-toast.show{opacity:1;transform:translateX(-50%)}
+#modal-stock .sk-final{position:absolute;inset:0;z-index:20;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:13px;background:rgba(7,17,31,.94);backdrop-filter:blur(4px);border-radius:24px;text-align:center;padding:28px}
+#modal-stock .sk-final.show{display:flex}
+#modal-stock .sk-final h2{font-size:25px;color:#fff}
+#modal-stock .sk-final .big{font-family:var(--font-mono);font-size:52px;font-weight:900}
+#modal-stock .sk-final .big.up{color:#1FA885}#modal-stock .sk-final .big.down{color:#F05F3B}
+#modal-stock .sk-final p{color:rgba(255,255,255,.72);max-width:440px;line-height:1.6}
+@media (max-width:680px){
+  #modal-stock .sd-grid{grid-template-columns:1fr}
+  #modal-stock .teacher-tip{display:none}
+}
 </style>
 </head>
 <body>
@@ -1508,7 +1604,7 @@ button { font-family: inherit; }
             <h3 class="case-title">주식 시뮬레이션</h3>
             <p class="case-quote">“AI로 모의투자 앱을 만들고, 학교 축제 때 다른 학생들이 체험하는 투자 대회나 부스로 운영해 보고 싶습니다.”</p>
             <div class="case-actions">
-              <a class="btn" href="https://stock.teachermate.co.kr" target="_blank" rel="noopener">체험하기 →</a>
+              <button class="btn" type="button" data-modal="modal-stock">데모 해보기</button>
             </div>
           </div>
         </article>
@@ -1765,6 +1861,93 @@ button { font-family: inherit; }
   </div>
 </div>
 
+<div class="modal" id="modal-stock" role="dialog" aria-modal="true" aria-labelledby="modal-stock-title">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3 id="modal-stock-title">주식 시뮬레이션 데모</h3>
+      <button class="modal-close" type="button" aria-label="닫기" data-close>&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-label">실제로 매수·매도하고 «다음 턴»으로 시대를 넘겨보세요</div>
+      <div class="stock-demo" id="game">
+        <div class="sd-head">
+          <div class="era">
+            <span>KOSPI 1990 · 시대별 모의투자</span>
+            <b id="sk-year">1995</b>
+            <span class="round" id="sk-round">라운드 0 / 6</span>
+          </div>
+          <span class="sd-status">체험 데모</span>
+        </div>
+
+        <div class="sd-grid">
+          <aside class="sk-panel">
+            <h4>내 자산</h4>
+            <div class="wallet">
+              <div class="row">보유 현금 <b id="sk-cash">₩1,000,000</b></div>
+              <div class="row">주식 평가 <b id="sk-equity">₩0</b></div>
+              <div class="total">
+                <div class="lab">총자산</div>
+                <div class="val" id="sk-total">₩1,000,000</div>
+                <div class="sk-ret flat" id="sk-retval">+0.0%</div>
+              </div>
+            </div>
+            <div class="rank">
+              <h4>부스 랭킹 <small>4개 조</small></h4>
+              <div id="sk-ranklist"></div>
+            </div>
+          </aside>
+
+          <section class="sk-panel" style="display:flex;flex-direction:column">
+            <div class="chart-wrap">
+              <div class="chart-label">KOSPI 지수</div>
+              <div class="chart-now" id="sk-kospiNow">1000</div>
+              <svg viewBox="0 0 600 218" preserveAspectRatio="none">
+                <defs><linearGradient id="skG" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#7EC8B5" stop-opacity=".35"/>
+                  <stop offset="1" stop-color="#7EC8B5" stop-opacity="0"/>
+                </linearGradient></defs>
+                <polygon id="sk-area" fill="url(#skG)" points=""/>
+                <polyline id="sk-line" fill="none" stroke="#7EC8B5" stroke-width="3" points=""/>
+              </svg>
+            </div>
+            <div class="event-card" id="sk-event">
+              <div class="ec-head"><span class="tag" id="sk-evTag">뉴스</span><span id="sk-evTitle"></span></div>
+              <div class="ec-body" id="sk-evBody"></div>
+            </div>
+          </section>
+
+          <aside class="sk-panel">
+            <h4>종목 거래 <small>1주 단위</small></h4>
+            <div class="stocks" id="sk-stocks"></div>
+          </aside>
+        </div>
+
+        <div class="sd-foot">
+          <div class="teacher-tip">
+            <b>교사 진행:</b> 뉴스 카드 공개 → 학생이 매수·매도 선택 → <b>다음 턴</b>으로 연도를 넘기면 사건에 따라 주가가 등락합니다.
+          </div>
+          <div class="foot-btns">
+            <button class="reset-btn" id="sk-reset">다시 시작</button>
+            <button class="next-btn" id="sk-next">다음 턴 ▶</button>
+          </div>
+        </div>
+
+        <div class="sk-toast" id="sk-toast"></div>
+
+        <div class="sk-final" id="sk-final">
+          <h2>🏁 2024년, 투자 결산</h2>
+          <div class="big" id="sk-finalRet">+0.0%</div>
+          <p id="sk-finalMsg"></p>
+          <button class="next-btn" id="sk-finalReset">다시 체험하기</button>
+        </div>
+      </div>
+      <div class="case-actions">
+        <a class="btn secondary" href="https://stock.teachermate.co.kr" target="_blank" rel="noopener">직접 체험 열기 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const openButtons = document.querySelectorAll('[data-modal]');
 const modals = document.querySelectorAll('.modal');
@@ -1778,6 +1961,7 @@ function openModal(id) {
   document.body.style.overflow = 'hidden';
   activeModal = modal;
   if (id === 'modal-data') initDataChat();
+  if (id === 'modal-stock' && window.initStockDemo) window.initStockDemo();
 }
 
 function closeModal() {
@@ -2156,6 +2340,155 @@ dataChatForm?.addEventListener('submit', async (event) => {
     setDataChatBusy(false);
   }
 });
+</script>
+
+<script>
+/* 주식 시뮬레이션 데모판 — modal-stock 전용 (IIFE 격리, window.initStockDemo 노출) */
+(function(){
+  const $ = id => document.getElementById(id);
+  const STOCKS = [
+    {name:'삼성전자',  base:48000},
+    {name:'현대차',    base:28000},
+    {name:'포스코',    base:62000},
+    {name:'SK하이닉스',base:21000},
+  ];
+  const TURNS = [
+    {year:1995, kospi:1000, ev:null, mult:[1,1,1,1]},
+    {year:1996, kospi:980,  ev:{tag:'경기',type:'',title:'반도체 가격 하락 · 경기 둔화',
+         body:'D램 가격이 떨어지며 IT주가 약세입니다. 다음 턴 어디에 투자할지 고민해보세요.'},
+         mult:[0.88,1.04,0.96,0.82]},
+    {year:1997, kospi:560,  ev:{tag:'위기',type:'crash',title:'IMF 외환위기 — 코스피 −20%',
+         body:'외환보유고 고갈로 환율 폭등, 증시 폭락. 거의 모든 종목이 급락합니다. 현금이 곧 기회가 될 수도?'},
+         mult:[0.62,0.55,0.6,0.48]},
+    {year:1999, kospi:1028, ev:{tag:'반등',type:'boom',title:'IMF 회복 + 닷컴 열풍 — 코스피 +83%',
+         body:'구조조정과 IT 붐으로 V자 반등. 바닥에서 사뒀다면 큰 수익! 특히 반도체·IT가 폭등합니다.'},
+         mult:[1.9,1.45,1.5,2.6]},
+    {year:2000, kospi:700,  ev:{tag:'버블',type:'crash',title:'닷컴버블 붕괴 — 코스피 −31%',
+         body:'기대만으로 오른 IT주가 무너집니다. 과열됐던 종목일수록 낙폭이 큽니다.'},
+         mult:[0.7,0.92,0.85,0.55]},
+    {year:2008, kospi:1124, ev:{tag:'위기',type:'crash',title:'글로벌 금융위기 — 코스피 −15%',
+         body:'미국발 금융위기로 전 세계 동반 하락. 수출주·금융주가 흔들립니다.'},
+         mult:[0.82,0.78,0.8,0.85]},
+    {year:2024, kospi:2680, ev:{tag:'장기',type:'boom',title:'반도체 슈퍼사이클 — 장기 우상향',
+         body:'15년을 버틴 우량주가 빛을 봅니다. 오래 들고 간 종목의 힘을 확인하세요.'},
+         mult:[3.4,2.2,1.9,4.1]},
+  ];
+  let state, toastTimer;
+  const won = n => '₩'+Math.round(n).toLocaleString('ko-KR');
+  const pct = n => (n>=0?'+':'')+n.toFixed(1)+'%';
+  const equityVal = () => state.hold.reduce((a,h,i)=>a+h*state.prices[i],0);
+  const totalVal = () => state.cash + equityVal();
+
+  function init(){
+    state = { turn:0, cash:1000000, ended:false,
+      prices:STOCKS.map(s=>s.base), hold:STOCKS.map(()=>0),
+      _prevPrices:STOCKS.map(s=>s.base), kospiHist:[TURNS[0].kospi],
+      bots:[{name:'1조',v:1000000,bias:1.0},{name:'2조',v:1000000,bias:0.7},{name:'4조',v:1000000,bias:0.4}] };
+    $('sk-final').classList.remove('show');
+    $('sk-event').classList.remove('show');
+    const nx=$('sk-next'); nx.disabled=false; nx.textContent='다음 턴 ▶';
+    render();
+  }
+
+  function render(){
+    const t=TURNS[state.turn];
+    $('sk-year').textContent=t.year;
+    $('sk-round').textContent=`라운드 ${state.turn} / ${TURNS.length-1}`;
+    $('sk-cash').textContent=won(state.cash);
+    $('sk-equity').textContent=won(equityVal());
+    const tot=totalVal(), ret=(tot/1000000-1)*100;
+    $('sk-total').textContent=won(tot);
+    const re=$('sk-retval'); re.textContent=pct(ret);
+    re.className='sk-ret '+(ret>0.05?'up':ret<-0.05?'down':'flat');
+
+    const kn=$('sk-kospiNow'); kn.textContent=Math.round(t.kospi).toLocaleString();
+    kn.style.color = state.turn>0 && t.kospi<state.kospiHist[state.kospiHist.length-2] ? '#F05F3B':'#7EC8B5';
+    drawChart();
+
+    const wrap=$('sk-stocks'); wrap.innerHTML='';
+    STOCKS.forEach((s,i)=>{
+      let chg=state.turn>0?(state.prices[i]/state._prevPrices[i]-1)*100:0; if(!isFinite(chg))chg=0;
+      const cls=chg>0.05?'up':chg<-0.05?'down':'flat';
+      const canBuy=state.cash>=state.prices[i]&&!state.ended, canSell=state.hold[i]>0&&!state.ended;
+      const el=document.createElement('div'); el.className='stock-item';
+      el.innerHTML=`<div class="si-top"><span class="si-name">${s.name}</span>
+        <span class="si-price">${won(state.prices[i])}<br><span class="si-chg ${cls}">${state.turn>0?pct(chg):'—'}</span></span></div>
+        <div class="si-hold">보유 ${state.hold[i]}주 · 평가 ${won(state.hold[i]*state.prices[i])}</div>
+        <div class="si-btns"><button class="tbtn buy" ${canBuy?'':'disabled'} data-b="${i}">매수</button>
+        <button class="tbtn sell" ${canSell?'':'disabled'} data-s="${i}">매도</button></div>`;
+      wrap.appendChild(el);
+    });
+    wrap.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>trade(+b.dataset.b,1));
+    wrap.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>trade(+b.dataset.s,-1));
+    renderRank();
+  }
+
+  function renderRank(){
+    const rows=[{name:'내 조',v:totalVal(),me:true},...state.bots.map(b=>({name:b.name,v:b.v,me:false}))].sort((a,b)=>b.v-a.v);
+    const list=$('sk-ranklist'); list.innerHTML='';
+    rows.forEach((r,idx)=>{
+      const ret=(r.v/1000000-1)*100;
+      const el=document.createElement('div'); el.className='rank-row'+(r.me?' me':'');
+      el.innerHTML=`<span>${idx+1}위 ${r.name}</span><strong>${pct(ret)}</strong>`;
+      list.appendChild(el);
+    });
+  }
+
+  function drawChart(){
+    const h=state.kospiHist, max=Math.max(...h)*1.05, min=Math.min(...h)*0.9, W=600,H=218, n=h.length;
+    const pts=h.map((v,i)=>{const x=n===1?0:(i/(n-1))*W; const y=H-((v-min)/(max-min))*H; return `${x.toFixed(1)},${y.toFixed(1)}`;});
+    $('sk-line').setAttribute('points',pts.join(' '));
+    $('sk-area').setAttribute('points',`0,${H} `+pts.join(' ')+` ${W},${H}`);
+  }
+
+  function trade(i,dir){
+    if(state.ended) return;
+    if(dir>0 && state.cash>=state.prices[i]){ state.cash-=state.prices[i]; state.hold[i]++; toast(`${STOCKS[i].name} 1주 매수`); }
+    else if(dir<0 && state.hold[i]>0){ state.cash+=state.prices[i]; state.hold[i]--; toast(`${STOCKS[i].name} 1주 매도`); }
+    render();
+  }
+
+  function toast(msg){
+    const t=$('sk-toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),1300);
+  }
+
+  function nextTurn(){
+    if(state.turn>=TURNS.length-1) return;
+    state._prevPrices=state.prices.slice(); state.turn++;
+    const t=TURNS[state.turn];
+    state.prices=STOCKS.map((s,i)=>Math.round(s.base*t.mult[i]*(1+(Math.random()-0.5)*0.06)/10)*10);
+    state.kospiHist.push(t.kospi);
+    const mkt=t.kospi/state.kospiHist[state.kospiHist.length-2];
+    state.bots.forEach(b=>{ b.v *= 1+(mkt-1)*(0.6+b.bias*0.9)+(Math.random()-0.5)*0.08; });
+    const ev=$('sk-event');
+    if(t.ev){
+      $('sk-evTag').textContent=t.ev.tag; $('sk-evTitle').textContent=t.ev.title; $('sk-evBody').textContent=t.ev.body;
+      ev.className='event-card '+(t.ev.type||''); requestAnimationFrame(()=>ev.classList.add('show'));
+    } else ev.classList.remove('show');
+    render();
+    if(state.turn>=TURNS.length-1){ const nx=$('sk-next'); nx.disabled=true; nx.textContent='결산 보기'; setTimeout(showFinal,400); }
+  }
+
+  function showFinal(){
+    state.ended=true;
+    const ret=(totalVal()/1000000-1)*100;
+    const fr=$('sk-finalRet'); fr.textContent=pct(ret); fr.className='big '+(ret>=0?'up':'down');
+    const rows=[{name:'내 조',v:totalVal()},...state.bots.map(b=>({name:b.name,v:b.v}))].sort((a,b)=>b.v-a.v);
+    const myRank=rows.findIndex(r=>r.name==='내 조')+1;
+    $('sk-finalMsg').textContent=
+      `30년을 투자한 결과, 4개 조 중 ${myRank}위입니다. ` +
+      (ret>=100?'우량주를 오래 들고 가는 힘을 보여줬어요!':
+       ret>=0?'위기 때 버티고 기회 때 담은 선택이 통했네요.':
+       '위기 때 손절·매수 타이밍을 다시 복기해 볼까요?');
+    $('sk-final').classList.add('show');
+  }
+
+  $('sk-next').addEventListener('click', nextTurn);
+  $('sk-reset').addEventListener('click', init);
+  $('sk-finalReset').addEventListener('click', init);
+  window.initStockDemo = init;
+})();
 </script>
 </body>
 </html>
