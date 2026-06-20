@@ -1073,283 +1073,6 @@ button { font-family: inherit; }
   color: var(--navy);
 }
 
-.stock-demo {
-  position: relative;
-  padding: 22px;
-  border-radius: 28px;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(126,200,181,0.28), transparent 28%),
-    radial-gradient(circle at 78% 8%, rgba(246,191,60,0.22), transparent 25%),
-    linear-gradient(135deg, #07111F 0%, #101827 48%, #172033 100%);
-  color: #fff;
-  overflow: hidden;
-}
-
-.stock-demo::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0.75), transparent);
-  pointer-events: none;
-}
-
-.stock-header {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 14px 16px;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 20px;
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.74);
-  font-family: var(--font-mono);
-  font-size: 13px;
-}
-
-.stock-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 999px;
-  background: rgba(246,191,60,0.16);
-  color: var(--yellow);
-  padding: 8px 11px;
-  font-weight: 900;
-}
-
-.stock-status::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--yellow);
-  box-shadow: 0 0 16px rgba(246,191,60,0.75);
-}
-
-.stock-game-grid {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 180px minmax(0, 1fr) 210px;
-  gap: 14px;
-  margin-top: 16px;
-}
-
-.game-panel {
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 22px;
-  background: rgba(255,255,255,0.075);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-}
-
-.team-panel {
-  padding: 16px;
-}
-
-.team-panel h4,
-.order-panel h4 {
-  color: #fff;
-  font-size: 14px;
-  margin-bottom: 12px;
-}
-
-.rank-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 11px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.78);
-  font-size: 13px;
-}
-
-.rank-row:last-child { border-bottom: 0; }
-
-.rank-row strong {
-  color: #fff;
-  font-family: var(--font-mono);
-}
-
-.market-panel {
-  padding: 16px;
-}
-
-.market-ticker {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.ticker-chip {
-  padding: 8px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.72);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.ticker-chip.up { color: #7EC8B5; }
-.ticker-chip.down { color: #FF8A65; }
-
-.stock-chart {
-  position: relative;
-  height: 270px;
-  margin-top: 0;
-  border-radius: 18px;
-  background:
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 52px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 70px);
-  overflow: hidden;
-}
-
-.stock-chart::before {
-  content: '';
-  position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 48%;
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #7EC8B5 0 14%, transparent 14% 18%, #7EC8B5 18% 31%, transparent 31% 35%, #F6BF3C 35% 49%, transparent 49% 53%, #F37B3D 53% 67%, transparent 67% 71%, #7EC8B5 71% 100%);
-  transform: skewY(-16deg);
-  box-shadow: 0 0 28px rgba(126,200,181,0.32);
-}
-
-.stock-chart::after {
-  content: '1948 → 2026  FESTIVAL ROUND 03';
-  position: absolute;
-  left: 18px;
-  bottom: 16px;
-  color: rgba(255,255,255,0.46);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.candle-row {
-  position: absolute;
-  inset: 28px 22px 54px;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  align-items: end;
-  gap: 9px;
-}
-
-.candle {
-  position: relative;
-  width: 14px;
-  justify-self: center;
-  border-radius: 4px;
-  background: var(--mint);
-  box-shadow: 0 0 18px rgba(126,200,181,0.22);
-}
-
-.candle::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: -18px;
-  bottom: -18px;
-  width: 2px;
-  transform: translateX(-50%);
-  background: currentColor;
-  opacity: 0.72;
-}
-
-.candle.down {
-  background: #FF7043;
-  color: #FF7043;
-  box-shadow: 0 0 18px rgba(255,112,67,0.22);
-}
-
-.event-card {
-  margin-top: 14px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  background: rgba(246,191,60,0.12);
-  border: 1px solid rgba(246,191,60,0.22);
-}
-
-.event-card b {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--yellow);
-}
-
-.event-card p {
-  color: rgba(255,255,255,0.78);
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-.order-panel {
-  padding: 16px;
-}
-
-.cash-box {
-  padding: 14px;
-  border-radius: 16px;
-  background: rgba(126,200,181,0.12);
-  color: #fff;
-  font-family: var(--font-mono);
-}
-
-.cash-box span {
-  display: block;
-  margin-top: 5px;
-  color: var(--mint);
-  font-size: 20px;
-  font-weight: 900;
-}
-
-.stock-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.trade-btn {
-  padding: 13px 10px;
-  border: 0;
-  border-radius: 14px;
-  color: #fff;
-  font-weight: 900;
-}
-
-.trade-btn.buy { background: #1FA885; }
-.trade-btn.sell { background: #F05F3B; }
-
-.stock-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 18px;
-  position: relative;
-  z-index: 1;
-}
-
-.stock-mini {
-  padding: 16px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.08);
-}
-
-.stock-mini b {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--yellow);
-}
-
 .feedback-showcase {
   margin-top: 34px;
   padding: 28px;
@@ -1614,8 +1337,7 @@ button { font-family: inherit; }
   .idea-callout,
   .ar-modal-grid,
   .data-flow-demo,
-  .kakao-grid,
-  .stock-game-grid {
+  .kakao-grid {
     grid-template-columns: 1fr;
   }
   .case-card { min-height: 470px; }
@@ -1664,7 +1386,6 @@ button { font-family: inherit; }
   .modal { padding: 10px; }
   .modal-body { padding: 18px; }
   .preview-frame { min-height: 360px; }
-  .stock-cards { grid-template-columns: 1fr; }
   .feedback-showcase { padding: 20px; }
   .feedback-showcase-head {
     align-items: start;
@@ -1779,7 +1500,7 @@ button { font-family: inherit; }
         <article class="case-card" style="--accent-glow: rgba(246,191,60,0.28);">
           <div class="case-top">
             <span class="case-order">04</span>
-            <span class="badge build">개발중</span>
+            <span class="badge live">체험 오픈</span>
           </div>
           <div class="case-visual stock-visual" aria-hidden="true"></div>
           <div class="case-main">
@@ -1787,7 +1508,7 @@ button { font-family: inherit; }
             <h3 class="case-title">주식 시뮬레이션</h3>
             <p class="case-quote">“AI로 모의투자 앱을 만들고, 학교 축제 때 다른 학생들이 체험하는 투자 대회나 부스로 운영해 보고 싶습니다.”</p>
             <div class="case-actions">
-              <button class="btn" type="button" data-modal="modal-stock">개발중 화면 보기</button>
+              <a class="btn" href="https://stock.teachermate.co.kr" target="_blank" rel="noopener">체험하기 →</a>
             </div>
           </div>
         </article>
@@ -2038,79 +1759,6 @@ button { font-family: inherit; }
             </div>
             <a class="btn secondary" href="https://data.teachermate.co.kr/?code=TEST01&group=38435f62-a5e8-48a9-8484-09fd2a5e5113" target="_blank" rel="noopener" style="margin-top:16px;">전체 수업 흐름 열기</a>
           </aside>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="modal-stock" role="dialog" aria-modal="true" aria-labelledby="modal-stock-title">
-  <div class="modal-panel">
-    <div class="modal-head">
-      <h3 id="modal-stock-title">주식 시뮬레이션 개발중</h3>
-      <button class="modal-close" type="button" aria-label="닫기" data-close>&times;</button>
-    </div>
-    <div class="modal-body">
-      <div class="stock-demo">
-        <div class="stock-header">
-          <span>KOSPI-1948 FESTIVAL MODE</span>
-          <span class="stock-status">개발중</span>
-        </div>
-        <div class="stock-game-grid">
-          <aside class="game-panel team-panel">
-            <h4>부스 랭킹</h4>
-            <div class="rank-row"><strong>1조</strong><span>+18.4%</span></div>
-            <div class="rank-row"><strong>4조</strong><span>+11.2%</span></div>
-            <div class="rank-row"><strong>2조</strong><span>+6.8%</span></div>
-            <div class="rank-row"><strong>3조</strong><span>-2.1%</span></div>
-          </aside>
-
-          <section class="game-panel market-panel">
-            <div class="market-ticker">
-              <span class="ticker-chip up">대한제분 +7.4%</span>
-              <span class="ticker-chip down">경성방직 -3.1%</span>
-              <span class="ticker-chip up">조흥은행 +5.8%</span>
-              <span class="ticker-chip">라운드 03</span>
-            </div>
-            <div class="stock-chart">
-              <div class="candle-row" aria-label="주가 캔들 차트 개발중 화면">
-                <i class="candle" style="height:42%;"></i>
-                <i class="candle down" style="height:58%;"></i>
-                <i class="candle" style="height:51%;"></i>
-                <i class="candle" style="height:68%;"></i>
-                <i class="candle down" style="height:47%;"></i>
-                <i class="candle" style="height:78%;"></i>
-                <i class="candle" style="height:62%;"></i>
-                <i class="candle down" style="height:54%;"></i>
-                <i class="candle" style="height:84%;"></i>
-                <i class="candle" style="height:72%;"></i>
-                <i class="candle down" style="height:64%;"></i>
-                <i class="candle" style="height:88%;"></i>
-              </div>
-            </div>
-            <div class="event-card">
-              <b>뉴스 이벤트 카드</b>
-              <p>수출 호재가 발표되었습니다. 관련 종목 가격이 다음 턴에 변동됩니다.</p>
-            </div>
-          </section>
-
-          <aside class="game-panel order-panel">
-            <h4>투자 선택</h4>
-            <div class="cash-box">보유 현금<span>₩1,240,000</span></div>
-            <div class="stock-buttons">
-              <button class="trade-btn buy" type="button">매수</button>
-              <button class="trade-btn sell" type="button">매도</button>
-            </div>
-            <div class="event-card">
-              <b>교사용 진행</b>
-              <p>뉴스 카드 공개 → 팀별 선택 → 수익률 공개 순서로 축제 부스를 운영합니다.</p>
-            </div>
-          </aside>
-        </div>
-        <div class="stock-cards">
-          <div class="stock-mini"><b>학생 참여</b><span>축제 부스에서 팀별 투자 선택</span></div>
-          <div class="stock-mini"><b>시대 이벤트</b><span>뉴스 카드에 따라 주가 변동</span></div>
-          <div class="stock-mini"><b>게임 결과</b><span>수익률과 선택 이유 공유</span></div>
         </div>
       </div>
     </div>
