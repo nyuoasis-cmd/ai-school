@@ -38,6 +38,7 @@ description: >
 | `기계차량_부품도감/parts-guide-v2.html` | 기계차량 앱 |
 | `경영금융_쇼핑몰경영/shop-simulator-v2.html` | 경영금융 앱 |
 | `정보통신과_교내상담AI챗봇/school-chatbot-v2.html` | 정보통신 앱 |
+| `관광과_여행플래너/travel-planner-v2.html` | 관광과 앱 (2026-04-17 추가) |
 
 ## Workflow
 
@@ -68,14 +69,18 @@ grep -L "app-frame" */*-v2.html
 
 **도구:** Grep
 
-각 v2.html CSS에서 `max-width` 설정을 확인합니다.
+각 v2.html CSS에서 `max-width` 설정을 확인합니다. CSS minify 등으로 `max-width:430px` (공백 없음)·`max-width: 430px` (콜론 뒤 공백) 양쪽 포맷을 모두 감지하도록 정규식을 작성합니다.
 
 ```bash
-grep "max-width.*430" */*-v2.html
+grep -E "max-width[[:space:]]*:[[:space:]]*430" */*-v2.html
 ```
 
-**PASS:** 8개 파일 모두 max-width:430px 설정
-**FAIL:** max-width 미설정 파일 발견
+**PASS:** 9개 파일 모두 max-width:430px 설정 (포맷 무관 감지).
+**FAIL:** max-width 미설정 파일 발견 — `grep -L`로 누락 파일 식별:
+
+```bash
+grep -LE "max-width[[:space:]]*:[[:space:]]*430" */*-v2.html
+```
 
 ### Step 4: app-header 검증
 
